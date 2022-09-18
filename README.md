@@ -151,7 +151,7 @@ with ```config.json``` like
 ```
 
 with ```template.md``` like
-```md
+```markdown
 # Aurix TC397 - Blinky Example
 
 ## User Control Block 00
