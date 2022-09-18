@@ -116,7 +116,7 @@ def common_load_template_file(file_name):
 
     return ret_status, template
 
-def common_dump_intel_hex(intel_hex, mem_access, addr, count):
+def common_dump_intel_hex(intel_hex, mem_access, addr, count, next_line=16):
     """Dump some data, starting with the address in the format "<addr>: <data>".
         The address and the data is printed in hex.
 
@@ -125,15 +125,19 @@ def common_dump_intel_hex(intel_hex, mem_access, addr, count):
         mem_access (MemAccess): Memory access API
         addr (int): Address
         count (int): Number of elements
+        next_line (int): A newline will be printed after this number of bytes.
 
     Returns:
         Ret: If successful, it will return Ret.OK otherwise a error code.
     """
-    next_line_after = 16 # byte
 
     offset = 0 # byte
     for index in range(count):
-        if (offset % next_line_after) == 0:
+
+        if (next_line == 0) and (index == 0):
+            print("{:04x}: ".format(addr + offset), end="")
+
+        elif (next_line > 0) and ((offset % next_line) == 0):
             if index > 0:
                 print("")
 

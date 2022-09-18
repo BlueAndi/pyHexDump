@@ -177,7 +177,8 @@ def _print_config_elements(intel_hex_file, cfg_elements):
         common_dump_intel_hex(  intel_hex_file,
                                 cfg_element.get_mem_access(),
                                 cfg_element.get_addr(),
-                                cfg_element.get_count())
+                                cfg_element.get_count(),
+                                0)
         print("")
 
     return ret_status
