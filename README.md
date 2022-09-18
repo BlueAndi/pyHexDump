@@ -24,7 +24,7 @@ $ pyHexDump --help
 
 ## Dump data as 8-bit
 
-```$ pyHexDump dump ./test/test.hex -a 0x80000020```
+```$ pyHexDump dump ./test/aurix_tc397.hex -a 0x80000020```
 
 Result:
 ```
@@ -36,7 +36,7 @@ Result:
 
 ## Dump data as 32-bit little endian
 
-```$ pyHexDump dump ./test/test.hex -a 0x80000020 -dt u32le```
+```$ pyHexDump dump ./test/aurix_tc397.hex -a 0x80000020 -dt u32le```
 
 Result:
 ```
@@ -60,29 +60,110 @@ Result:
 
 ## Print configuration
 
-```$ pyHexDump print ./test/test.hex ./test/config.json```
+```$ pyHexDump print ./test/aurix_tc397.hex ./test/config.json```
 
 with ```config.json``` like
 ```json
 {
     "elements": [{
-        "name": "element 1",
-        "addr": "0x80000020",
+        "name": "UCB00_BMI_BMHDID",
+        "addr": "0xAF400000",
         "dataType": "u32le",
         "count": 1
     }, {
-        "name": "element 2",
-        "addr": "0x80000080",
+        "name": "UCB00_STAD",
+        "addr": "0xAF400004",
         "dataType": "u32le",
-        "count": 2
+        "count": 1
+    }, {
+        "name": "UCB00_CRCBMHD",
+        "addr": "0xAF400008",
+        "dataType": "u32le",
+        "count": 1
+    }, {
+        "name": "UCB00_CRCBMHD_N",
+        "addr": "0xAF40000C",
+        "dataType": "u32le",
+        "count": 1
+    }, {
+        "name": "UCB00_PWx",
+        "addr": "0xAF400104",
+        "dataType": "u32le",
+        "count": 8
+    }, {
+        "name": "UCB00_CONFIRMATION",
+        "addr": "0xAF4001F0",
+        "dataType": "u32le",
+        "count": 1
     }]
 }
 ```
 
 Result:
 ```
-element 1 @ 80000020: 01da5802
-element 2 @ 80000080: f0108f0f 9000f16c
+UCB00_BMI_BMHDID @ af400000: b35900fe
+UCB00_STAD @ af400004: a0000000
+UCB00_CRCBMHD @ af400008: 31795570
+UCB00_CRCBMHD_N @ af40000c: ce86aa8f
+UCB00_PWx @ af400104: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+UCB00_CONFIRMATION @ af4001f0: 43211234
+```
+
+## Print report with template
+
+```$ pyHexDump print ./test/aurix_tc397.hex ./test/config.json --template ./test/template.md```
+
+with ```config.json``` like
+```json
+{
+    "elements": [{
+        "name": "UCB00_BMI_BMHDID",
+        "addr": "0xAF400000",
+        "dataType": "u32le",
+        "count": 1
+    }, {
+        "name": "UCB00_STAD",
+        "addr": "0xAF400004",
+        "dataType": "u32le",
+        "count": 1
+    }, {
+        "name": "UCB00_CRCBMHD",
+        "addr": "0xAF400008",
+        "dataType": "u32le",
+        "count": 1
+    }, {
+        "name": "UCB00_CRCBMHD_N",
+        "addr": "0xAF40000C",
+        "dataType": "u32le",
+        "count": 1
+    }, {
+        "name": "UCB00_PWx",
+        "addr": "0xAF400104",
+        "dataType": "u32le",
+        "count": 8
+    }, {
+        "name": "UCB00_CONFIRMATION",
+        "addr": "0xAF4001F0",
+        "dataType": "u32le",
+        "count": 1
+    }]
+}
+```
+
+with ```template.md``` like
+```md
+# Aurix TC397 - Blinky Example
+
+## User Control Block 00
+
+|Short Name|Value|
+|----------|-----|
+| BMI_BMHDID | ${UCB00_BMI_BMHDID} |
+| STAD | ${UCB00_STAD} |
+| CRCBMHD | ${UCB00_CRCBMHD} |
+| CRCBMHD_N | ${UCB00_CRCBMHD_N} |
+| PWx | ${UCB00_PWx} |
+| CONFIRMATION | ${UCB00_CONFIRMATION} |
 ```
 
 # Issues, Ideas And Bugs
