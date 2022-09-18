@@ -166,6 +166,22 @@ with ```template.md``` like
 | CONFIRMATION | ${UCB00_CONFIRMATION} |
 ```
 
+Result:
+```markdown
+# Aurix TC397 - Blinky Example
+
+## User Control Block 00
+
+|Short Name|Value|
+|----------|-----|
+| BMI_BMHDID | b35900fe |
+| STAD | a0000000 |
+| CRCBMHD | 31795570 |
+| CRCBMHD_N | ce86aa8f |
+| PWx | 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 |
+| CONFIRMATION | 43211234 |
+```
+
 # Issues, Ideas And Bugs
 If you have further ideas or you found some bugs, great! Create a [issue](https://github.com/BlueAndi/pyHexDump/issues) or if you are able and willing to fix it by yourself, clone the repository and create a pull request.
 
