@@ -1,0 +1,13 @@
+{
+    "elements": [{
+        "name": "element 1",
+        "addr": "0x80000020",
+        "dataType": "u32le",
+        "count": 1
+    }, {
+        "name": "element 2",
+        "addr": "0x80000080",
+        "dataType": "u32le",
+        "count": 2
+    }]
+}
