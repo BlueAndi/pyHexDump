@@ -116,6 +116,56 @@ def common_load_template_file(file_name):
 
     return ret_status, template
 
+def common_print_address(addr, addr_format="{:04X}"):
+    """Print the memory address in the given format.
+
+    Args:
+        addr (int): Memory address
+        addr_format (str, optional): The output format. Defaults to "{:04X}".
+    """
+    print(addr_format.format(addr), end="")
+
+def common_print_value(value, value_format="{:02X}"):
+    """Print the value in the given format.
+
+    Args:
+        value (int, list): A single value or a list of values.
+        value_format (str, optional): The output format. Defaults to "{:02X}".
+    """
+    # Array of values?
+    if isinstance(value, list):
+        # Print the array with a space between
+        for idx, element in enumerate(value):
+            if idx > 0:
+                print(" ", end="")
+            common_print_address(element, value_format)
+    else:
+        # Print the single value
+        print(value_format.format(value), end="")
+
+def common_print_line(intel_hex_file, mem_access, addr, count):
+    """Print a single line in the format:
+        <address>: <data>
+
+    Args:
+        intel_hex_file (intelhex): The intel hex object.
+        mem_access (MemAccess): The memory access API.
+        addr (int): The memory start address.
+        count (int): The number of elements to show.
+    """
+    common_print_address(addr)
+    print(": ", end="")
+
+    value_width = 2 * mem_access.get_size()
+    value_format = "{:0" + str(value_width) + "X}"
+    for idx in range(count):
+        # Print space between each value
+        if idx > 0:
+            print(" ", end="")
+
+        offset = idx * mem_access.get_size()
+        common_print_value(mem_access.get_value(intel_hex_file, addr + offset), value_format)
+
 def common_dump_intel_hex(intel_hex, mem_access, addr, count, next_line=16):
     """Dump some data, starting with the address in the format "<addr>: <data>".
         The address and the data is printed in hex.
@@ -131,27 +181,32 @@ def common_dump_intel_hex(intel_hex, mem_access, addr, count, next_line=16):
         Ret: If successful, it will return Ret.OK otherwise a error code.
     """
 
-    offset = 0 # byte
-    for index in range(count):
+    if next_line == 0:
+        next_line = mem_access.get_size() * count
 
-        if (next_line == 0) and (index == 0):
-            print("{:04x}: ".format(addr + offset), end="")
+    full_line_cnt = next_line // mem_access.get_size()
+    full_lines_cnt = 0
+    last_line_element_cnt = 0
 
-        elif (next_line > 0) and ((offset % next_line) == 0):
-            if index > 0:
-                print("")
+    if full_line_cnt > 0:
+        full_lines_cnt = count // full_line_cnt
+        last_line_element_cnt = count % full_line_cnt
 
-            print("{:04x}: ".format(addr + offset), end="")
+    offset = 0
+    for index in range(full_lines_cnt):
+        # Print newline not for the first line but for all following lines
+        if index > 0:
+            print("")
 
-        elif index > 0:
+        offset = index * next_line
+        common_print_line(intel_hex, mem_access, addr + offset, full_line_cnt)
 
-            print(" ", end="")
+    if last_line_element_cnt > 0:
+        # Print newline only if this is not the first line (no full lines available)
+        if full_lines_cnt > 0:
+            print("")
 
-        value = mem_access.get_value(intel_hex, addr + offset)
-
-        print("{:0{num}x}".format(value, num=2 * mem_access.get_size()), end="")
-
-        offset += mem_access.get_size()
+        common_print_line(intel_hex, mem_access, addr + offset, last_line_element_cnt)
 
     return Ret.OK
 
