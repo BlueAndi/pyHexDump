@@ -221,6 +221,24 @@ Result:
 Is boot mode header valid: OK
 ```
 
+# FAQ
+
+## How to get a element in decimal in the template?
+Define the following expression filter in your template:
+```
+<%!
+    def toDec(hex_value_str):
+        return str(int(hex_value_str, 16))
+%>
+```
+
+By using this filter, the value is shown in decimal.
+```
+${hex_value | toDec}
+```
+
+Note, a expression filter gets a string as parameter and expects to get a string returned!
+
 # Issues, Ideas And Bugs
 If you have further ideas or you found some bugs, great! Create a [issue](https://github.com/BlueAndi/pyHexDump/issues) or if you are able and willing to fix it by yourself, clone the repository and create a pull request.
 
