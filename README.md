@@ -152,7 +152,7 @@ with ```config.json``` like
 ```
 
 with ```template.md``` like
-```markdown
+```mako
 # Aurix TC397 - Blinky Example
 
 <%text>## User Control Block 00</%text>
@@ -225,7 +225,7 @@ Is boot mode header valid: OK
 
 ## How to get a element in decimal in the template?
 Define the following expression filter in your template:
-```
+```mako
 <%!
     def toDec(hex_value_str):
         return str(int(hex_value_str, 16))
@@ -233,7 +233,7 @@ Define the following expression filter in your template:
 ```
 
 By using this filter, the value is shown in decimal.
-```
+```mako
 ${hex_value | toDec}
 ```
 
