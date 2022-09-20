@@ -72,7 +72,10 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     python_requires=">=3.9",
     include_package_data=True,
-    install_requires=["intelhex==2.3.0"],
+    install_requires=[
+        "intelhex==2.3.0",
+        "Mako==1.2.2"
+    ],
     entry_points={"console_scripts": [
         "pyHexDump = pyHexDump.__main__:main",
     ]}

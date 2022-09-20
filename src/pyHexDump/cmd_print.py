@@ -30,7 +30,7 @@
 ################################################################################
 # Imports
 ################################################################################
-from string import Template
+from mako.template import Template
 from pyHexDump.constants import Ret
 from pyHexDump.common import\
     common_load_binary_file,\
@@ -122,14 +122,6 @@ class ConfigElement:
 
         return value
 
-class MyTemplate(Template):
-    """Template which supports additional a space as identifier, but not as first character.
-
-    Args:
-        Template (obj): Template base
-    """
-    braceidpattern="(?a:[_a-z][_a-z0-9 ]*)"
-
 ################################################################################
 # Functions
 ################################################################################
@@ -186,7 +178,7 @@ def _print_config_elements(intel_hex_file, cfg_elements):
 def _print_template(intel_hex_file, cfg_elements, template):
     ret_status = Ret.OK
     element_dict = {}
-    tmpl = MyTemplate(template)
+    tmpl = Template(template)
 
     for cfg_element in cfg_elements:
         cfg_element.set_intel_hex(intel_hex_file)
@@ -206,7 +198,7 @@ def _print_template(intel_hex_file, cfg_elements, template):
             element_dict[cfg_element.get_name()] = out_str
 
     try:
-        print(tmpl.safe_substitute(element_dict))
+        print(tmpl.render(**element_dict))
     except ValueError:
         ret_status = Ret.ERROR_TEMPLATE
 

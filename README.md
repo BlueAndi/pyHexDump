@@ -110,6 +110,7 @@ UCB00_CONFIRMATION @ AF4001F0: 43211234
 ```
 
 ## Print report with template
+The [Mako template library](https://www.makotemplates.org/) is used, to provide a lot of functionality. Please have a look to the [Mako documentation](https://docs.makotemplates.org/en/latest/) for details.
 
 ```$ pyHexDump print ./test/aurix_tc397.hex ./test/config.json --template ./test/template.md```
 
