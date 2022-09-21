@@ -71,7 +71,7 @@ def main():
             elif ret_status == Ret.ERROR_CONFIG_FILE_NOT_FOUND:
                 print(f"File {prg_arg_parser.get_args().configFile[0]} not found.")
             elif ret_status == Ret.ERROR_TEMPLATE_FILE_NOT_FOUND:
-                print(f"File {prg_arg_parser.get_args().templateFile[0]} not found.")
+                print(f"File {prg_arg_parser.get_args().templateFile} not found.")
             elif ret_status == Ret.ERROR_UNKNOWN_COMMAND:
                 print(f"Unknown command {prg_arg_parser.get_args().cmd}.")
             elif ret_status == Ret.ERROR_TEMPLATE:
