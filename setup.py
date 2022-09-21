@@ -51,7 +51,8 @@ with open(README_FILE_NAME, "r", encoding="utf-8") as fh:
     LONG_DESCRIPTION = fh.read()
 
 # Get __version__, __author__ and __email__
-exec(open("src/pyHexDump/version.py", encoding="utf-8").read()) # pylint: disable=exec-used
+with open("src/pyHexDump/version.py", encoding="utf-8") as version_file:
+    exec(version_file.read()) # pylint: disable=exec-used
 
 setuptools.setup(
     name="pyHexDump",
