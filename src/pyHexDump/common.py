@@ -86,7 +86,7 @@ def common_load_json_file(file_name):
     config = None
 
     try:
-        with open(file_name) as file_descriptor:
+        with open(file_name, encoding="utf-8") as file_descriptor:
             config = json.load(file_descriptor)
     except FileNotFoundError:
         ret_status = Ret.ERROR_CONFIG_FILE_NOT_FOUND
@@ -109,7 +109,7 @@ def common_load_template_file(file_name):
     template = None
 
     try:
-        with open(file_name) as file_descriptor:
+        with open(file_name, encoding="utf-8") as file_descriptor:
             template = file_descriptor.read()
     except FileNotFoundError:
         ret_status = Ret.ERROR_TEMPLATE_FILE_NOT_FOUND

@@ -165,7 +165,7 @@ def _print_config_elements(intel_hex_file, cfg_elements):
     for cfg_element in cfg_elements:
         cfg_element.set_intel_hex(intel_hex_file)
 
-        print("{} @ ".format(cfg_element.get_name()), end="")
+        print(f"{cfg_element.get_name()} @ ", end="")
         common_dump_intel_hex(  intel_hex_file,
                                 cfg_element.get_mem_access(),
                                 cfg_element.get_addr(),
@@ -185,7 +185,7 @@ def _print_template(intel_hex_file, cfg_elements, template):
 
         if cfg_element.get_count() == 1:
             width = cfg_element.get_mem_access().get_size() * 2
-            out_str = "{:0{width}X}".format(cfg_element.get_value(), width=width)
+            out_str = f"{cfg_element.get_value():0{width}X}"
             element_dict[cfg_element.get_name()] = out_str
 
         elif cfg_element.get_count() > 1:
@@ -194,7 +194,7 @@ def _print_template(intel_hex_file, cfg_elements, template):
             for idx in range(cfg_element.get_count()):
                 if idx > 0:
                     out_str += " "
-                out_str += "{:0{width}X}".format(cfg_element.get_value()[idx], width=width)
+                out_str += f"{cfg_element.get_value()[idx]:0{width}X}"
             element_dict[cfg_element.get_name()] = out_str
 
     try:
