@@ -5,6 +5,7 @@ There are a lot of hex viewers already, but I was not able to find one which I c
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](http://choosealicense.com/licenses/mit/)
 [![Repo Status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+![CI Status](https://github.com/BlueAndi/pyHexDump/actions/workflows/pylint.yml/badge.svg)
 
 # Installation
 ```cmd
