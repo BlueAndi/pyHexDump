@@ -203,7 +203,7 @@ def _get_config_structure(config_dict, base_addr):
 
     return cfg_elements_dict
 
-def _get_config_elements(config_dict):
+def _get_config_elements(config_dict): #pylint: disable=too-many-branches
     """Get a configuration element object dictionary from the configuration
         item dictionary. If a configuration item doesn't contain all
         necessary parameters, it will be skipped.
@@ -222,12 +222,18 @@ def _get_config_elements(config_dict):
         if "name" in item:
             name = item["name"]
 
+        if name is None:
+            continue
+
         addr = None
         if "addr" in item:
             if isinstance(item["addr"], str) is True:
                 addr = int(item["addr"], 0)
             elif isinstance(item["addr"], int) is True:
                 addr = item["addr"]
+
+        if addr is None:
+            continue
 
         count = None
         if "count" in item:
@@ -236,24 +242,20 @@ def _get_config_elements(config_dict):
             elif isinstance(item["count"], int) is True:
                 count = item["count"]
 
+        if count is None:
+            continue
+
         data_type = None
         if "dataType" in item:
             if isinstance(item["dataType"], str) is True:
                 data_type = item["dataType"]
-
-                if (name      is not None) and (addr  is not None) and \
-                   (data_type is not None) and (count is not None):
-                    cfg_elements_dict[name] = ConfigElement(name, addr, data_type, count)
+                cfg_elements_dict[name] = ConfigElement(name, addr, data_type, count)
 
             elif isinstance(item["dataType"], list) is True:
-                if (name      is not None) and (addr  is not None) and \
-                   (count is not None):
-                    if name not in cfg_elements_dict:
-                        cfg_elements_dict[name] = _get_config_structure(item["dataType"], addr)
-                    else:
-                        cfg_elements_dict[name] |= _get_config_structure(item["dataType"], addr)
-
-                    # TODO Consider structure count
+                if name not in cfg_elements_dict:
+                    cfg_elements_dict[name] = _get_config_structure(item["dataType"], addr)
+                else:
+                    cfg_elements_dict[name] |= _get_config_structure(item["dataType"], addr)
 
     return cfg_elements_dict
 
