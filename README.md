@@ -1,4 +1,4 @@
-# pyHexDump
+# pyHexDump <!-- omit in toc -->
 A CLI tool written in Python to dump binary files and files in intel hex format. It can generate a report for any file based on report template. This is useful for images which contain specific data always on the same address, e.g. a CRC, signature, etc.
 
 There are a lot of hex viewers already, but I was not able to find one which I could configure in a way to generate something like a report.
@@ -6,6 +6,20 @@ There are a lot of hex viewers already, but I was not able to find one which I c
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](http://choosealicense.com/licenses/mit/)
 [![Repo Status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 ![CI Status](https://github.com/BlueAndi/pyHexDump/actions/workflows/pylint.yml/badge.svg)
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
+  - [Dump data as 8-bit](#dump-data-as-8-bit)
+  - [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
+  - [Print configuration](#print-configuration)
+  - [Print report with template](#print-report-with-template)
+  - [Configuration using structures](#configuration-using-structures)
+- [FAQ](#faq)
+  - [How to get a element in decimal in the template?](#how-to-get-a-element-in-decimal-in-the-template)
+- [Issues, Ideas And Bugs](#issues-ideas-and-bugs)
+- [License](#license)
+- [Contribution](#contribution)
 
 # Installation
 ```cmd
@@ -154,7 +168,7 @@ with ```config.json``` like
 
 with ```markdown.mao``` like
 ```mako
-# Aurix TC397 - Blinky Example
+<%text># Aurix TC397 - Blinky Example</%text>
 
 <%text>## User Control Block 00</%text>
 
@@ -220,6 +234,105 @@ Result:
 
 ### Boot Mode Header Identifier (BMHDID)
 Is boot mode header valid: OK
+```
+
+## Configuration using structures
+If several elements are right behind each other like in a structure, it can be configured in a similar way by using a list of elements for a datatype. The address of each element in the structure is calculated by the given base address in the datatype of each element.
+
+Note that nested structures are not supported yet!
+
+```json
+{
+    "elements": [{
+        "name": "UCB00",
+        "addr": "0xAF400000",
+        "dataType": [{
+            "name": "BMI_BMHDID",
+            "dataType": "u32le",
+            "count": 1
+        }, {
+            "name": "STAD",
+            "dataType": "u32le",
+            "count": 1
+        }, {
+            "name": "CRCBMHD",
+            "dataType": "u32le",
+            "count": 1
+        }, {
+            "name": "CRCBMHD_N",
+            "dataType": "u32le",
+            "count": 1
+        }],
+        "count": 1
+    }, {
+        "name": "UCB00",
+        "addr": "0xAF400104",
+        "dataType": [{
+            "name": "PWx",
+            "dataType": "u32le",
+            "count": 8
+        }],
+        "count": 1
+    }, {
+        "name": "UCB00",
+        "addr": "0xAF4001F0",
+        "dataType": [{
+            "name": "CONFIRMATION",
+            "dataType": "u32le",
+            "count": 1
+        }],
+        "count": 1
+    }]
+}
+```
+
+To access it in the template, you can use the "." notation or Python dictionary syntax.
+
+with ```markdown.mao``` like
+```mako
+<%text># Aurix TC397 - Blinky Example</%text>
+
+<%text>## User Control Block 00</%text>
+
+|Short Name|Value|
+|----------|-----|
+| BMI_BMHDID | ${UCB00.BMI_BMHDID} |
+| STAD | ${UCB00.STAD} |
+| CRCBMHD | ${UCB00.CRCBMHD} |
+| CRCBMHD_N | ${UCB00.CRCBMHD_N} |
+| PWx | ${UCB00.PWx} |
+| CONFIRMATION | ${UCB00.CONFIRMATION} |
+<%
+    bmi_bmhdid = int(UCB00.BMI_BMHDID, 16)
+    bmi    = (bmi_bmhdid >>  0) & 0xFFFF
+    bmhdid = (bmi_bmhdid >>  16) & 0xFFFF
+    pindis = (bmi >> 0) & 0x01
+    hwcfg  = (bmi >> 1) & 0x07
+
+    mode_by_hwcfg = "disabled"
+    if pindis == 0:
+        mode_by_hwcfg = "enabled"
+
+    start_up_mode = "invalid"
+    if hwcfg == 0x07:
+        start_up_mode = "internal start from flash"
+    elif hwcfg == 0x06:
+        start_up_mode = "alternate boot mode"
+    elif hwcfg == 0x04:
+        start_up_mode = "generic bootstrap loader mode"
+    elif hwcfg == 0x03:
+        start_up_mode = "asc bootstrap loader mode"
+    
+    is_bmh_valid = "invalid"
+    if bmhdid == 0xB359:
+        is_bmh_valid = "OK"
+%>
+<%text>### Boot Mode Index (BMI)</%text>
+* Mode selection by configuration pins: ${mode_by_hwcfg}
+* Start-up mode: ${start_up_mode}
+
+<%text>### Boot Mode Header Identifier (BMHDID)</%text>
+Is boot mode header valid: ${is_bmh_valid}
 ```
 
 # FAQ

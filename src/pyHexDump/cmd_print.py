@@ -122,12 +122,99 @@ class ConfigElement:
 
         return value
 
+class Bunch(dict):
+    """Bunch is a dictionary that supports attribute-style access, a la JavaScript.
+        A dictionary must be accessed via myDict["test"].
+        A bunch can access the same with myDict.test.
+    """
+    def __init__(self, dict_of_items):
+        dict.__init__(self, dict_of_items)
+        self.__dict__.update(dict_of_items)
+
 ################################################################################
 # Functions
 ################################################################################
 
+def _dict_to_bunch(dict_of_items):
+    """Convert a dictionary to a bunch.
+
+    Args:
+        dict_of_items (dict): Dictionary of items
+
+    Returns:
+        Bunch: Bunch of items
+    """
+    bunch_of_items = {}
+
+    for key, value in dict_of_items.items():
+        if isinstance(value, dict):
+            value = _dict_to_bunch(value)
+
+        bunch_of_items[key] = value
+
+    return Bunch(bunch_of_items)
+
+def _get_config_structure(config_dict, base_addr):
+    """Get a configuration element object dictionary from the configuration
+        item sub dictionary. If not all necessary parameters are available,
+        it will be skipped.
+
+        Nested structures are not supported!
+
+    Args:
+        config_dict (dict): Configuration items
+        base_addr (int): The base address of the sub dictionary
+
+    Returns:
+        dict: Configuration element objects
+    """
+    cfg_elements_dict = {}
+    addr = base_addr
+
+    for item in config_dict:
+        name = None
+        if "name" in item:
+            name = item["name"]
+
+        if name is None:
+            break
+
+        count = None
+        if "count" in item:
+            if isinstance(item["count"], str) is True:
+                count = int(item["count", 0])
+            elif isinstance(item["count"], int) is True:
+                count = item["count"]
+
+        if count is None:
+            break
+
+        data_type = None
+        if "dataType" in item:
+            if isinstance(item["dataType"], str) is True:
+                data_type = item["dataType"]
+
+        if data_type is None:
+            break
+
+        cfg_elements_dict[name] = ConfigElement(name, addr, data_type, count)
+
+        addr += count * mem_access_get_api_by_data_type(data_type).get_size()
+
+    return cfg_elements_dict
+
 def _get_config_elements(config_dict):
-    cfg_elements = []
+    """Get a configuration element object dictionary from the configuration
+        item dictionary. If a configuration item doesn't contain all
+        necessary parameters, it will be skipped.
+
+    Args:
+        config_dict (dict): Configuration items
+
+    Returns:
+        dict: Configuration element objects
+    """
+    cfg_elements_dict = {}
 
     for item in config_dict["elements"]:
 
@@ -142,10 +229,6 @@ def _get_config_elements(config_dict):
             elif isinstance(item["addr"], int) is True:
                 addr = item["addr"]
 
-        data_type = None
-        if "dataType" in item:
-            data_type = item["dataType"]
-
         count = None
         if "count" in item:
             if isinstance(item["count"], str) is True:
@@ -153,52 +236,113 @@ def _get_config_elements(config_dict):
             elif isinstance(item["count"], int) is True:
                 count = item["count"]
 
-        if (name      is not None) and (addr  is not None) and \
-           (data_type is not None) and (count is not None):
-            cfg_elements.append(ConfigElement(name, addr, data_type, count))
+        data_type = None
+        if "dataType" in item:
+            if isinstance(item["dataType"], str) is True:
+                data_type = item["dataType"]
 
-    return cfg_elements
+                if (name      is not None) and (addr  is not None) and \
+                   (data_type is not None) and (count is not None):
+                    cfg_elements_dict[name] = ConfigElement(name, addr, data_type, count)
 
-def _print_config_elements(intel_hex_file, cfg_elements):
+            elif isinstance(item["dataType"], list) is True:
+                if (name      is not None) and (addr  is not None) and \
+                   (count is not None):
+                    if name not in cfg_elements_dict:
+                        cfg_elements_dict[name] = _get_config_structure(item["dataType"], addr)
+                    else:
+                        cfg_elements_dict[name] |= _get_config_structure(item["dataType"], addr)
+
+                    # TODO Consider structure count
+
+    return cfg_elements_dict
+
+def _print_config_elements(binary_data, cfg_elements_dict, namespace=""):
+    """Print a single configuration element with its value, read from the
+        binary data.
+
+    Args:
+        binary_data (IntelHex): Binary data
+        cfg_elements_dict (dict): Configuration element objects
+        namespace (str, optional): Namespace which to use. Defaults to "".
+
+    Returns:
+        Ret: If successful, it will return Ret.OK otherwise a corresponding error.
+    """
     ret_status = Ret.OK
 
-    for cfg_element in cfg_elements:
-        cfg_element.set_intel_hex(intel_hex_file)
+    for key, cfg_element in cfg_elements_dict.items():
 
-        print(f"{cfg_element.get_name()} @ ", end="")
-        common_dump_intel_hex(  intel_hex_file,
-                                cfg_element.get_mem_access(),
-                                cfg_element.get_addr(),
-                                cfg_element.get_count(),
-                                0)
-        print("")
+        # The dictionary of elements may contain further dictionaries which
+        # corresponds to a structure of elements.
+        if isinstance(cfg_element, dict):
+            _print_config_elements(binary_data, cfg_element, namespace + key + ".")
+        else:
+            cfg_element.set_intel_hex(binary_data)
+
+            print(f"{namespace}{key} @ ", end="")
+            common_dump_intel_hex(  binary_data,
+                                    cfg_element.get_mem_access(),
+                                    cfg_element.get_addr(),
+                                    cfg_element.get_count(),
+                                    0)
+            print("")
 
     return ret_status
 
-def _print_template(intel_hex_file, cfg_elements, template):
+def _get_element_value_dict(binary_data, cfg_elements_dict):
+    """Get a dictionary of elements and its value.
+
+    Args:
+        binary_data (IntelHex): The binary data used to retrieve the value.
+        cfg_elements_dict (dict): Configuration element objects
+
+    Returns:
+        dict: Dictionary of elements and its value.
+    """
+    element_value_dict = {}
+
+    for key, cfg_element in cfg_elements_dict.items():
+
+        if isinstance(cfg_element, dict):
+            element_value_dict[key] = _get_element_value_dict(binary_data, cfg_element)
+        else:
+            cfg_element.set_intel_hex(binary_data)
+
+            if cfg_element.get_count() == 1:
+                width = cfg_element.get_mem_access().get_size() * 2
+                out_str = f"{cfg_element.get_value():0{width}X}"
+                element_value_dict[key] = out_str
+
+            elif cfg_element.get_count() > 1:
+                width = cfg_element.get_mem_access().get_size() * 2
+                out_str = ""
+                for idx in range(cfg_element.get_count()):
+                    if idx > 0:
+                        out_str += " "
+                    out_str += f"{cfg_element.get_value()[idx]:0{width}X}"
+                element_value_dict[key] = out_str
+
+    return element_value_dict
+
+def _print_template(binary_data, cfg_elements_dict, template):
+    """Print a generated report from template and configuration element dictionary.
+
+    Args:
+        binary_data (IntelHex): The binary data to retrieve the element values.
+        cfg_elements_dict (dict): The configuration element objects.
+        template (str): The template content
+
+    Returns:
+        Ret: If successul printed, it will return Ret.OK otherwise a corresponding error.
+    """
     ret_status = Ret.OK
-    element_dict = {}
+    element_value_dict = _get_element_value_dict(binary_data, cfg_elements_dict)
+    element_bunch = _dict_to_bunch(element_value_dict)
     tmpl = Template(template)
 
-    for cfg_element in cfg_elements:
-        cfg_element.set_intel_hex(intel_hex_file)
-
-        if cfg_element.get_count() == 1:
-            width = cfg_element.get_mem_access().get_size() * 2
-            out_str = f"{cfg_element.get_value():0{width}X}"
-            element_dict[cfg_element.get_name()] = out_str
-
-        elif cfg_element.get_count() > 1:
-            width = cfg_element.get_mem_access().get_size() * 2
-            out_str = ""
-            for idx in range(cfg_element.get_count()):
-                if idx > 0:
-                    out_str += " "
-                out_str += f"{cfg_element.get_value()[idx]:0{width}X}"
-            element_dict[cfg_element.get_name()] = out_str
-
     try:
-        print(tmpl.render(**element_dict))
+        print(tmpl.render(**element_bunch))
     except ValueError:
         ret_status = Ret.ERROR_TEMPLATE
 
@@ -218,7 +362,7 @@ def cmd_print(binary_file, config_file, template_file):
     Returns:
         Ret: If successful, it will return Ret.OK otherwise a error code.
     """
-    ret_status, intel_hex_file = common_load_binary_file(binary_file)
+    ret_status, binary_data = common_load_binary_file(binary_file)
 
     # Is binary file successful loaded?
     if ret_status == Ret.OK:
@@ -226,19 +370,19 @@ def cmd_print(binary_file, config_file, template_file):
 
         # Is configuration file successful loaded?
         if ret_status == Ret.OK:
-            cfg_elements = _get_config_elements(config_dict)
+            cfg_elements_dict = _get_config_elements(config_dict)
 
             # If there is no template file available, only the elements in the
             # configuration will be printed. Otherwise the template is used to
             # print a corresponding report.
             if template_file is None:
-                ret_status = _print_config_elements(intel_hex_file, cfg_elements)
+                ret_status = _print_config_elements(binary_data, cfg_elements_dict)
             else:
                 ret_status, template = common_load_template_file(template_file)
 
                 # Is template file successful loaded?
                 if ret_status == Ret.OK:
-                    ret_status = _print_template(intel_hex_file, cfg_elements, template)
+                    ret_status = _print_template(binary_data, cfg_elements_dict, template)
 
     return ret_status
 

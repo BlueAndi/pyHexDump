@@ -4,14 +4,14 @@
 
 |Short Name|Value|
 |----------|-----|
-| BMI_BMHDID | ${UCB00_BMI_BMHDID} |
-| STAD | ${UCB00_STAD} |
-| CRCBMHD | ${UCB00_CRCBMHD} |
-| CRCBMHD_N | ${UCB00_CRCBMHD_N} |
-| PWx | ${UCB00_PWx} |
-| CONFIRMATION | ${UCB00_CONFIRMATION} |
+| BMI_BMHDID | ${UCB00.BMI_BMHDID} |
+| STAD | ${UCB00.STAD} |
+| CRCBMHD | ${UCB00.CRCBMHD} |
+| CRCBMHD_N | ${UCB00.CRCBMHD_N} |
+| PWx | ${UCB00.PWx} |
+| CONFIRMATION | ${UCB00.CONFIRMATION} |
 <%
-    bmi_bmhdid = int(UCB00_BMI_BMHDID, 16)
+    bmi_bmhdid = int(UCB00.BMI_BMHDID, 16)
     bmi    = (bmi_bmhdid >>  0) & 0xFFFF
     bmhdid = (bmi_bmhdid >>  16) & 0xFFFF
     pindis = (bmi >> 0) & 0x01
