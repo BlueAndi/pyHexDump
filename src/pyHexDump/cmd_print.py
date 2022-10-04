@@ -109,6 +109,9 @@ class ConfigElement:
         """
         value = 0
 
+        if self._mem_access is None:
+            return 0
+
         if self._intel_hex is not None:
             if self._count == 1:
                 value = self._mem_access.get_value(self._intel_hex, self._addr)
@@ -154,6 +157,29 @@ def _dict_to_bunch(dict_of_items):
 
     return Bunch(bunch_of_items)
 
+def _find_structure_definition(config_dict, structure_name):
+    """Find a structure definition by its name.
+
+    Args:
+        config_dict (dict): Configuration items
+        structure_name (str): Name of the structure
+
+    Returns:
+        dict: If structure found, it will return its definition otherwise None.
+    """
+    structure_pos = None
+
+    if "structures" in config_dict:
+        for item in config_dict["structures"]:
+            if "name" in item:
+                if item["name"] == structure_name:
+                    if "elements" in item:
+                        structure_pos = item["elements"]
+
+                    break
+
+    return structure_pos
+
 def _get_config_structure(config_dict, base_addr):
     """Get a configuration element object dictionary from the configuration
         item sub dictionary. If not all necessary parameters are available,
@@ -172,6 +198,8 @@ def _get_config_structure(config_dict, base_addr):
     addr = base_addr
 
     for item in config_dict:
+
+        # "name" is mandatory
         name = None
         if "name" in item:
             name = item["name"]
@@ -179,16 +207,26 @@ def _get_config_structure(config_dict, base_addr):
         if name is None:
             break
 
+        # "count" is mandatory
         count = None
         if "count" in item:
             if isinstance(item["count"], str) is True:
-                count = int(item["count", 0])
+                count = int(item["count"], 0)
             elif isinstance(item["count"], int) is True:
                 count = item["count"]
 
         if count is None:
             break
 
+        # "offset" is optional
+        offset = 0
+        if "offset" in item:
+            if isinstance(item["offset"], str) is True:
+                offset = int(item["offset"], 0)
+            elif isinstance(item["offset"], int) is True:
+                offset = item["offset"]
+
+        # "data_type" is mandatory
         data_type = None
         if "dataType" in item:
             if isinstance(item["dataType"], str) is True:
@@ -196,6 +234,10 @@ def _get_config_structure(config_dict, base_addr):
 
         if data_type is None:
             break
+
+        # A offset is always relative to the given base address.
+        if offset > 0:
+            addr = base_addr + offset
 
         cfg_elements_dict[name] = ConfigElement(name, addr, data_type, count)
 
@@ -216,8 +258,12 @@ def _get_config_elements(config_dict): #pylint: disable=too-many-branches
     """
     cfg_elements_dict = {}
 
+    if "elements" not in config_dict:
+        return cfg_elements_dict
+
     for item in config_dict["elements"]:
 
+        # "name" is mandatory
         name = None
         if "name" in item:
             name = item["name"]
@@ -225,6 +271,7 @@ def _get_config_elements(config_dict): #pylint: disable=too-many-branches
         if name is None:
             continue
 
+        # "addr" is mandatory
         addr = None
         if "addr" in item:
             if isinstance(item["addr"], str) is True:
@@ -235,22 +282,39 @@ def _get_config_elements(config_dict): #pylint: disable=too-many-branches
         if addr is None:
             continue
 
+        # "count" is mandatory
         count = None
         if "count" in item:
             if isinstance(item["count"], str) is True:
-                count = int(item["count", 0])
+                count = int(item["count"], 0)
             elif isinstance(item["count"], int) is True:
                 count = item["count"]
 
         if count is None:
             continue
 
+        # "data_type" is mandatory
         data_type = None
         if "dataType" in item:
+            # Built-in datatype or structure?
             if isinstance(item["dataType"], str) is True:
                 data_type = item["dataType"]
-                cfg_elements_dict[name] = ConfigElement(name, addr, data_type, count)
 
+                # If a memory access API is available, its a built-in type otherwise a structure.
+                mem_access = mem_access_get_api_by_data_type(data_type)
+                if mem_access is None:
+                    structure_definition = _find_structure_definition(config_dict, data_type)
+
+                    if structure_definition is not None:
+                        if name not in cfg_elements_dict:
+                            cfg_elements_dict[name] = _get_config_structure(structure_definition, addr)
+                        else:
+                            cfg_elements_dict[name] |= _get_config_structure(structure_definition, addr)
+
+                else:
+                    cfg_elements_dict[name] = ConfigElement(name, addr, data_type, count)
+
+            # Structure defined directly in datatype?
             elif isinstance(item["dataType"], list) is True:
                 if name not in cfg_elements_dict:
                     cfg_elements_dict[name] = _get_config_structure(item["dataType"], addr)

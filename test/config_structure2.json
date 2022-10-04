@@ -2,7 +2,12 @@
     "elements": [{
         "name": "UCB00",
         "addr": "0xAF400000",
-        "dataType": [{
+        "dataType": "UCB_t",
+        "count": 1
+    }],
+    "structures": [{
+        "name": "UCB_t",
+        "elements": [{
             "name": "BMI_BMHDID",
             "dataType": "u32le",
             "count": 1
@@ -28,7 +33,6 @@
             "dataType": "u32le",
             "offset": "0x01F0",
             "count": 1
-        }],
-        "count": 1
+        }]
     }]
 }

@@ -234,7 +234,7 @@ def mem_access_get_api_by_data_type(data_type):
         data_type (str): Data type
 
     Returns:
-        MemAccess: Memory access API
+        MemAccess: Memory access API; may be None in case there is no available
     """
     mem_access = None
 
@@ -248,8 +248,6 @@ def mem_access_get_api_by_data_type(data_type):
         mem_access = MemAccessU32LE()
     elif data_type == "u32be":
         mem_access = MemAccessU32BE()
-    else:
-        mem_access = MemAccessU8()
 
     return mem_access
 

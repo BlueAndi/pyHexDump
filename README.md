@@ -15,6 +15,7 @@ There are a lot of hex viewers already, but I was not able to find one which I c
   - [Print configuration](#print-configuration)
   - [Print report with template](#print-report-with-template)
   - [Configuration using structures](#configuration-using-structures)
+  - [Define structure as datatype](#define-structure-as-datatype)
 - [FAQ](#faq)
   - [How to get a element in decimal in the template?](#how-to-get-a-element-in-decimal-in-the-template)
 - [Issues, Ideas And Bugs](#issues-ideas-and-bugs)
@@ -262,23 +263,15 @@ Note that nested structures are not supported yet!
             "name": "CRCBMHD_N",
             "dataType": "u32le",
             "count": 1
-        }],
-        "count": 1
-    }, {
-        "name": "UCB00",
-        "addr": "0xAF400104",
-        "dataType": [{
+        }, {
             "name": "PWx",
             "dataType": "u32le",
+            "offset": "0x0104",
             "count": 8
-        }],
-        "count": 1
-    }, {
-        "name": "UCB00",
-        "addr": "0xAF4001F0",
-        "dataType": [{
+        }, {
             "name": "CONFIRMATION",
             "dataType": "u32le",
+            "offset": "0x01F0",
             "count": 1
         }],
         "count": 1
@@ -333,6 +326,50 @@ with ```markdown.mao``` like
 
 <%text>### Boot Mode Header Identifier (BMHDID)</%text>
 Is boot mode header valid: ${is_bmh_valid}
+```
+
+## Define structure as datatype
+If a structure shall be used several times, define it as a datatype and use its name.
+
+```json
+{
+    "elements": [{
+        "name": "UCB00",
+        "addr": "0xAF400000",
+        "dataType": "UCB_t",
+        "count": 1
+    }],
+    "structures": [{
+        "name": "UCB_t",
+        "elements": [{
+            "name": "BMI_BMHDID",
+            "dataType": "u32le",
+            "count": 1
+        }, {
+            "name": "STAD",
+            "dataType": "u32le",
+            "count": 1
+        }, {
+            "name": "CRCBMHD",
+            "dataType": "u32le",
+            "count": 1
+        }, {
+            "name": "CRCBMHD_N",
+            "dataType": "u32le",
+            "count": 1
+        }, {
+            "name": "PWx",
+            "dataType": "u32le",
+            "offset": "0x0104",
+            "count": 8
+        }, {
+            "name": "CONFIRMATION",
+            "dataType": "u32le",
+            "offset": "0x01F0",
+            "count": 1
+        }]
+    }]
+}
 ```
 
 # FAQ
