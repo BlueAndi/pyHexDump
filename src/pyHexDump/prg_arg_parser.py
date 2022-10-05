@@ -53,6 +53,7 @@ class PrgArgParser():
         sub_parsers = main_parser.add_subparsers(dest="cmd")
         self._create_dump_sub_parser(sub_parsers)
         self._create_print_sub_parser(sub_parsers)
+        self._create_checksum_sub_parser(sub_parsers)
 
         return main_parser
 
@@ -139,6 +140,46 @@ class PrgArgParser():
             nargs="?",
             default=None,
             help="Template file in ASCII format."
+        )
+
+
+    def _create_checksum_sub_parser(self, sub_parsers):
+        parser = sub_parsers.add_parser(
+            "checksum",
+            help="Calculate the CRC32 checksum for the specified data."
+        )
+
+        parser.add_argument(
+            "binaryFile",
+            metavar="BINARY_FILE",
+            type=str,
+            nargs=1,
+            help="Binary file in intel hex format (.hex) or binary (.bin)."
+        )
+        parser.add_argument(
+            "-sa",
+            "--saddr",
+            metavar="SADDR",
+            type=lambda x: int(x, 0), # Support "0x" notation
+            nargs=1,
+            help="The calculation starts at this address."
+        )
+        parser.add_argument(
+            "-ea",
+            "--eaddr",
+            metavar="EADDR",
+            type=lambda x: int(x, 0), # Support "0x" notation
+            nargs=1,
+            help="The calculation ends at this address. (not included)"
+        )       
+        parser.add_argument(
+            "-s",
+            "--seed",
+            metavar="SEED",
+            type=lambda x: int(x, 0), # Support "0x" notation
+            nargs="?", # Optional
+            default=0,
+            help="The seed value for the CRC calculation.\nDefault: 0"
         )
 
     def print_help(self):

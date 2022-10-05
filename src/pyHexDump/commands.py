@@ -31,6 +31,7 @@
 from pyHexDump.constants import Ret
 from pyHexDump.cmd_dump import cmd_dump
 from pyHexDump.cmd_print import cmd_print
+from pyHexDump.cmd_print_checksum import cmd_print_checksum
 
 ################################################################################
 # Variables
@@ -60,6 +61,8 @@ def commands_handle_command(args):
         ret_status = cmd_dump(args.binaryFile[0], args.addr, args.count, args.dataType)
     elif args.cmd == "print":
         ret_status = cmd_print(args.binaryFile[0], args.configFile[0], args.templateFile)
+    elif args.cmd ==  "checksum":
+        ret_status = cmd_print_checksum(args.binaryFile[0], args.saddr[0], args.eaddr[0], args.seed)
     else:
         ret_status = Ret.ERROR_UNKNOWN_COMMAND
 
