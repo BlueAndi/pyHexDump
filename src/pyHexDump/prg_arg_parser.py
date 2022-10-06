@@ -171,7 +171,7 @@ class PrgArgParser():
             type=lambda x: int(x, 0), # Support "0x" notation
             nargs=1,
             help="The calculation ends at this address. (not included)"
-        )       
+        )
         parser.add_argument(
             "-s",
             "--seed",
