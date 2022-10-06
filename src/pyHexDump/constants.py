@@ -41,6 +41,7 @@ class Ret(IntEnum):
     ERROR_TEMPLATE_FILE_NOT_FOUND = 4
     ERROR_UNKNOWN_COMMAND = 5
     ERROR_TEMPLATE = 6
+    ERROR_CRC_CACLULATION = 7
 
 ################################################################################
 # Classes
