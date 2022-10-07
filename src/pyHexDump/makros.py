@@ -52,8 +52,8 @@ def makros_compare_values(set_value, actual_value, value_format="{:02X}"):
     """
     if set_value == actual_value:
         return "Ok"
-    else:
-        return f"Not Ok (Set: {value_format.format(set_value)}, " \
+
+    return f"Not Ok (Set: {value_format.format(set_value)}, " \
               f"Actual: {value_format.format(actual_value)})"
 
 def convert_middle_to_little_endian(value):
@@ -96,7 +96,8 @@ def makros_check_stadabm(value):
         # Check if it is word alligned - 32bit system
         if value%4:
             return "Not Ok (STADABM is not word alligned)"
-        return "Ok"
+        else:
+            return "Ok"
     else:
         return "Not Ok (STADABM is not in the PFLASH)"
 
