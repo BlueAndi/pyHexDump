@@ -43,7 +43,7 @@ from pyHexDump.mem_access import MemAccessU8
 # Functions
 ################################################################################
 
-def cmd_print_checksum(binary_file, start_address, end_address, seed):
+def cmd_print_checksum(binary_file, start_address, end_address, polynomial, bit_width, seed, reverse_input, reverse_output, final_xor):
     """Print the checksum for the given address and the given number of bytes
     to the console.
 
@@ -51,7 +51,14 @@ def cmd_print_checksum(binary_file, start_address, end_address, seed):
         binary_file (str): File name of the binary file
         start_address (int): Address where to start the calculation
         end_address (int):  Address where to end the calculation (not included)
+        polynomial(int): Generator polynomial to use in the CRC calculation.
+                         The bits in this integer are to coefficients in the polynomial.
+        bit_width(int): Number of bits for the CRC calculation. They have to match with
+                        the generator polynomial
         seed (int): Seed value for the CRC calculation
+        reverse_input(bool): Reflect each single input byte if True
+        reverse_output(bool): Reflect the final CRC value if True
+        final_xor(bool): Xor the final result with the value 0xff before returning the soulution
 
     Returns:
         Ret: If successful it will return OK, otherwise a corresponding error code.
@@ -59,15 +66,16 @@ def cmd_print_checksum(binary_file, start_address, end_address, seed):
     ret_status, intel_hex = common_load_binary_file(binary_file)
 
     if ret_status == Ret.OK:
-        ret_status, checksum = calc_checksum(intel_hex, start_address, end_address, seed)
+        ret_status, checksum = calc_checksum(intel_hex, start_address, end_address, polynomial, bit_width, seed, reverse_input, reverse_output, final_xor)
 
     if ret_status == Ret.OK:
-        common_print_value(checksum, "{:04X}")
+        value_width = bit_width // 4
+        value_format = "{:0" + str(value_width) + "X}"
+        common_print_value(checksum, value_format)
 
     return ret_status
 
-def calc_checksum(binary_data, start_address, end_address, seed=0, polynomial=0x04C11DB7,\
-                 bit_width=32, reverse_input=False, reverse_output=False, final_xor=False):
+def calc_checksum(binary_data, start_address, end_address, polynomial, bit_width, seed, reverse_input, reverse_output, final_xor):
     """Calcuate the checksum for the given address in the binary_data and the
     given number of bytes.
 
@@ -75,11 +83,11 @@ def calc_checksum(binary_data, start_address, end_address, seed=0, polynomial=0x
         binary_data (IntelHex): Binary data
         start_address (int): Address where to start the calculation
         end_address (int):  Address where to end the calculation (not included)
-        seed (int): Seed value for the CRC calculation (default 0)
         polynomial(int): Generator polynomial to use in the CRC calculation.
                          The bits in this integer are to coefficients in the polynomial.
         bit_width(int): Number of bits for the CRC calculation. They have to match with
                         the generator polynomial
+        seed (int): Seed value for the CRC calculation
         reverse_input(bool): Reflect each single input byte if True
         reverse_output(bool): Reflect the final CRC value if True
         final_xor(bool): Xor the final result with the value 0xff before returning the soulution
@@ -93,10 +101,15 @@ def calc_checksum(binary_data, start_address, end_address, seed=0, polynomial=0x
     offset = 0
     count = (end_address - start_address) / mem_access.get_size()
 
+    # Valid bit widths: 8, 16, 32
+    if (bit_width != 8) and (bit_width != 16) and (bit_width != 32):
+        ret_status = Ret.ERROR_CRC_CACLULATION
+        return ret_status, 0
+
     # The number to calculate the CRC has to be a multiple of word size
     if (end_address - start_address) % mem_access.get_size() != 0:
         ret_status = Ret.ERROR_CRC_CACLULATION
-        return ret_status, None
+        return ret_status, 0
 
     bit_width_mask = pow(2, bit_width) - 1
     msb_mask = 1 << bit_width
@@ -109,10 +122,10 @@ def calc_checksum(binary_data, start_address, end_address, seed=0, polynomial=0x
         count -= 1
 
         word = mem_access.get_value(binary_data, start_address + offset)
-        if reverse_input:
-            tmp = '{:0{width}b}'.format(word, width=8)
-            word = int(tmp[::-1], 2)
 
+        if reverse_input:
+            tmp = f"{word:08b}"
+            word = int(tmp[::-1], 2)
 
         crc = crc ^ (word << (bit_width - 8))
 
@@ -127,7 +140,7 @@ def calc_checksum(binary_data, start_address, end_address, seed=0, polynomial=0x
     crc &= bit_width_mask
 
     if reverse_output:
-        tmp = '{:0{width}b}'.format(word, width=bit_width)
+        tmp = f"{word:0{bit_width}b}"
         word = int(tmp[::-1], 2)
 
     if final_xor:

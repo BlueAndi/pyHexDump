@@ -87,7 +87,7 @@ class PrgArgParser():
             "--addr",
             metavar="ADDR",
             type=lambda x: int(x, 0), # Support "0x" notation
-            nargs="?", # Optional
+            required=False,
             default=0,
             help="The dump starts at this address. Default: 0x00000000."
         )
@@ -96,7 +96,7 @@ class PrgArgParser():
             "--count",
             metavar="COUNT",
             type=lambda x: int(x, 0), # Support "0x" notation
-            nargs="?", # Optional
+            required=False,
             default=64,
             help="The number of elements in the dump.\nDefault: 16"
         )
@@ -105,7 +105,7 @@ class PrgArgParser():
             "--dataType",
             metavar="DATA_TYPE",
             type=str,
-            nargs="?", # Optional
+            required=False,
             default="u8",
             help="The type of a single data element (u8, u16le, u16be, u32le, u32be). Default: u8"
         )
@@ -137,7 +137,7 @@ class PrgArgParser():
             "--templateFile",
             metavar="TEMPLATE_FILE",
             type=str,
-            nargs="?",
+            required=False,
             default=None,
             help="Template file in ASCII format."
         )
@@ -161,7 +161,7 @@ class PrgArgParser():
             "--saddr",
             metavar="SADDR",
             type=lambda x: int(x, 0), # Support "0x" notation
-            nargs=1,
+            required=True,
             help="The calculation starts at this address."
         )
         parser.add_argument(
@@ -169,17 +169,59 @@ class PrgArgParser():
             "--eaddr",
             metavar="EADDR",
             type=lambda x: int(x, 0), # Support "0x" notation
-            nargs=1,
+            required=True,
             help="The calculation ends at this address. (not included)"
+        )
+        parser.add_argument(
+            "-p",
+            "--polynomial",
+            metavar="POLYNOMIAL",
+            type=lambda x: int(x, 0), # Support "0x" notation
+            required=False,
+            default=0x04C11DB7,
+            help="The polynomial for the CRC calculation.\nDefault: 0x04C11DB7"
+        )
+        parser.add_argument(
+            "-bw",
+            "--bitWidth",
+            metavar="BIT_WIDTH",
+            type=lambda x: int(x, 0), # Support "0x" notation
+            required=False,
+            default=32,
+            help="The bit width of the CRC calculation.\nDefault: 32"
         )
         parser.add_argument(
             "-s",
             "--seed",
             metavar="SEED",
             type=lambda x: int(x, 0), # Support "0x" notation
-            nargs="?", # Optional
+            required=False,
             default=0,
             help="The seed value for the CRC calculation.\nDefault: 0"
+        )
+        parser.add_argument(
+            "-ri",
+            "--reverseIn",
+            action="store_true",
+            required=False,
+            default=False,
+            help="Use reverse input.\nDefault: False"
+        )
+        parser.add_argument(
+            "-ro",
+            "--reverseOut",
+            action="store_true",
+            required=False,
+            default=False,
+            help="Use reverse output.\nDefault: False"
+        )
+        parser.add_argument(
+            "-fx",
+            "--finalXOR",
+            action="store_true",
+            required=False,
+            default=False,
+            help="Use a final XOR with all bits 1.\nDefault: False"
         )
 
     def print_help(self):

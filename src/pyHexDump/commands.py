@@ -62,7 +62,9 @@ def commands_handle_command(args):
     elif args.cmd == "print":
         ret_status = cmd_print(args.binaryFile[0], args.configFile[0], args.templateFile)
     elif args.cmd ==  "checksum":
-        ret_status = cmd_print_checksum(args.binaryFile[0], args.saddr[0], args.eaddr[0], args.seed)
+        ret_status = cmd_print_checksum(args.binaryFile[0], args.saddr, args.eaddr,\
+                        args.polynomial, args.bitWidth, args.seed, args.reverseIn, \
+                        args.reverseOut, args.finalXOR)
     else:
         ret_status = Ret.ERROR_UNKNOWN_COMMAND
 
