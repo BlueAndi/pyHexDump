@@ -59,10 +59,10 @@ def makros_compare_values(set_value, actual_value, value_format="{:02X}"):
 def convert_middle_to_little_endian(value):
     """Converts the value from middle to little endian representation.
         The value 0xCCDDAABB should be represented as 0xAABBCCDD
-    
+
         Args:
             value(int): Value in middle endian representation
-            
+
         Retruns:
             Value in little endian representation
     """
@@ -79,6 +79,27 @@ def convert_middle_to_little_endian(value):
     solution.value = solution.value | tmp.value
 
     return solution.value
+
+def makros_check_stadabm(value):
+    """Checks if the passed value is word alligned and if the address
+       is inside PFLASH (Compare chapter 2 of the Aurix datasheet).
+
+        Args:
+            value(int): Address to check
+
+        Returns:
+            "Ok" if the value is valid, otherwise "Not Ok <error-reason>"
+    """
+    segment_8_pflash = range(0x80000000, 0x811FFFFF)
+    segment_10_pflash = range(0xA0000000, 0XA11FFFFF)
+    if value in segment_8_pflash or value in segment_10_pflash:
+        # Check if it is word alligned - 32bit system
+        if value%4:
+            return "Not Ok (STADABM is not word alligned)"
+        return "Ok"
+    else:
+        return "Not Ok (STADABM is not in the PFLASH)"
+
 
 ################################################################################
 # Main
