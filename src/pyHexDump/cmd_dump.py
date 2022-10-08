@@ -33,6 +33,8 @@ from pyHexDump.mem_access import mem_access_get_api_by_data_type
 # Variables
 ################################################################################
 
+_CMD_NAME = "dump"
+
 ################################################################################
 # Classes
 ################################################################################
@@ -41,7 +43,7 @@ from pyHexDump.mem_access import mem_access_get_api_by_data_type
 # Functions
 ################################################################################
 
-def cmd_dump(binary_file, addr, count, data_type):
+def _cmd_dump(binary_file, addr, count, data_type):
     """Dump binary file to the console at the given address. It will contain a
         number of elements (count) depended on the data type (data_type).
 
@@ -62,6 +64,73 @@ def cmd_dump(binary_file, addr, count, data_type):
         print("")
 
     return ret_status
+
+def _exec(args):
+    """Determine the required parameters from the program arguments and execute the command.
+
+    Args:
+        args (obj): Program arguments
+
+    Returns:
+        Ret: If successful, it will return Ret.OK otherwise a corresponding error.
+    """
+    return _cmd_dump(args.binaryFile[0], args.addr, args.count, args.dataType)
+
+def cmd_dump_register(arg_sub_parsers):
+    """Register the command specific CLI argument parser and get command
+        specific paramters.
+
+    Args:
+        arg_sub_parsers (obj): Register the parser here
+
+    Returns:
+        obj: Command parameters
+    """
+    cmd_par_dict = {}
+    cmd_par_dict["name"] = _CMD_NAME
+    cmd_par_dict["execFunc"] = _exec
+
+    parser = arg_sub_parsers.add_parser(
+        "dump",
+        help="Dump a range of data from a start address."
+    )
+
+    parser.add_argument(
+        "binaryFile",
+        metavar="BINARY_FILE",
+        type=str,
+        nargs=1,
+        help="Binary file in intel hex format (.hex) or binary (.bin)."
+    )
+    parser.add_argument(
+        "-a",
+        "--addr",
+        metavar="ADDR",
+        type=lambda x: int(x, 0), # Support "0x" notation
+        required=False,
+        default=0,
+        help="The dump starts at this address. Default: 0x00000000."
+    )
+    parser.add_argument(
+        "-c",
+        "--count",
+        metavar="COUNT",
+        type=lambda x: int(x, 0), # Support "0x" notation
+        required=False,
+        default=64,
+        help="The number of elements in the dump.\nDefault: 16"
+    )
+    parser.add_argument(
+        "-dt",
+        "--dataType",
+        metavar="DATA_TYPE",
+        type=str,
+        required=False,
+        default="u8",
+        help="The type of a single data element (u8, u16le, u16be, u32le, u32be). Default: u8"
+    )
+
+    return cmd_par_dict
 
 ################################################################################
 # Main

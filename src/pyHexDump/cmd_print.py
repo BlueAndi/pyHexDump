@@ -48,6 +48,8 @@ from pyHexDump.cmd_print_checksum import calc_checksum
 # Variables
 ################################################################################
 
+_CMD_NAME = "print"
+
 ################################################################################
 # Classes
 ################################################################################
@@ -461,7 +463,7 @@ def _print_template(binary_data, cfg_elements_dict, template):
 
     return ret_status
 
-def cmd_print(binary_file, config_file, template_file):
+def _cmd_print(binary_file, config_file, template_file):
     """Print configuration element values. The configuration file contains the
         elements with its meta data. A template may be used to format the
         output. If no template is available, the configuration elements will
@@ -498,6 +500,64 @@ def cmd_print(binary_file, config_file, template_file):
                     ret_status = _print_template(binary_data, cfg_elements_dict, template)
 
     return ret_status
+
+def _exec(args):
+    """Determine the required parameters from the program arguments and execute the command.
+
+    Args:
+        args (obj): Program arguments
+
+    Returns:
+        Ret: If successful, it will return Ret.OK otherwise a corresponding error.
+    """
+    return _cmd_print(args.binaryFile[0], args.configFile[0], args.templateFile)
+
+def cmd_print_register(arg_sub_parsers):
+    """Register the command specific CLI argument parser and get command
+        specific paramters.
+
+    Args:
+        arg_sub_parsers (obj): Register the parser here
+
+    Returns:
+        obj: Command parameters
+    """
+    cmd_par_dict = {}
+    cmd_par_dict["name"] = _CMD_NAME
+    cmd_par_dict["execFunc"] = _exec
+
+    parser = arg_sub_parsers.add_parser(
+        "print",
+        help="Retrieve the elements from configuration and print them."
+    )
+
+    parser.add_argument(
+        "binaryFile",
+        metavar="BINARY_FILE",
+        type=str,
+        nargs=1,
+        help="Binary file in intel hex format (.hex) or binary (.bin)."
+    )
+
+    parser.add_argument(
+        "configFile",
+        metavar="CONFIG_FILE",
+        type=str,
+        nargs=1,
+        help="Configuration file in JSON format (*.json)."
+    )
+
+    parser.add_argument(
+        "-tf",
+        "--templateFile",
+        metavar="TEMPLATE_FILE",
+        type=str,
+        required=False,
+        default=None,
+        help="Template file in ASCII format."
+    )
+
+    return cmd_par_dict
 
 ################################################################################
 # Main

@@ -28,11 +28,21 @@
 import sys
 from pyHexDump.constants import Ret
 from pyHexDump.prg_arg_parser import PrgArgParser
-from pyHexDump.commands import commands_handle_command
+
+from pyHexDump.cmd_dump import cmd_dump_register
+from pyHexDump.cmd_print import cmd_print_register
+from pyHexDump.cmd_print_checksum import cmd_checksum_register
 
 ################################################################################
 # Variables
 ################################################################################
+
+# Register a command here!
+_COMMAND_REG_LIST = [
+    cmd_dump_register,
+    cmd_print_register,
+    cmd_checksum_register
+]
 
 ################################################################################
 # Classes
@@ -42,42 +52,48 @@ from pyHexDump.commands import commands_handle_command
 # Functions
 ################################################################################
 
+def _get_cmd_exec_func(commands, cmd_name):
+    exec_func = None
+
+    for cmd in commands:
+        if cmd["name"] == cmd_name:
+            exec_func = cmd["execFunc"]
+
+    return exec_func
+
 def main():
     """The program entry point function.
 
     Returns:
         int: System exit status
     """
-    ret_status      = Ret.OK
-    prg_arg_parser  = PrgArgParser()
+    ret_status          = Ret.OK
+    prg_arg_parser      = PrgArgParser()
+    prg_arg_sub_parsers = prg_arg_parser.get_sub_parsers()
+    commands            = []
+
+    # Register all command specific argument parsers
+    for cmd_reg_func in _COMMAND_REG_LIST:
+        cmd_par_dict = cmd_reg_func(prg_arg_sub_parsers)
+        commands.append(cmd_par_dict)
+
+    # Parse all program arguments now
+    prg_arg_parser.parse_args()
 
     # Uncomment for debugging purposes
-    #print(prg_arg_parser.get_args())
+    print(prg_arg_parser.get_args())
 
     # If no program arguments are available, the help information shall be shown.
     if prg_arg_parser.get_args().cmd is None:
         prg_arg_parser.print_help()
     else:
-
         # Handle command received via program arguments
-        ret_status = commands_handle_command(prg_arg_parser.get_args())
+        cmd_exec_func = _get_cmd_exec_func(commands, prg_arg_parser.get_args().cmd)
 
-        # Any error?
-        if ret_status != Ret.OK:
-
-            # Print more detail about the kind of error
-            if ret_status == Ret.ERROR_INPUT_FILE_NOT_FOUND:
-                print(f"File {prg_arg_parser.get_args().binaryFile[0]} not found.")
-            elif ret_status == Ret.ERROR_CONFIG_FILE_NOT_FOUND:
-                print(f"File {prg_arg_parser.get_args().configFile[0]} not found.")
-            elif ret_status == Ret.ERROR_TEMPLATE_FILE_NOT_FOUND:
-                print(f"File {prg_arg_parser.get_args().templateFile} not found.")
-            elif ret_status == Ret.ERROR_UNKNOWN_COMMAND:
-                print(f"Unknown command {prg_arg_parser.get_args().cmd}.")
-            elif ret_status == Ret.ERROR_TEMPLATE:
-                print("Template error")
-            else:
-                print("Error")
+        if cmd_exec_func is None:
+            ret_status = Ret.ERROR_UNKNOWN_COMMAND
+        else:
+            ret_status = cmd_exec_func(prg_arg_parser.get_args())
 
     return ret_status
 

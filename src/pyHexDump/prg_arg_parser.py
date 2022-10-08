@@ -43,19 +43,9 @@ class PrgArgParser():
     def __init__(self):
         """Configure parser and parse program arguments.
         """
-        self._parser = self._create_parser()
-        self._args = self._parser.parse_args()
-
-    def _create_parser(self):
-        main_parser = self._create_main_parser()
-
-        # Every command has its own sub parser
-        sub_parsers = main_parser.add_subparsers(dest="cmd")
-        self._create_dump_sub_parser(sub_parsers)
-        self._create_print_sub_parser(sub_parsers)
-        self._create_checksum_sub_parser(sub_parsers)
-
-        return main_parser
+        self._parser = self._create_main_parser()
+        self._sub_parsers =  self._parser.add_subparsers(dest="cmd")
+        self._args = None
 
     def _create_main_parser(self):
         main_parser = argparse.ArgumentParser(description="Binary files in different \
@@ -69,160 +59,18 @@ class PrgArgParser():
 
         return main_parser
 
-    def _create_dump_sub_parser(self, sub_parsers):
-        parser = sub_parsers.add_parser(
-            "dump",
-            help="Dump a range of data from a start address."
-        )
+    def parse_args(self):
+        """Parse the program arguments.
+        """
+        self._args = self._parser.parse_args()
 
-        parser.add_argument(
-            "binaryFile",
-            metavar="BINARY_FILE",
-            type=str,
-            nargs=1,
-            help="Binary file in intel hex format (.hex) or binary (.bin)."
-        )
-        parser.add_argument(
-            "-a",
-            "--addr",
-            metavar="ADDR",
-            type=lambda x: int(x, 0), # Support "0x" notation
-            required=False,
-            default=0,
-            help="The dump starts at this address. Default: 0x00000000."
-        )
-        parser.add_argument(
-            "-c",
-            "--count",
-            metavar="COUNT",
-            type=lambda x: int(x, 0), # Support "0x" notation
-            required=False,
-            default=64,
-            help="The number of elements in the dump.\nDefault: 16"
-        )
-        parser.add_argument(
-            "-dt",
-            "--dataType",
-            metavar="DATA_TYPE",
-            type=str,
-            required=False,
-            default="u8",
-            help="The type of a single data element (u8, u16le, u16be, u32le, u32be). Default: u8"
-        )
+    def get_sub_parsers(self):
+        """Get the sub parsers to be able to add additional command specific parsers.
 
-    def _create_print_sub_parser(self, sub_parsers):
-        parser = sub_parsers.add_parser(
-            "print",
-            help="Retrieve the elements from configuration and print them."
-        )
-
-        parser.add_argument(
-            "binaryFile",
-            metavar="BINARY_FILE",
-            type=str,
-            nargs=1,
-            help="Binary file in intel hex format (.hex) or binary (.bin)."
-        )
-
-        parser.add_argument(
-            "configFile",
-            metavar="CONFIG_FILE",
-            type=str,
-            nargs=1,
-            help="Configuration file in JSON format (*.json)."
-        )
-
-        parser.add_argument(
-            "-tf",
-            "--templateFile",
-            metavar="TEMPLATE_FILE",
-            type=str,
-            required=False,
-            default=None,
-            help="Template file in ASCII format."
-        )
-
-
-    def _create_checksum_sub_parser(self, sub_parsers):
-        parser = sub_parsers.add_parser(
-            "checksum",
-            help="Calculate the CRC32 checksum for the specified data."
-        )
-
-        parser.add_argument(
-            "binaryFile",
-            metavar="BINARY_FILE",
-            type=str,
-            nargs=1,
-            help="Binary file in intel hex format (.hex) or binary (.bin)."
-        )
-        parser.add_argument(
-            "-sa",
-            "--saddr",
-            metavar="SADDR",
-            type=lambda x: int(x, 0), # Support "0x" notation
-            required=True,
-            help="The calculation starts at this address."
-        )
-        parser.add_argument(
-            "-ea",
-            "--eaddr",
-            metavar="EADDR",
-            type=lambda x: int(x, 0), # Support "0x" notation
-            required=True,
-            help="The calculation ends at this address. (not included)"
-        )
-        parser.add_argument(
-            "-p",
-            "--polynomial",
-            metavar="POLYNOMIAL",
-            type=lambda x: int(x, 0), # Support "0x" notation
-            required=False,
-            default=0x04C11DB7,
-            help="The polynomial for the CRC calculation.\nDefault: 0x04C11DB7"
-        )
-        parser.add_argument(
-            "-bw",
-            "--bitWidth",
-            metavar="BIT_WIDTH",
-            type=lambda x: int(x, 0), # Support "0x" notation
-            required=False,
-            default=32,
-            help="The bit width of the CRC calculation.\nDefault: 32"
-        )
-        parser.add_argument(
-            "-s",
-            "--seed",
-            metavar="SEED",
-            type=lambda x: int(x, 0), # Support "0x" notation
-            required=False,
-            default=0,
-            help="The seed value for the CRC calculation.\nDefault: 0"
-        )
-        parser.add_argument(
-            "-ri",
-            "--reverseIn",
-            action="store_true",
-            required=False,
-            default=False,
-            help="Use reverse input.\nDefault: False"
-        )
-        parser.add_argument(
-            "-ro",
-            "--reverseOut",
-            action="store_true",
-            required=False,
-            default=False,
-            help="Use reverse output.\nDefault: False"
-        )
-        parser.add_argument(
-            "-fx",
-            "--finalXOR",
-            action="store_true",
-            required=False,
-            default=False,
-            help="Use a final XOR with all bits 1.\nDefault: False"
-        )
+        Returns:
+            obj: Argument sub parsers
+        """
+        return self._sub_parsers
 
     def print_help(self):
         """Print the help information.
