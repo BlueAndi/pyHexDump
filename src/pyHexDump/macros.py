@@ -110,7 +110,7 @@ def _read(addr, data_type):
     mem_access = mem_access_get_api_by_data_type(data_type)
     binary_data = globals()["BINARY_DATA"]
     mem_access.set_binary_data(binary_data)
-    return mem_access
+    return mem_access.get_value(addr)
 
 def _read_u8(addr):
     return _read(addr, "u8")
