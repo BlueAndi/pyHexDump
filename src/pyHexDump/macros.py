@@ -38,7 +38,7 @@ import ctypes
 # Functions
 ################################################################################
 
-def makros_compare_values(set_value, actual_value, value_format="{:02X}"):
+def macros_compare_values(set_value, actual_value, value_format="{:02X}"):
     """Compares the set_value and the actual_value.
 
         Args:
@@ -80,7 +80,7 @@ def convert_middle_to_little_endian(value):
 
     return solution.value
 
-def makros_check_stadabm(value):
+def macros_check_stadabm(value):
     """Checks if the passed value is word alligned and if the address
        is inside PFLASH (Compare chapter 2 of the Aurix datasheet).
 

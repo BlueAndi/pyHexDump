@@ -31,7 +31,7 @@ from pyHexDump.prg_arg_parser import PrgArgParser
 
 from pyHexDump.cmd_dump import cmd_dump_register
 from pyHexDump.cmd_print import cmd_print_register
-from pyHexDump.cmd_print_checksum import cmd_checksum_register
+from pyHexDump.cmd_checksum import cmd_checksum_register
 
 ################################################################################
 # Variables
