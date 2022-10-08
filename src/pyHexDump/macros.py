@@ -131,9 +131,10 @@ def _calc_checksum(start_address, end_address, polynomial, bit_width, seed, \
     reverse_input, reverse_output, final_xor): # pylint: disable=too-many-arguments
 
     binary_data = globals()["BINARY_DATA"]
-
-    return calc_checksum(binary_data, start_address, end_address, polynomial, \
+    _,  result = calc_checksum(binary_data, start_address, end_address, polynomial, \
         bit_width, seed, reverse_input, reverse_output, final_xor)
+
+    return result
 
 def set_binary_data(binary_data):
     """Set the binary data to be used by all macros. This avoids to spawn the binary data

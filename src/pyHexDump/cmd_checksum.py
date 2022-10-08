@@ -80,11 +80,6 @@ def calc_checksum(binary_data, start_address, end_address,\
         ret_status = Ret.ERROR_CRC_CACLULATION
         return ret_status, 0
 
-    # The number to calculate the CRC has to be a multiple of word size
-    if (end_address - start_address) % mem_access.get_size() != 0:
-        ret_status = Ret.ERROR_CRC_CACLULATION
-        return ret_status, 0
-
     bit_width_mask = pow(2, bit_width) - 1
     msb_mask = 1 << bit_width
     crc = seed
@@ -97,7 +92,7 @@ def calc_checksum(binary_data, start_address, end_address,\
 
         word = mem_access.get_value(start_address + offset)
 
-        if reverse_input:
+        if reverse_input is True:
             tmp = f"{word:08b}"
             word = int(tmp[::-1], 2)
 
@@ -113,9 +108,9 @@ def calc_checksum(binary_data, start_address, end_address,\
 
     crc &= bit_width_mask
 
-    if reverse_output:
-        tmp = f"{word:0{bit_width}b}"
-        word = int(tmp[::-1], 2)
+    if reverse_output is True:
+        tmp = f"{crc:0{bit_width}b}"
+        crc = int(tmp[::-1], 2)
 
     if final_xor:
         crc = crc ^ bit_width_mask

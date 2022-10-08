@@ -110,6 +110,26 @@ def test_calc_checksum():
     }, {
         "start_addr": 0,
         "end_addr": len(test_data),
+        "polynomial": 0x07,
+        "bit_width": 8,
+        "seed": 0x00,
+        "reverse_in": False,
+        "reverse_out": True, # Reflected
+        "final_xor": False,
+        "expected": 0xE3
+    }, {
+        "start_addr": 0,
+        "end_addr": len(test_data),
+        "polynomial": 0x07,
+        "bit_width": 8,
+        "seed": 0x00,
+        "reverse_in": False,
+        "reverse_out": False,
+        "final_xor": True, # Inverted
+        "expected": 0x38
+    }, {
+        "start_addr": 0,
+        "end_addr": len(test_data),
         "polynomial": 0x04C11DB7,
         "bit_width": 32,
         "seed": 0xFFFFFFFF,
