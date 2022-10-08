@@ -102,7 +102,7 @@ def cmd_dump_register(arg_sub_parsers):
         type=str,
         nargs=1,
         help="Binary file in intel hex format (.hex) or binary (.bin)."
-    )
+    ) # pylint: disable=duplicate-code
     parser.add_argument(
         "-a",
         "--addr",
