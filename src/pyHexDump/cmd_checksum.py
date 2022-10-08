@@ -31,6 +31,8 @@ from pyHexDump.constants import Ret
 from pyHexDump.common import common_load_binary_file, common_print_value
 from pyHexDump.mem_access import MemAccessU8
 
+# pylint: disable=duplicate-code
+
 ################################################################################
 # Variables
 ################################################################################

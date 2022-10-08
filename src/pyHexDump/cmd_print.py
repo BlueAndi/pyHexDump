@@ -40,6 +40,8 @@ from pyHexDump.common import \
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 from pyHexDump.macros import get_macro_dict, set_binary_data
 
+# pylint: disable=duplicate-code
+
 ################################################################################
 # Variables
 ################################################################################
@@ -528,7 +530,7 @@ def cmd_print_register(arg_sub_parsers):
         type=str,
         nargs=1,
         help="Binary file in intel hex format (.hex) or binary (.bin)."
-    ) # pylint: disable=duplicate-code
+    )
 
     parser.add_argument(
         "configFile",

@@ -29,6 +29,8 @@ from pyHexDump.constants import Ret
 from pyHexDump.common import common_load_binary_file, common_dump_intel_hex
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 
+# pylint: disable=duplicate-code
+
 ################################################################################
 # Variables
 ################################################################################
@@ -102,7 +104,7 @@ def cmd_dump_register(arg_sub_parsers):
         type=str,
         nargs=1,
         help="Binary file in intel hex format (.hex) or binary (.bin)."
-    ) # pylint: disable=duplicate-code
+    )
     parser.add_argument(
         "-a",
         "--addr",
