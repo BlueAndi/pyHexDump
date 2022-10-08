@@ -46,7 +46,7 @@ _CMD_NAME = "checksum"
 ################################################################################
 
 def calc_checksum(binary_data, start_address, end_address,\
-    polynomial, bit_width, seed, reverse_input, reverse_output, final_xor):
+    polynomial, bit_width, seed, reverse_input, reverse_output, final_xor): #pylint: disable=too-many-arguments,too-many-locals
     """Calcuate the checksum for the given address in the binary_data and the
     given number of bytes.
 
@@ -74,7 +74,7 @@ def calc_checksum(binary_data, start_address, end_address,\
     count = (end_address - start_address) / mem_access.get_size()
 
     # Valid bit widths: 8, 16, 32
-    if (bit_width != 8) and (bit_width != 16) and (bit_width != 32):
+    if bit_width not in (8, 16, 32):
         ret_status = Ret.ERROR_CRC_CACLULATION
         return ret_status, 0
 
@@ -121,7 +121,7 @@ def calc_checksum(binary_data, start_address, end_address,\
     return ret_status, crc
 
 def _cmd_checksum(binary_file, start_address, end_address, \
-    polynomial, bit_width, seed, reverse_input, reverse_output, final_xor):
+    polynomial, bit_width, seed, reverse_input, reverse_output, final_xor): #pylint: disable=too-many-arguments
     """Print the checksum for the given address and the given number of bytes
     to the console.
 

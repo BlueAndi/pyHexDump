@@ -132,6 +132,8 @@ def test_calc_checksum():
         assert hex(crc) == hex(test_case["expected"])
 
 def test_macros():
+    """Test macros
+    """
     binary_data = IntelHex()
     test_data = "1234"
 
