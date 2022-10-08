@@ -143,7 +143,7 @@ def common_print_value(value, value_format="{:02X}"):
         # Print the single value
         print(value_format.format(value), end="")
 
-def common_print_line(intel_hex_file, mem_access, addr, count):
+def common_print_line(mem_access, addr, count):
     """Print a single line in the format:
         <address>: <data>
 
@@ -164,14 +164,13 @@ def common_print_line(intel_hex_file, mem_access, addr, count):
             print(" ", end="")
 
         offset = idx * mem_access.get_size()
-        common_print_value(mem_access.get_value(intel_hex_file, addr + offset), value_format)
+        common_print_value(mem_access.get_value(addr + offset), value_format)
 
-def common_dump_intel_hex(intel_hex, mem_access, addr, count, next_line=16):
+def common_dump_intel_hex(mem_access, addr, count, next_line=16):
     """Dump some data, starting with the address in the format "<addr>: <data>".
         The address and the data is printed in hex.
 
     Args:
-        intel_hex (intelhex): Binary file
         mem_access (MemAccess): Memory access API
         addr (int): Address
         count (int): Number of elements
@@ -199,14 +198,14 @@ def common_dump_intel_hex(intel_hex, mem_access, addr, count, next_line=16):
             print("")
 
         offset = index * next_line
-        common_print_line(intel_hex, mem_access, addr + offset, full_line_cnt)
+        common_print_line(mem_access, addr + offset, full_line_cnt)
 
     if last_line_element_cnt > 0:
         # Print newline only if this is not the first line (no full lines available)
         if full_lines_cnt > 0:
             print("")
 
-        common_print_line(intel_hex, mem_access, addr + offset, last_line_element_cnt)
+        common_print_line(mem_access, addr + offset, last_line_element_cnt)
 
     return Ret.OK
 

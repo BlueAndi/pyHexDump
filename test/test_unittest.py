@@ -19,8 +19,9 @@ def test_dump(capsys):
 
     # unsigned 8-bit dump
     mem_access_api = mem_access_get_api_by_data_type("u8")
+    mem_access_api.set_binary_data(binary_data)
 
-    ret_status = common_dump_intel_hex(binary_data, mem_access_api, 0, len(test_data))
+    ret_status = common_dump_intel_hex(mem_access_api, 0, len(test_data))
 
     captured = capsys.readouterr()
 
@@ -29,8 +30,9 @@ def test_dump(capsys):
 
     # unsigned 16-bit LE dump
     mem_access_api = mem_access_get_api_by_data_type("u16le")
+    mem_access_api.set_binary_data(binary_data)
 
-    ret_status = common_dump_intel_hex(binary_data, mem_access_api, 0, len(test_data) // 2)
+    ret_status = common_dump_intel_hex(mem_access_api, 0, len(test_data) // 2)
 
     captured = capsys.readouterr()
 
@@ -39,8 +41,9 @@ def test_dump(capsys):
 
     # unsigned 16-bit BE dump
     mem_access_api = mem_access_get_api_by_data_type("u16be")
+    mem_access_api.set_binary_data(binary_data)
 
-    ret_status = common_dump_intel_hex(binary_data, mem_access_api, 0, len(test_data) // 2)
+    ret_status = common_dump_intel_hex(mem_access_api, 0, len(test_data) // 2)
 
     captured = capsys.readouterr()
 
@@ -49,8 +52,9 @@ def test_dump(capsys):
 
     # unsigned 32-bit LE dump
     mem_access_api = mem_access_get_api_by_data_type("u32le")
+    mem_access_api.set_binary_data(binary_data)
 
-    ret_status = common_dump_intel_hex(binary_data, mem_access_api, 0, len(test_data) // 4)
+    ret_status = common_dump_intel_hex(mem_access_api, 0, len(test_data) // 4)
 
     captured = capsys.readouterr()
 
@@ -59,8 +63,9 @@ def test_dump(capsys):
 
     # unsigned 32-bit BE dump
     mem_access_api = mem_access_get_api_by_data_type("u32be")
+    mem_access_api.set_binary_data(binary_data)
 
-    ret_status = common_dump_intel_hex(binary_data, mem_access_api, 0, len(test_data) // 4)
+    ret_status = common_dump_intel_hex(mem_access_api, 0, len(test_data) // 4)
 
     captured = capsys.readouterr()
 
@@ -69,9 +74,9 @@ def test_dump(capsys):
 
     # unsigned 8-bit dump - next line after half number of bytes
     mem_access_api = mem_access_get_api_by_data_type("u8")
+    mem_access_api.set_binary_data(binary_data)
 
-    ret_status = common_dump_intel_hex(binary_data, mem_access_api, 0, \
-                                        len(test_data), len(test_data) // 2)
+    ret_status = common_dump_intel_hex(mem_access_api, 0, len(test_data), len(test_data) // 2)
 
     captured = capsys.readouterr()
 

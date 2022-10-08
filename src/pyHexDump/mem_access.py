@@ -43,11 +43,19 @@ class MemAccess(ABC):
     """
 
     @abstractmethod
-    def get_value(self, intel_hex, addr):
-        """Get value from the intel hex object at the given address.
+    def set_binary_data(self, binary_data):
+        """Set binary data which to access.
 
         Args:
-            intel_hex (obj): Intel hex object
+            binary_data (IntelHex): Binary data
+        """
+        raise NotImplementedError("Subclass implementation missing.")
+
+    @abstractmethod
+    def get_value(self, addr):
+        """Get value from the binary data at the given address.
+
+        Args:
             addr (int): Address of the value
 
         Returns:
@@ -67,24 +75,26 @@ class MemAccess(ABC):
     def _get_value_uxle(self, intel_hex, addr, size):
         value = 0
 
-        if size == 1:
-            value = intel_hex[addr]
-        elif size > 1:
-            for offset in range(size - 1, -1, -1):
-                value <<= 8
-                value += intel_hex[addr + offset]
+        if intel_hex is not None:
+            if size == 1:
+                value = intel_hex[addr]
+            elif size > 1:
+                for offset in range(size - 1, -1, -1):
+                    value <<= 8
+                    value += intel_hex[addr + offset]
 
         return value
 
     def _get_value_uxbe(self, intel_hex, addr, size):
         value = 0
 
-        if size == 1:
-            value = intel_hex[addr]
-        elif size > 1:
-            for offset in range(0, size, 1):
-                value <<= 8
-                value += intel_hex[addr + offset]
+        if intel_hex is not None:
+            if size == 1:
+                value = intel_hex[addr]
+            elif size > 1:
+                for offset in range(0, size, 1):
+                    value <<= 8
+                    value += intel_hex[addr + offset]
 
         return value
 
@@ -94,18 +104,28 @@ class MemAccessU8(MemAccess):
     Args:
         MemAccess (obj): Parent class
     """
+    def __init__(self, binary_data = None) -> None:
+        super().__init__()
+        self._binary_data = binary_data
 
-    def get_value(self, intel_hex, addr):
-        """Get value from the intel hex object at the given address.
+    def set_binary_data(self, binary_data):
+        """Set binary data which to access.
 
         Args:
-            intel_hex (obj): Intel hex object
+            binary_data (IntelHex): Binary data
+        """
+        self._binary_data = binary_data
+
+    def get_value(self, addr):
+        """Get value from the binary data at the given address.
+
+        Args:
             addr (int): Address of the value
 
         Returns:
             int: Value
         """
-        return self._get_value_uxle(intel_hex, addr, self.get_size())
+        return self._get_value_uxle(self._binary_data, addr, self.get_size())
 
     def get_size(self):
         """Get the data type size in byte.
@@ -121,18 +141,28 @@ class MemAccessU16LE(MemAccess):
     Args:
         MemAccess (obj): Parent class
     """
+    def __init__(self, binary_data = None) -> None:
+        super().__init__()
+        self._binary_data = binary_data
 
-    def get_value(self, intel_hex, addr):
-        """Get value from the intel hex object at the given address.
+    def set_binary_data(self, binary_data):
+        """Set binary data which to access.
 
         Args:
-            intel_hex (obj): Intel hex object
-            address (int): Address of the value
+            binary_data (IntelHex): Binary data
+        """
+        self._binary_data = binary_data
+
+    def get_value(self, addr):
+        """Get value from the binary data at the given address.
+
+        Args:
+            addr (int): Address of the value
 
         Returns:
             int: Value
         """
-        return self._get_value_uxle(intel_hex, addr, self.get_size())
+        return self._get_value_uxle(self._binary_data, addr, self.get_size())
 
     def get_size(self):
         """Get the data type size in byte.
@@ -148,18 +178,28 @@ class MemAccessU16BE(MemAccess):
     Args:
         MemAccess (obj): Parent class
     """
+    def __init__(self, binary_data = None) -> None:
+        super().__init__()
+        self._binary_data = binary_data
 
-    def get_value(self, intel_hex, addr):
-        """Get value from the intel hex object at the given address.
+    def set_binary_data(self, binary_data):
+        """Set binary data which to access.
 
         Args:
-            intel_hex (obj): Intel hex object
-            address (int): Address of the value
+            binary_data (IntelHex): Binary data
+        """
+        self._binary_data = binary_data
+
+    def get_value(self, addr):
+        """Get value from the binary data at the given address.
+
+        Args:
+            addr (int): Address of the value
 
         Returns:
             int: Value
         """
-        return self._get_value_uxbe(intel_hex, addr, self.get_size())
+        return self._get_value_uxbe(self._binary_data, addr, self.get_size())
 
     def get_size(self):
         """Get the data type size in byte.
@@ -175,18 +215,28 @@ class MemAccessU32LE(MemAccess):
     Args:
         MemAccess (obj): Parent class
     """
+    def __init__(self, binary_data = None) -> None:
+        super().__init__()
+        self._binary_data = binary_data
 
-    def get_value(self, intel_hex, addr):
-        """Get value from the intel hex object at the given address.
+    def set_binary_data(self, binary_data):
+        """Set binary data which to access.
 
         Args:
-            intel_hex (obj): Intel hex object
-            address (int): Address of the value
+            binary_data (IntelHex): Binary data
+        """
+        self._binary_data = binary_data
+
+    def get_value(self, addr):
+        """Get value from the binary data at the given address.
+
+        Args:
+            addr (int): Address of the value
 
         Returns:
             int: Value
         """
-        return self._get_value_uxle(intel_hex, addr, self.get_size())
+        return self._get_value_uxle(self._binary_data, addr, self.get_size())
 
     def get_size(self):
         """Get the data type size in byte.
@@ -202,18 +252,28 @@ class MemAccessU32BE(MemAccess):
     Args:
         MemAccess (obj): Parent class
     """
+    def __init__(self, binary_data = None) -> None:
+        super().__init__()
+        self._binary_data = binary_data
 
-    def get_value(self, intel_hex, addr):
-        """Get value from the intel hex object at the given address.
+    def set_binary_data(self, binary_data):
+        """Set binary data which to access.
 
         Args:
-            intel_hex (obj): Intel hex object
-            address (int): Address of the value
+            binary_data (IntelHex): Binary data
+        """
+        self._binary_data = binary_data
+
+    def get_value(self, addr):
+        """Get value from the binary data at the given address.
+
+        Args:
+            addr (int): Address of the value
 
         Returns:
             int: Value
         """
-        return self._get_value_uxbe(intel_hex, addr, self.get_size())
+        return self._get_value_uxbe(self._binary_data, addr, self.get_size())
 
     def get_size(self):
         """Get the data type size in byte.

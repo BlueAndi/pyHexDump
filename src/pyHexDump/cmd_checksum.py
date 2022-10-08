@@ -68,6 +68,7 @@ def calc_checksum(binary_data, start_address, end_address,\
     """
     ret_status = Ret.OK
     mem_access = MemAccessU8()
+    mem_access.set_binary_data(binary_data)
 
     offset = 0
     count = (end_address - start_address) / mem_access.get_size()
@@ -92,7 +93,7 @@ def calc_checksum(binary_data, start_address, end_address,\
     while count > 0:
         count -= 1
 
-        word = mem_access.get_value(binary_data, start_address + offset)
+        word = mem_access.get_value(start_address + offset)
 
         if reverse_input:
             tmp = f"{word:08b}"

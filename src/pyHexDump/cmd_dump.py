@@ -60,7 +60,8 @@ def _cmd_dump(binary_file, addr, count, data_type):
 
     if ret_status == Ret.OK:
         mem_access = mem_access_get_api_by_data_type(data_type)
-        ret_status = common_dump_intel_hex(intel_hex, mem_access, addr, count)
+        mem_access.set_binary_data(intel_hex)
+        ret_status = common_dump_intel_hex(mem_access, addr, count)
         print("")
 
     return ret_status

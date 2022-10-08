@@ -32,6 +32,8 @@ from pyHexDump.cmd_checksum import calc_checksum
 # Variables
 ################################################################################
 
+BINARY_DATA = None
+
 ################################################################################
 # Classes
 ################################################################################
@@ -40,7 +42,7 @@ from pyHexDump.cmd_checksum import calc_checksum
 # Functions
 ################################################################################
 
-def _macros_compare_values(set_value, actual_value, value_format="{:02X}"):
+def _compare_values(set_value, actual_value, value_format="{:02X}"):
     """Compares the set_value and the actual_value.
 
         Args:
@@ -58,46 +60,89 @@ def _macros_compare_values(set_value, actual_value, value_format="{:02X}"):
     return f"Not Ok (Set: {value_format.format(set_value)}, " \
               f"Actual: {value_format.format(actual_value)})"
 
-def _macros_convert_middle_to_little_endian(value):
-    """Converts the value from middle to little endian representation.
-        The value 0xCCDDAABB should be represented as 0xAABBCCDD
+def _u16_swap_bytes(u16_value):
+    """Swap the bytes of unsigned 16-bit value.
+        Used for conversion between little and big endian.
 
-        Args:
-            value(int): Value in middle endian representation
+    Args:
+        u16_value (int): Source
 
-        Retruns:
-            Value in little endian representation
+    Returns:
+        int: Destination
     """
-    result = 0
-
-    # Shift CCDD to the right position
-    result = (value << 16) & 0xFFFFFFFF
-
-    # Shift AABB to the right position
-    result |= (value >> 16) & 0xFFFFFFFF
-
+    result  = (u16_value & 0x00FF) << 8
+    result |= (u16_value & 0xFF00) >> 8
     return result
 
-def _macros_check_stadabm(value):
-    """Checks if the passed value is word alligned and if the address
-       is inside PFLASH (Compare chapter 2 of the Aurix datasheet).
+def _u32_swap_bytes(u32_value):
+    """Swap the bytes of unsigned 32-bit value.
+        Used for conversion between little and big endian.
 
-        Args:
-            value(int): Address to check
+    Args:
+        u32_value (int): Source
 
-        Returns:
-            "Ok" if the value is valid, otherwise "Not Ok <error-reason>"
+    Returns:
+        int: Destination
     """
-    segment_8_pflash = range(0x80000000, 0x811FFFFF)
-    segment_10_pflash = range(0xA0000000, 0XA11FFFFF)
-    if value in segment_8_pflash or value in segment_10_pflash:
-        # Check if it is word alligned - 32bit system
-        if value%4:
-            return "Not Ok (STADABM is not word alligned)"
-        else:
-            return "Ok"
-    else:
-        return "Not Ok (STADABM is not in the PFLASH)"
+    result  = (u32_value & 0x000000FF) << 24
+    result |= (u32_value & 0x0000FF00) << 8
+    result |= (u32_value & 0x00FF0000) >> 8
+    result |= (u32_value & 0xFF000000) >> 24
+    return result
+
+def _u32_swap_words(u32_value):
+    """Swap the 16-bit words of unsigned 16-bit value.
+        Used for conversion between little and middle endian.
+        For big endian to middle endian conversion, convert it first to little endian
+        and after it call this macro.
+
+    Args:
+        u32_value (int): Source
+
+    Returns:
+        int: Destination
+    """
+    result  = (u32_value & 0x0000FFFF) << 16
+    result |= (u32_value & 0xFFFF0000) >> 16
+    return result
+
+def _read(addr, data_type):
+    mem_access = mem_access_get_api_by_data_type(data_type)
+    binary_data = globals()["BINARY_DATA"]
+    mem_access.set_binary_data(binary_data)
+    return mem_access
+
+def _read_u8(addr):
+    return _read(addr, "u8")
+
+def _read_u16le(addr):
+    return _read(addr, "u16le")
+
+def _read_u16be(addr):
+    return _read(addr, "u16be")
+
+def _read_u32le(addr):
+    return _read(addr, "u32le")
+
+def _read_u32be(addr):
+    return _read(addr, "u32be")
+
+def _calc_checksum(start_address, end_address, polynomial, bit_width, seed, \
+    reverse_input, reverse_output, final_xor): # pylint: disable=too-many-arguments
+
+    binary_data = globals()["BINARY_DATA"]
+
+    return calc_checksum(binary_data, start_address, end_address, polynomial, \
+        bit_width, seed, reverse_input, reverse_output, final_xor)
+
+def set_binary_data(binary_data):
+    """Set the binary data to be used by all macros. This avoids to spawn the binary data
+        access into the template.
+
+    Args:
+        binary_data (IntelHex): Binary data
+    """
+    globals()["BINARY_DATA"] = binary_data
 
 def get_macro_dict():
     """Get the macro dictionary. The macros will be supported inside the template
@@ -108,12 +153,16 @@ def get_macro_dict():
     """
     macro_dict = {}
 
-    macro_dict["macros_compare_values"] = _macros_compare_values
-    macro_dict["macros_check_stadabm"] = _macros_check_stadabm
-    macro_dict["mem_access_get_api_by_data_type"] = mem_access_get_api_by_data_type
-    macro_dict["calc_checksum"] = calc_checksum
-    macro_dict["convert_middle_to_little_endian"] = _macros_convert_middle_to_little_endian
-    macro_dict["bootloader_start_addr"] = 0x000000
+    macro_dict["macros_compare_values"] = _compare_values
+    macro_dict["m_read_u8"] = _read_u8
+    macro_dict["m_read_u16le"] = _read_u16le
+    macro_dict["m_read_u16be"] = _read_u16be
+    macro_dict["m_read_u32le"] = _read_u32le
+    macro_dict["m_read_u32be"] = _read_u32be
+    macro_dict["m_calc_checksum"] = _calc_checksum
+    macro_dict["m_swap_bytes_u16"] = _u16_swap_bytes # Used for LE/BE conversion
+    macro_dict["m_swap_bytes_u32"] = _u32_swap_bytes # Used for LE/BE conversion
+    macro_dict["m_swap_words_u32"] = _u32_swap_words # Used for LE/ME conversion
 
     return macro_dict
 

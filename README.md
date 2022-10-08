@@ -16,6 +16,17 @@ There are a lot of hex viewers already, but I was not able to find one which I c
   - [Print report with template](#print-report-with-template)
   - [Configuration using structures](#configuration-using-structures)
   - [Define structure as datatype](#define-structure-as-datatype)
+- [Macros](#macros)
+  - [macros_compare_values()](#macros_compare_values)
+  - [m_read_u8()](#m_read_u8)
+  - [m_read_u16le()](#m_read_u16le)
+  - [m_read_u16be()](#m_read_u16be)
+  - [m_read_u32le()](#m_read_u32le)
+  - [m_read_u32be()](#m_read_u32be)
+  - [m_calc_checksum()](#m_calc_checksum)
+  - [m_swap_bytes_u16()](#m_swap_bytes_u16)
+  - [m_swap_bytes_u32()](#m_swap_bytes_u32)
+  - [m_swap_words_u32()](#m_swap_words_u32)
 - [FAQ](#faq)
   - [How to get a element in decimal in the template?](#how-to-get-a-element-in-decimal-in-the-template)
 - [Issues, Ideas And Bugs](#issues-ideas-and-bugs)
@@ -371,6 +382,91 @@ If a structure shall be used several times, define it as a datatype and use its 
     }]
 }
 ```
+
+# Macros
+
+The following macros are available in the templates.
+
+## macros_compare_values()
+Compares the set value with the actual value.
+
+Parameters:
+* set_value: Set value
+* actual_value: Actual value
+* value_format="{:02X}": Value format used to print them in case they are different.
+
+Returns:
+* "Ok": If both values are equal.
+* "Not Ok (Set: &lt;set_value&gt;, Actual: &lt;actual_value&gt;)": If the values are different.
+
+## m_read_u8()
+Read unsigned 8-bit value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_u16le()
+Read unsigned 16-bit little endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_u16be()
+Read unsigned 16-bit big endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_u32le()
+Read unsigned 32-bit little endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_u32be()
+Read unsigned 32-bit big endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_calc_checksum()
+
+Parameters:
+* start_address: Start address of the CRC calculation.
+* end_address: End address of the CRC calculation (not included).
+* polynomial: The polynomial for the CRC calculation.
+* bit_width: The bit width, e.g. 8 in case of a CRC-8.
+* seed: The seed value which to use.
+* reverse_input: If the input data shall be reflected, set to True otherwise to False.
+* reverse_output: If the output data shall be reflected, set to True otherwise to False.
+* final_xor: If the output shall be have a final XOR with all bits set, set to True otherwise to False.
+
+## m_swap_bytes_u16()
+Swaps the bytes of a unsigned 16-bit value.
+
+Parameters:
+* value: Source value
+
+Returns:
+* Swapped value
+
+## m_swap_bytes_u32()
+Swaps the bytes of a unsigned 32-bit value.
+
+Parameters:
+* value: Source value
+
+Returns:
+* Swapped value
+
+## m_swap_words_u32()
+Swaps the 16-bit words of a unsigned 32-bit value.
+
+Parameters:
+* value: Source value
+
+Returns:
+* Swapped value
 
 # FAQ
 

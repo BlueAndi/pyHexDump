@@ -38,7 +38,7 @@ from pyHexDump.common import \
     common_dump_intel_hex, \
     common_load_template_file
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
-from pyHexDump.macros import get_macro_dict
+from pyHexDump.macros import get_macro_dict, set_binary_data
 
 ################################################################################
 # Variables
@@ -54,7 +54,6 @@ class ConfigElement:
     """Represents a single element in the configuration.
     """
     def __init__(self, name, addr, data_type, count) -> None:
-        self._intel_hex = None
         self._name = name
         self._addr = addr
         self._mem_access = mem_access_get_api_by_data_type(data_type)
@@ -100,7 +99,8 @@ class ConfigElement:
         Args:
             intel_hex (_type_): _description_
         """
-        self._intel_hex = intel_hex
+        if self._mem_access is not None:
+            self._mem_access.set_binary_data(intel_hex)
 
     def get_value(self):
         """Get the configuration element value.
@@ -115,16 +115,15 @@ class ConfigElement:
         if self._mem_access is None:
             return 0
 
-        if self._intel_hex is not None:
-            if self._count == 1:
-                value = self._mem_access.get_value(self._intel_hex, self._addr)
-            elif self._count > 1:
-                value = []
-                for idx in range(self._count):
-                    offset = idx * self._mem_access.get_size()
-                    value.append(self._mem_access.get_value(self._intel_hex, self._addr + offset))
-            else:
-                value = 0
+        if self._count == 1:
+            value = self._mem_access.get_value(self._addr)
+        elif self._count > 1:
+            value = []
+            for idx in range(self._count):
+                offset = idx * self._mem_access.get_size()
+                value.append(self._mem_access.get_value(self._addr + offset))
+        else:
+            value = 0
 
         return value
 
@@ -382,8 +381,7 @@ def _print_config_elements(binary_data, cfg_elements_dict, namespace=""):
             cfg_element.set_intel_hex(binary_data)
 
             print(f"{namespace}{key} @ ", end="")
-            common_dump_intel_hex(  binary_data,
-                                    cfg_element.get_mem_access(),
+            common_dump_intel_hex(  cfg_element.get_mem_access(),
                                     cfg_element.get_addr(),
                                     cfg_element.get_count(),
                                     0)
@@ -442,6 +440,8 @@ def _print_template(binary_data, cfg_elements_dict, template):
 
     # Add macro functions, so they are available in the template
     element_value_dict.update(get_macro_dict())
+    # Ensure that the macros can access the binary data
+    set_binary_data(binary_data)
 
     # Create the template
     element_bunch = _dict_to_bunch(element_value_dict)
