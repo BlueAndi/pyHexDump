@@ -81,7 +81,7 @@ def main():
     prg_arg_parser.parse_args()
 
     # Uncomment for debugging purposes
-    print(prg_arg_parser.get_args())
+    #print(prg_arg_parser.get_args())
 
     # If no program arguments are available, the help information shall be shown.
     if prg_arg_parser.get_args().cmd is None:
