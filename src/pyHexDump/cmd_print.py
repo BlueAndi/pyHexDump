@@ -32,17 +32,13 @@
 ################################################################################
 from mako.template import Template
 from pyHexDump.constants import Ret
-from pyHexDump.common import\
-    common_load_binary_file,\
-    common_load_json_file,\
-    common_dump_intel_hex,\
+from pyHexDump.common import \
+    common_load_binary_file, \
+    common_load_json_file, \
+    common_dump_intel_hex, \
     common_load_template_file
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
-from pyHexDump.macros import\
-    macros_compare_values,\
-    convert_middle_to_little_endian,\
-    macros_check_stadabm
-from pyHexDump.cmd_checksum import calc_checksum
+from pyHexDump.macros import get_macro_dict
 
 ################################################################################
 # Variables
@@ -444,15 +440,10 @@ def _print_template(binary_data, cfg_elements_dict, template):
     ret_status = Ret.OK
     element_value_dict = _get_element_value_dict(binary_data, cfg_elements_dict)
 
-    #Add methods and the binary_data to the element_value_dict to execute them from the template
-    element_value_dict["macros_compare_values"] = macros_compare_values
-    element_value_dict["macros_check_stadabm"] = macros_check_stadabm
-    element_value_dict["mem_access_get_api_by_data_type"] = mem_access_get_api_by_data_type
-    element_value_dict["calc_checksum"] = calc_checksum
-    element_value_dict["convert_middle_to_little_endian"] = convert_middle_to_little_endian
-    element_value_dict["binary_data"] = binary_data
-    element_value_dict["bootloader_start_addr"] = 0x000000
+    # Add macro functions, so they are available in the template
+    element_value_dict.update(get_macro_dict())
 
+    # Create the template
     element_bunch = _dict_to_bunch(element_value_dict)
     tmpl = Template(template)
 

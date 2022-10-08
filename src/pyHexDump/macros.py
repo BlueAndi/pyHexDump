@@ -25,7 +25,9 @@
 ################################################################################
 # Imports
 ################################################################################
-import ctypes
+from pyHexDump.mem_access import mem_access_get_api_by_data_type
+from pyHexDump.cmd_checksum import calc_checksum
+
 ################################################################################
 # Variables
 ################################################################################
@@ -38,7 +40,7 @@ import ctypes
 # Functions
 ################################################################################
 
-def macros_compare_values(set_value, actual_value, value_format="{:02X}"):
+def _macros_compare_values(set_value, actual_value, value_format="{:02X}"):
     """Compares the set_value and the actual_value.
 
         Args:
@@ -56,7 +58,7 @@ def macros_compare_values(set_value, actual_value, value_format="{:02X}"):
     return f"Not Ok (Set: {value_format.format(set_value)}, " \
               f"Actual: {value_format.format(actual_value)})"
 
-def convert_middle_to_little_endian(value):
+def _macros_convert_middle_to_little_endian(value):
     """Converts the value from middle to little endian representation.
         The value 0xCCDDAABB should be represented as 0xAABBCCDD
 
@@ -66,21 +68,17 @@ def convert_middle_to_little_endian(value):
         Retruns:
             Value in little endian representation
     """
-    solution = ctypes.c_uint32(0)
+    result = 0
 
-    tmp = ctypes.c_uint32(0)
     # Shift CCDD to the right position
-    tmp.value = value << 16
-    solution.value = solution.value | tmp.value
+    result = (value << 16) & 0xFFFFFFFF
 
     # Shift AABB to the right position
-    tmp.value = 0
-    tmp.value = value >> 16
-    solution.value = solution.value | tmp.value
+    result |= (value >> 16) & 0xFFFFFFFF
 
-    return solution.value
+    return result
 
-def macros_check_stadabm(value):
+def _macros_check_stadabm(value):
     """Checks if the passed value is word alligned and if the address
        is inside PFLASH (Compare chapter 2 of the Aurix datasheet).
 
@@ -101,6 +99,23 @@ def macros_check_stadabm(value):
     else:
         return "Not Ok (STADABM is not in the PFLASH)"
 
+def get_macro_dict():
+    """Get the macro dictionary. The macros will be supported inside the template
+        and can be used there.
+
+    Returns:
+        dict: Macro dictionary
+    """
+    macro_dict = {}
+
+    macro_dict["macros_compare_values"] = _macros_compare_values
+    macro_dict["macros_check_stadabm"] = _macros_check_stadabm
+    macro_dict["mem_access_get_api_by_data_type"] = mem_access_get_api_by_data_type
+    macro_dict["calc_checksum"] = calc_checksum
+    macro_dict["convert_middle_to_little_endian"] = _macros_convert_middle_to_little_endian
+    macro_dict["bootloader_start_addr"] = 0x000000
+
+    return macro_dict
 
 ################################################################################
 # Main

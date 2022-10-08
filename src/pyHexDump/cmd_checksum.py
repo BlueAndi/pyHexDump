@@ -64,7 +64,7 @@ def calc_checksum(binary_data, start_address, end_address,\
         final_xor(bool): Xor the final result with the value 0xff before returning the soulution
 
     Returns:
-        Ret, checksum: Statusinformation and checksum
+        Ret, checksum: Status information and checksum
     """
     ret_status = Ret.OK
     mem_access = MemAccessU8()
