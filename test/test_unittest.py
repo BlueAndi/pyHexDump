@@ -6,6 +6,7 @@ from pyHexDump.constants import Ret
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 from pyHexDump.common import common_dump_intel_hex
 from pyHexDump.cmd_checksum import calc_checksum
+from pyHexDump.macros import get_macro_dict, set_binary_data
 
 def test_dump(capsys):
     """Test the dump of binary data.
@@ -129,3 +130,64 @@ def test_calc_checksum():
 
         # String compare to see the hex value in the assertion output
         assert hex(crc) == hex(test_case["expected"])
+
+def test_macros():
+    binary_data = IntelHex()
+    test_data = "1234"
+
+    # Prepare binary data
+    for idx, _ in enumerate(test_data):
+        binary_data[idx] = ord(test_data[idx])
+
+    macro_dict = get_macro_dict()
+    set_binary_data(binary_data)
+
+    # u8 access
+    value = macro_dict["m_read_u8"](0)
+    assert ord(test_data[0]) == value
+
+    # u16le access
+    value = macro_dict["m_read_u16le"](0)
+    expected  = ord(test_data[0]) << 0
+    expected |= ord(test_data[1]) << 8
+    assert hex(expected) == hex(value)
+
+    # u16be access
+    value = macro_dict["m_read_u16be"](0)
+    expected  = ord(test_data[0]) << 8
+    expected |= ord(test_data[1]) << 0
+    assert hex(expected) == hex(value)
+
+    # u32le access
+    value = macro_dict["m_read_u32le"](0)
+    expected  = ord(test_data[0]) << 0
+    expected |= ord(test_data[1]) << 8
+    expected |= ord(test_data[2]) << 16
+    expected |= ord(test_data[3]) << 24
+    assert hex(expected) == hex(value)
+
+    # u32be access
+    value = macro_dict["m_read_u32be"](0)
+    expected  = ord(test_data[0]) << 24
+    expected |= ord(test_data[1]) << 16
+    expected |= ord(test_data[2]) << 8
+    expected |= ord(test_data[3]) << 0
+    assert hex(expected) == hex(value)
+
+    # Swap bytes
+    value = 0x1234
+    expected = 0x3412
+    value = macro_dict["m_swap_bytes_u16"](value)
+    assert hex(expected) == hex(value)
+
+    # Swap bytes
+    value = 0x12345678
+    expected = 0x78563412
+    value = macro_dict["m_swap_bytes_u32"](value)
+    assert hex(expected) == hex(value)
+
+    # Swap words
+    value = 0x12345678
+    expected = 0x56781234
+    value = macro_dict["m_swap_words_u32"](value)
+    assert hex(expected) == hex(value)
