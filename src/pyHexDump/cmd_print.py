@@ -528,7 +528,7 @@ def cmd_print_register(arg_sub_parsers):
         type=str,
         nargs=1,
         help="Binary file in intel hex format (.hex) or binary (.bin)."
-    )
+    ) # pylint: disable=duplicate-code
 
     parser.add_argument(
         "configFile",
