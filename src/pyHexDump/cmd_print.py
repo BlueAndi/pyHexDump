@@ -35,7 +35,6 @@ from pyHexDump.constants import Ret
 from pyHexDump.common import \
     common_load_binary_file, \
     common_load_json_file, \
-    common_dump_intel_hex, \
     common_load_template_file
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 from pyHexDump.macros import get_macro_dict, set_binary_data
@@ -469,13 +468,13 @@ def _get_config_elements(config_dict):
 
     return cfg_elements_dict
 
-def _print_config_elements(binary_data, cfg_elements_dict, namespace=""):
+def _print_config_elements(binary_data, tmpl_element_dict, namespace=""):
     """Print a single configuration element with its value, read from the
         binary data.
 
     Args:
         binary_data (IntelHex): Binary data
-        cfg_elements_dict (dict): Configuration element objects
+        tmpl_element_dict (dict): Template element objects
         namespace (str, optional): Namespace which to use. Defaults to "".
 
     Returns:
@@ -483,21 +482,14 @@ def _print_config_elements(binary_data, cfg_elements_dict, namespace=""):
     """
     ret_status = Ret.OK
 
-    for key, cfg_element in cfg_elements_dict.items():
+    for key, tmpl_element in tmpl_element_dict.items():
 
         # The dictionary of elements may contain further dictionaries which
         # corresponds to a structure of elements.
-        if isinstance(cfg_element, dict):
-            _print_config_elements(binary_data, cfg_element, namespace + key + ".")
+        if isinstance(tmpl_element, dict):
+            _print_config_elements(binary_data, tmpl_element, namespace + key + ".")
         else:
-            cfg_element.set_intel_hex(binary_data)
-
-            print(f"{namespace}{key} @ ", end="")
-            common_dump_intel_hex(  cfg_element.get_mem_access(),
-                                    cfg_element.get_addr(),
-                                    cfg_element.get_count(),
-                                    0)
-            print("")
+            print(f"{namespace}{key} @ {tmpl_element.addr():08X}: {tmpl_element.hex()}")
 
     return ret_status
 
@@ -534,19 +526,18 @@ def _get_tmpl_element_dict(binary_data, cfg_elements_dict):
 
     return tmpl_element_dict
 
-def _print_template(binary_data, cfg_elements_dict, template):
+def _print_template(binary_data, tmpl_element_dict, template):
     """Print a generated report from template and configuration element dictionary.
 
     Args:
         binary_data (IntelHex): The binary data to retrieve the element values.
-        cfg_elements_dict (dict): The configuration element objects.
+        tmpl_element_dict (dict): The template element objects.
         template (str): The template content
 
     Returns:
         Ret: If successul printed, it will return Ret.OK otherwise a corresponding error.
     """
     ret_status = Ret.OK
-    tmpl_element_dict = _get_tmpl_element_dict(binary_data, cfg_elements_dict)
 
     # Add macro functions, so they are available in the template
     tmpl_element_dict.update(get_macro_dict())
@@ -587,18 +578,19 @@ def _cmd_print(binary_file, config_file, template_file):
         # Is configuration file successful loaded?
         if ret_status == Ret.OK:
             cfg_elements_dict = _get_config_elements(config_dict)
+            tmpl_element_dict = _get_tmpl_element_dict(binary_data, cfg_elements_dict)
 
             # If there is no template file available, only the elements in the
             # configuration will be printed. Otherwise the template is used to
             # print a corresponding report.
             if template_file is None:
-                ret_status = _print_config_elements(binary_data, cfg_elements_dict)
+                ret_status = _print_config_elements(binary_data, tmpl_element_dict)
             else:
                 ret_status, template = common_load_template_file(template_file)
 
                 # Is template file successful loaded?
                 if ret_status == Ret.OK:
-                    ret_status = _print_template(binary_data, cfg_elements_dict, template)
+                    ret_status = _print_template(binary_data, tmpl_element_dict, template)
 
     return ret_status
 
