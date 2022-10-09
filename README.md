@@ -14,8 +14,11 @@ There are a lot of hex viewers already, but I was not able to find one which I c
   - [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
   - [Print configuration](#print-configuration)
   - [Print report with template](#print-report-with-template)
+    - [Example](#example)
   - [Configuration using structures](#configuration-using-structures)
+    - [Example](#example-1)
   - [Define structure as datatype](#define-structure-as-datatype)
+    - [Example](#example-2)
 - [Macros](#macros)
   - [macros_compare_values()](#macros_compare_values)
   - [m_read_u8()](#m_read_u8)
@@ -27,8 +30,6 @@ There are a lot of hex viewers already, but I was not able to find one which I c
   - [m_swap_bytes_u16()](#m_swap_bytes_u16)
   - [m_swap_bytes_u32()](#m_swap_bytes_u32)
   - [m_swap_words_u32()](#m_swap_words_u32)
-- [FAQ](#faq)
-  - [How to get a element in decimal in the template?](#how-to-get-a-element-in-decimal-in-the-template)
 - [Issues, Ideas And Bugs](#issues-ideas-and-bugs)
 - [License](#license)
 - [Contribution](#contribution)
@@ -128,17 +129,24 @@ with ```config.json``` like
 
 Result:
 ```
-UCB00_BMI_BMHDID @ AF400000: B35900FE
-UCB00_STAD @ AF400004: A0000000
-UCB00_CRCBMHD @ AF400008: 31795570
-UCB00_CRCBMHD_N @ AF40000C: CE86AA8F
-UCB00_PWx @ AF400104: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-UCB00_CONFIRMATION @ AF4001F0: 43211234
+UCB00_BMI_BMHDID @ AF400000: 0xB35900FE
+UCB00_STAD @ AF400004: 0xA0000000
+UCB00_CRCBMHD @ AF400008: 0x31795570
+UCB00_CRCBMHD_N @ AF40000C: 0xCE86AA8F
+UCB00_PWx @ AF400104: [0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000]
+UCB00_CONFIRMATION @ AF4001F0: 0x43211234
 ```
 
 ## Print report with template
 The [Mako template library](https://www.makotemplates.org/) is used, to provide a lot of functionality. Please have a look to the [Mako documentation](https://docs.makotemplates.org/en/latest/) for details.
 
+A configuration element can be accessed in the template via:
+* ```${<config-element-name>}```: Prints the decimal value.
+* ```${<config-element-name>.hex()}```: Prints the value in hex with "0x" as prefix by default.
+* ```${<config-element-name>.hex("")}```: Prints the value in hex without a prefix.
+* ```${<config-element-name>.addr()}```: Prints the address in decimal.
+
+### Example
 ```$ pyHexDump print ./test/aurix_tc397.hex ./test/config.json --template ./test/markdown.mao```
 
 with ```config.json``` like
@@ -186,14 +194,14 @@ with ```markdown.mao``` like
 
 |Short Name|Value|
 |----------|-----|
-| BMI_BMHDID | ${UCB00_BMI_BMHDID} |
-| STAD | ${UCB00_STAD} |
-| CRCBMHD | ${UCB00_CRCBMHD} |
-| CRCBMHD_N | ${UCB00_CRCBMHD_N} |
-| PWx | ${UCB00_PWx} |
-| CONFIRMATION | ${UCB00_CONFIRMATION} |
+| BMI_BMHDID | ${UCB00_BMI_BMHDID.hex()} |
+| STAD | ${UCB00_STAD.hex()} |
+| CRCBMHD | ${UCB00_CRCBMHD.hex()} |
+| CRCBMHD_N | ${UCB00_CRCBMHD_N.hex()} |
+| PWx | ${UCB00_PWx.hex()} |
+| CONFIRMATION | ${UCB00_CONFIRMATION.hex()} |
 <%
-    bmi_bmhdid = int(UCB00_BMI_BMHDID, 16)
+    bmi_bmhdid = UCB00_BMI_BMHDID
     bmi    = (bmi_bmhdid >>  0) & 0xFFFF
     bmhdid = (bmi_bmhdid >>  16) & 0xFFFF
     pindis = (bmi >> 0) & 0x01
@@ -217,12 +225,12 @@ with ```markdown.mao``` like
     if bmhdid == 0xB359:
         is_bmh_valid = "OK"
     
-    calculated_crc_bmhd = m_calc_checksum("u32le", 0xAF400000, 0xAF400008, 0x04c11db7, 32, 0xffffffff, True, True, True)
-    calculated_crc_bmhd_n = m_calc_checksum("u32le", 0xAF400000, 0xAF400008, 0x04c11db7, 32, 0xffffffff, True, True, False)
+    calculated_crc_bmhd = m_calc_checksum("u32le", UCB00_BMI_BMHDID.addr(), UCB00_CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, True)
+    calculated_crc_bmhd_n = m_calc_checksum("u32le", UCB00_BMI_BMHDID.addr(), UCB00_CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, False)
 
     is_bmh_integrity_given = "Not OK"
-    if calculated_crc_bmhd == int(UCB00_CRCBMHD, 16):
-        if calculated_crc_bmhd_n == int(UCB00_CRCBMHD_N, 16):
+    if calculated_crc_bmhd == UCB00_CRCBMHD:
+        if calculated_crc_bmhd_n == UCB00_CRCBMHD_N:
             is_bmh_integrity_given = "OK"
 %>
 <%text>### Boot Mode Index (BMI)</%text>
@@ -244,12 +252,12 @@ Result:
 
 |Short Name|Value|
 |----------|-----|
-| BMI_BMHDID | B35900FE |
-| STAD | A0000000 |
-| CRCBMHD | 31795570 |
-| CRCBMHD_N | CE86AA8F |
-| PWx | 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 |
-| CONFIRMATION | 43211234 |
+| BMI_BMHDID | 0xB35900FE |
+| STAD | 0xA0000000 |
+| CRCBMHD | 0x31795570 |
+| CRCBMHD_N | 0xCE86AA8F |
+| PWx | [0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000] |
+| CONFIRMATION | 0x43211234 |
 
 ### Boot Mode Index (BMI)
 * Mode selection by configuration pins: enabled
@@ -266,6 +274,8 @@ Is boot mode header integrity given: OK
 If several elements are right behind each other like in a structure, it can be configured in a similar way by using a list of elements for a datatype. The address of each element in the structure is calculated by the given base address in the datatype of each element.
 
 Note that nested structures are not supported yet!
+
+### Example
 
 ```json
 {
@@ -314,14 +324,14 @@ with ```markdown.mao``` like
 
 |Short Name|Value|
 |----------|-----|
-| BMI_BMHDID | ${UCB00.BMI_BMHDID} |
-| STAD | ${UCB00.STAD} |
-| CRCBMHD | ${UCB00.CRCBMHD} |
-| CRCBMHD_N | ${UCB00.CRCBMHD_N} |
-| PWx | ${UCB00.PWx} |
-| CONFIRMATION | ${UCB00.CONFIRMATION} |
+| BMI_BMHDID | ${UCB00.BMI_BMHDID.hex()} |
+| STAD | ${UCB00.STAD.hex()} |
+| CRCBMHD | ${UCB00.CRCBMHD.hex()} |
+| CRCBMHD_N | ${UCB00.CRCBMHD_N.hex()} |
+| PWx | ${UCB00.PWx.hex()} |
+| CONFIRMATION | ${UCB00.CONFIRMATION.hex()} |
 <%
-    bmi_bmhdid = int(UCB00.BMI_BMHDID, 16)
+    bmi_bmhdid = UCB00.BMI_BMHDID
     bmi    = (bmi_bmhdid >>  0) & 0xFFFF
     bmhdid = (bmi_bmhdid >>  16) & 0xFFFF
     pindis = (bmi >> 0) & 0x01
@@ -345,12 +355,12 @@ with ```markdown.mao``` like
     if bmhdid == 0xB359:
         is_bmh_valid = "OK"
 
-    calculated_crc_bmhd = m_calc_checksum("u32le", 0xAF400000, 0xAF400008, 0x04c11db7, 32, 0xffffffff, True, True, True)
-    calculated_crc_bmhd_n = m_calc_checksum("u32le", 0xAF400000, 0xAF400008, 0x04c11db7, 32, 0xffffffff, True, True, False)
+    calculated_crc_bmhd = m_calc_checksum("u32le", UCB00.BMI_BMHDID.addr(), UCB00.CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, True)
+    calculated_crc_bmhd_n = m_calc_checksum("u32le", UCB00.BMI_BMHDID.addr(), UCB00.CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, False)
 
     is_bmh_integrity_given = "Not OK"
-    if calculated_crc_bmhd == int(UCB00.CRCBMHD, 16):
-        if calculated_crc_bmhd_n == int(UCB00.CRCBMHD_N, 16):
+    if calculated_crc_bmhd == UCB00.CRCBMHD:
+        if calculated_crc_bmhd_n == UCB00.CRCBMHD_N:
             is_bmh_integrity_given = "OK"
 %>
 <%text>### Boot Mode Index (BMI)</%text>
@@ -362,11 +372,12 @@ Is boot mode header valid: ${is_bmh_valid}
 
 <%text>### Boot Mode Header CRC (CRCBMHD/CRCBMHD_N)</%text>
 Is boot mode header integrity given: ${is_bmh_integrity_given}
-
 ```
 
 ## Define structure as datatype
 If a structure shall be used several times, define it as a datatype and use its name.
+
+### Example
 
 ```json
 {
@@ -499,24 +510,6 @@ Parameters:
 
 Returns:
 * Swapped value
-
-# FAQ
-
-## How to get a element in decimal in the template?
-Define the following expression filter in your template:
-```mako
-<%!
-    def toDec(hex_value_str):
-        return str(int(hex_value_str, 16))
-%>
-```
-
-By using this filter, the value is shown in decimal.
-```mako
-${hex_value | toDec}
-```
-
-Note, a expression filter gets a string as parameter and expects to get a string returned!
 
 # Issues, Ideas And Bugs
 If you have further ideas or you found some bugs, great! Create a [issue](https://github.com/BlueAndi/pyHexDump/issues) or if you are able and willing to fix it by yourself, clone the repository and create a pull request.
