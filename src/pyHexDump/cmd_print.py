@@ -138,6 +138,115 @@ class Bunch(dict):
         dict.__init__(self, dict_of_items)
         self.__dict__.update(dict_of_items)
 
+class TmplElement():
+    """Template element representing a element with a address, value and bit width.
+    """
+    def __init__(self, addr, value, bit_width) -> None:
+        self._addr = addr
+        self._value = value
+        self._bit_width = bit_width
+
+    def __int__(self):
+        if isinstance(self._value, int) is False:
+            raise TypeError("Template element is not a int.")
+        return self._value
+
+    def __str__(self):
+        return str(self._value)
+
+    def __add__(self, value):
+        return self._value + value
+
+    def __sub__(self, value):
+        return self._value - value
+
+    def __mul__(self, value):
+        return self._value * value
+
+    def __pow__(self, value):
+        return self._value ** value
+
+    def __truediv__(self, value):
+        return self._value / value
+
+    def __floordiv__(self, value):
+        return self._value // value
+
+    def __mod__(self, value):
+        return self._value % value
+
+    def __lshift__(self, value):
+        return self._value << value
+
+    def __rshift__(self, value):
+        return self._value >> value
+
+    def __and__(self, value):
+        return self._value & value
+
+    def __or__(self, value):
+        return self._value | value
+
+    def __xor__(self, value):
+        return self._value ^ value
+
+    def __invert__(self):
+        return ~self._value
+
+    def __lt__(self, value):
+        return self._value < value
+
+    def __le__(self, value):
+        return self._value <= value
+
+    def __eq__(self, value):
+        return self._value == value
+
+    def __ne__(self, value):
+        return self._value != value
+
+    def __gt__(self, value):
+        return self._value > value
+
+    def __ge__(self, value):
+        return self._value >= value
+
+    def __getitem__(self, idx):
+        if isinstance(self._value, list) is False:
+            raise TypeError("Template element is not a list.")
+        return self._value[idx]
+
+    def hex(self, prefix="0x"):
+        """Get the value in hex format.
+
+        Args:
+            prefix (str, optional): Prefix. Defaults to "0x".
+
+        Returns:
+            str: Hex value
+        """
+        output = ""
+
+        if isinstance(self._value, int) is True:
+            output = f"{prefix}{self._value:0{self._bit_width // 4}X}"
+        elif isinstance(self._value, list) is True:
+            output = "["
+            for idx, value in enumerate(self._value):
+                if idx > 0:
+                    output += ", "
+                output += f"{prefix}{value:0{self._bit_width // 4}X}"
+            output += "]"
+
+        return output
+
+    def addr(self):
+        """Get the address of the element in the binary data.
+
+        Returns:
+            int: Address
+        """
+        return self._addr
+
 ################################################################################
 # Functions
 ################################################################################
@@ -392,7 +501,7 @@ def _print_config_elements(binary_data, cfg_elements_dict, namespace=""):
 
     return ret_status
 
-def _get_element_value_dict(binary_data, cfg_elements_dict):
+def _get_tmpl_element_dict(binary_data, cfg_elements_dict):
     """Get a dictionary of elements and its value.
 
     Args:
@@ -402,30 +511,28 @@ def _get_element_value_dict(binary_data, cfg_elements_dict):
     Returns:
         dict: Dictionary of elements and its value.
     """
-    element_value_dict = {}
+    tmpl_element_dict = {}
 
     for key, cfg_element in cfg_elements_dict.items():
 
         if isinstance(cfg_element, dict):
-            element_value_dict[key] = _get_element_value_dict(binary_data, cfg_element)
+            tmpl_element_dict[key] = _get_tmpl_element_dict(binary_data, cfg_element)
         else:
             cfg_element.set_intel_hex(binary_data)
 
             if cfg_element.get_count() == 1:
-                width = cfg_element.get_mem_access().get_size() * 2
-                out_str = f"{cfg_element.get_value():0{width}X}"
-                element_value_dict[key] = out_str
+                bit_width = cfg_element.get_mem_access().get_size() * 8
+                tmpl_element_dict[key] = TmplElement(cfg_element.get_addr(), cfg_element.get_value(), bit_width) # pylint: disable=line-too-long
 
             elif cfg_element.get_count() > 1:
-                width = cfg_element.get_mem_access().get_size() * 2
-                out_str = ""
+                bit_width = cfg_element.get_mem_access().get_size() * 8
+                value_list = []
                 for idx in range(cfg_element.get_count()):
-                    if idx > 0:
-                        out_str += " "
-                    out_str += f"{cfg_element.get_value()[idx]:0{width}X}"
-                element_value_dict[key] = out_str
+                    value_list.append(cfg_element.get_value()[idx])
 
-    return element_value_dict
+                tmpl_element_dict[key] = TmplElement(cfg_element.get_addr(), value_list, bit_width)
+
+    return tmpl_element_dict
 
 def _print_template(binary_data, cfg_elements_dict, template):
     """Print a generated report from template and configuration element dictionary.
@@ -439,19 +546,19 @@ def _print_template(binary_data, cfg_elements_dict, template):
         Ret: If successul printed, it will return Ret.OK otherwise a corresponding error.
     """
     ret_status = Ret.OK
-    element_value_dict = _get_element_value_dict(binary_data, cfg_elements_dict)
+    tmpl_element_dict = _get_tmpl_element_dict(binary_data, cfg_elements_dict)
 
     # Add macro functions, so they are available in the template
-    element_value_dict.update(get_macro_dict())
+    tmpl_element_dict.update(get_macro_dict())
     # Ensure that the macros can access the binary data
     set_binary_data(binary_data)
 
     # Create the template
-    element_bunch = _dict_to_bunch(element_value_dict)
+    tmpl_element_bunch = _dict_to_bunch(tmpl_element_dict)
     tmpl = Template(template)
 
     try:
-        print(tmpl.render(**element_bunch))
+        print(tmpl.render(**tmpl_element_bunch))
     except ValueError:
         ret_status = Ret.ERROR_TEMPLATE
 

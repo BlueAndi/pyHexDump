@@ -4,14 +4,14 @@
 
 |Short Name|Value|
 |----------|-----|
-| BMI_BMHDID | ${UCB00_BMI_BMHDID} |
-| STAD | ${UCB00_STAD} |
-| CRCBMHD | ${UCB00_CRCBMHD} |
-| CRCBMHD_N | ${UCB00_CRCBMHD_N} |
-| PWx | ${UCB00_PWx} |
-| CONFIRMATION | ${UCB00_CONFIRMATION} |
+| BMI_BMHDID | ${UCB00_BMI_BMHDID.hex()} |
+| STAD | ${UCB00_STAD.hex()} |
+| CRCBMHD | ${UCB00_CRCBMHD.hex()} |
+| CRCBMHD_N | ${UCB00_CRCBMHD_N.hex()} |
+| PWx | ${UCB00_PWx.hex()} |
+| CONFIRMATION | ${UCB00_CONFIRMATION.hex()} |
 <%
-    bmi_bmhdid = int(UCB00_BMI_BMHDID, 16)
+    bmi_bmhdid = UCB00_BMI_BMHDID
     bmi    = (bmi_bmhdid >>  0) & 0xFFFF
     bmhdid = (bmi_bmhdid >>  16) & 0xFFFF
     pindis = (bmi >> 0) & 0x01
@@ -35,12 +35,12 @@
     if bmhdid == 0xB359:
         is_bmh_valid = "OK"
     
-    calculated_crc_bmhd = m_calc_checksum("u32le", 0xAF400000, 0xAF400008, 0x04c11db7, 32, 0xffffffff, True, True, True)
-    calculated_crc_bmhd_n = m_calc_checksum("u32le", 0xAF400000, 0xAF400008, 0x04c11db7, 32, 0xffffffff, True, True, False)
+    calculated_crc_bmhd = m_calc_checksum("u32le", UCB00_BMI_BMHDID.addr(), UCB00_CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, True)
+    calculated_crc_bmhd_n = m_calc_checksum("u32le", UCB00_BMI_BMHDID.addr(), UCB00_CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, False)
 
     is_bmh_integrity_given = "Not OK"
-    if calculated_crc_bmhd == int(UCB00_CRCBMHD, 16):
-        if calculated_crc_bmhd_n == int(UCB00_CRCBMHD_N, 16):
+    if calculated_crc_bmhd == UCB00_CRCBMHD:
+        if calculated_crc_bmhd_n == UCB00_CRCBMHD_N:
             is_bmh_integrity_given = "OK"
 %>
 <%text>### Boot Mode Index (BMI)</%text>

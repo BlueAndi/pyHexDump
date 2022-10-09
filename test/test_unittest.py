@@ -219,3 +219,22 @@ def test_macros():
     expected = 0x56781234
     value = macro_dict["m_swap_words_u32"](value)
     assert hex(expected) == hex(value)
+
+class Test(int):
+    def __new__(cls, value):
+        return super(cls, cls).__new__(cls, value)
+
+    def __repr__(self):
+        return "Test(%d)" % int(self)
+
+    def hex(self):
+        return "hui"
+
+def test_blah():
+    a = Test(5)
+    b = Test(10)
+
+    c = a + b
+
+    assert 15 == c
+    assert "hui" == c.hex()
