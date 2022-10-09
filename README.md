@@ -216,6 +216,14 @@ with ```markdown.mao``` like
     is_bmh_valid = "invalid"
     if bmhdid == 0xB359:
         is_bmh_valid = "OK"
+    
+    calculated_crc_bmhd = m_calc_checksum("u32le", 0xAF400000, 0xAF400008, 0x04c11db7, 32, 0xffffffff, True, True, True)
+    calculated_crc_bmhd_n = m_calc_checksum("u32le", 0xAF400000, 0xAF400008, 0x04c11db7, 32, 0xffffffff, True, True, False)
+
+    is_bmh_integrity_given = "Not OK"
+    if calculated_crc_bmhd == int(UCB00_CRCBMHD, 16):
+        if calculated_crc_bmhd_n == int(UCB00_CRCBMHD_N, 16):
+            is_bmh_integrity_given = "OK"
 %>
 <%text>### Boot Mode Index (BMI)</%text>
 * Mode selection by configuration pins: ${mode_by_hwcfg}
@@ -223,6 +231,9 @@ with ```markdown.mao``` like
 
 <%text>### Boot Mode Header Identifier (BMHDID)</%text>
 Is boot mode header valid: ${is_bmh_valid}
+
+<%text>### Boot Mode Header CRC (CRCBMHD/CRCBMHD_N)</%text>
+Is boot mode header integrity given: ${is_bmh_integrity_given}
 ```
 
 Result:
@@ -246,6 +257,9 @@ Result:
 
 ### Boot Mode Header Identifier (BMHDID)
 Is boot mode header valid: OK
+
+### Boot Mode Header CRC (CRCBMHD/CRCBMHD_N)
+Is boot mode header integrity given: OK
 ```
 
 ## Configuration using structures
@@ -330,6 +344,14 @@ with ```markdown.mao``` like
     is_bmh_valid = "invalid"
     if bmhdid == 0xB359:
         is_bmh_valid = "OK"
+
+    calculated_crc_bmhd = m_calc_checksum("u32le", 0xAF400000, 0xAF400008, 0x04c11db7, 32, 0xffffffff, True, True, True)
+    calculated_crc_bmhd_n = m_calc_checksum("u32le", 0xAF400000, 0xAF400008, 0x04c11db7, 32, 0xffffffff, True, True, False)
+
+    is_bmh_integrity_given = "Not OK"
+    if calculated_crc_bmhd == int(UCB00.CRCBMHD, 16):
+        if calculated_crc_bmhd_n == int(UCB00.CRCBMHD_N, 16):
+            is_bmh_integrity_given = "OK"
 %>
 <%text>### Boot Mode Index (BMI)</%text>
 * Mode selection by configuration pins: ${mode_by_hwcfg}
@@ -337,6 +359,10 @@ with ```markdown.mao``` like
 
 <%text>### Boot Mode Header Identifier (BMHDID)</%text>
 Is boot mode header valid: ${is_bmh_valid}
+
+<%text>### Boot Mode Header CRC (CRCBMHD/CRCBMHD_N)</%text>
+Is boot mode header integrity given: ${is_bmh_integrity_given}
+
 ```
 
 ## Define structure as datatype
@@ -432,6 +458,12 @@ Parameters:
 ## m_calc_checksum()
 
 Parameters:
+* binary_data_endianess: The binary data endianess and bit width:
+    * "u8": unsigned 8-bit
+    * "u16le": unsigned 16-bit little endian
+    * "u16be": unsigned 16-bit big endian
+    * "u32le": unsigned 32-bit little endian
+    * "u32be": unsigned 32-bit big endian
 * start_address: Start address of the CRC calculation.
 * end_address: End address of the CRC calculation (not included).
 * polynomial: The polynomial for the CRC calculation.

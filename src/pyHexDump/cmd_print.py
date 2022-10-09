@@ -294,7 +294,8 @@ def _get_config_structure(config_dict, base_addr):
 
     return cfg_elements_dict
 
-def _get_config_elements(config_dict): #pylint: disable=too-many-branches
+#pylint: disable-next=too-many-branches
+def _get_config_elements(config_dict):
     """Get a configuration element object dictionary from the configuration
         item dictionary. If a configuration item doesn't contain all
         necessary parameters, it will be skipped.

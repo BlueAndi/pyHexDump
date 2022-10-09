@@ -127,14 +127,17 @@ def _read_u32le(addr):
 def _read_u32be(addr):
     return _read(addr, "u32be")
 
-def _calc_checksum(start_address, end_address, polynomial, bit_width, seed, \
-    reverse_input, reverse_output, final_xor): # pylint: disable=too-many-arguments
+# pylint: disable-next=too-many-arguments
+def _calc_checksum(binary_data_endianess, start_address, end_address, polynomial, bit_width, seed, \
+    reverse_input, reverse_output, final_xor):
 
     binary_data = globals()["BINARY_DATA"]
-    _,  result = calc_checksum(binary_data, start_address, end_address, polynomial, \
-        bit_width, seed, reverse_input, reverse_output, final_xor)
+    # pylint: disable-next=too-many-function-args
+    checksum = calc_checksum(binary_data, binary_data_endianess, start_address, end_address, \
+                             polynomial, bit_width, seed, reverse_input, reverse_output, \
+                             final_xor)
 
-    return result
+    return checksum
 
 def set_binary_data(binary_data):
     """Set the binary data to be used by all macros. This avoids to spawn the binary data

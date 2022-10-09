@@ -90,7 +90,6 @@ def test_calc_checksum():
     """
     binary_data = IntelHex()
     test_data = "12345678"
-    ret_status = Ret.ERROR
     crc = 0
 
     # Prepare binary data
@@ -98,6 +97,7 @@ def test_calc_checksum():
         binary_data[idx] = ord(test_data[idx])
 
     test_case_list = [{
+        "binary_data_endianess": "u8",
         "start_addr": 0,
         "end_addr": len(test_data),
         "polynomial": 0x07,
@@ -108,6 +108,7 @@ def test_calc_checksum():
         "final_xor": False,
         "expected": 0xC7
     }, {
+        "binary_data_endianess": "u8",
         "start_addr": 0,
         "end_addr": len(test_data),
         "polynomial": 0x07,
@@ -118,6 +119,7 @@ def test_calc_checksum():
         "final_xor": False,
         "expected": 0xE3
     }, {
+        "binary_data_endianess": "u8",
         "start_addr": 0,
         "end_addr": len(test_data),
         "polynomial": 0x07,
@@ -128,6 +130,7 @@ def test_calc_checksum():
         "final_xor": True, # Inverted
         "expected": 0x38
     }, {
+        "binary_data_endianess": "u8",
         "start_addr": 0,
         "end_addr": len(test_data),
         "polynomial": 0x04C11DB7,
@@ -140,13 +143,16 @@ def test_calc_checksum():
     }]
 
     for test_case in test_case_list:
-        ret_status, crc = calc_checksum(binary_data, test_case["start_addr"], \
-            test_case["end_addr"], test_case["polynomial"], test_case["bit_width"], \
-            test_case["seed"], test_case["reverse_in"], test_case["reverse_out"], \
-            test_case["final_xor"])
-
-        print(test_case)
-        assert ret_status == Ret.OK
+        # pylint: disable-next=too-many-function-args
+        crc = calc_checksum(binary_data, test_case["binary_data_endianess"], \
+                            test_case["start_addr"], \
+                            test_case["end_addr"], \
+                            test_case["polynomial"], \
+                            test_case["bit_width"], \
+                            test_case["seed"], \
+                            test_case["reverse_in"], \
+                            test_case["reverse_out"], \
+                            test_case["final_xor"])
 
         # String compare to see the hex value in the assertion output
         assert hex(crc) == hex(test_case["expected"])

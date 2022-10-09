@@ -34,6 +34,14 @@
     is_bmh_valid = "invalid"
     if bmhdid == 0xB359:
         is_bmh_valid = "OK"
+    
+    calculated_crc_bmhd = m_calc_checksum("u32le", 0xAF400000, 0xAF400008, 0x04c11db7, 32, 0xffffffff, True, True, True)
+    calculated_crc_bmhd_n = m_calc_checksum("u32le", 0xAF400000, 0xAF400008, 0x04c11db7, 32, 0xffffffff, True, True, False)
+
+    is_bmh_integrity_given = "Not OK"
+    if calculated_crc_bmhd == int(UCB00_CRCBMHD, 16):
+        if calculated_crc_bmhd_n == int(UCB00_CRCBMHD_N, 16):
+            is_bmh_integrity_given = "OK"
 %>
 <%text>### Boot Mode Index (BMI)</%text>
 * Mode selection by configuration pins: ${mode_by_hwcfg}
@@ -41,3 +49,6 @@
 
 <%text>### Boot Mode Header Identifier (BMHDID)</%text>
 Is boot mode header valid: ${is_bmh_valid}
+
+<%text>### Boot Mode Header CRC (CRCBMHD/CRCBMHD_N)</%text>
+Is boot mode header integrity given: ${is_bmh_integrity_given}

@@ -29,7 +29,7 @@ or from http://ross.net/crc/download/crc_v3.txt."""
 ################################################################################
 from pyHexDump.constants import Ret
 from pyHexDump.common import common_load_binary_file, common_print_value
-from pyHexDump.mem_access import MemAccessU8
+from pyHexDump.mem_access import mem_access_get_api_by_data_type
 
 # pylint: disable=duplicate-code
 
@@ -47,13 +47,15 @@ _CMD_NAME = "checksum"
 # Functions
 ################################################################################
 
-def calc_checksum(binary_data, start_address, end_address,\
-    polynomial, bit_width, seed, reverse_input, reverse_output, final_xor): #pylint: disable=too-many-arguments,too-many-locals
+#pylint: disable-next=too-many-arguments,too-many-locals
+def calc_checksum(binary_data, binary_data_endianess, start_address, end_address,\
+    polynomial, bit_width, seed, reverse_input, reverse_output, final_xor):
     """Calcuate the checksum for the given address in the binary_data and the
     given number of bytes.
 
     Args:
         binary_data (IntelHex): Binary data
+        binary_data_endianess (str): Binary data endianess and data bit width, e.g. u32le.
         start_address (int): Address where to start the calculation
         end_address (int):  Address where to end the calculation (not included)
         polynomial(int): Generator polynomial to use in the CRC calculation.
@@ -66,19 +68,12 @@ def calc_checksum(binary_data, start_address, end_address,\
         final_xor(bool): Xor the final result with the value 0xff before returning the soulution
 
     Returns:
-        Ret, checksum: Status information and checksum
+        checksum: Checksum
     """
-    ret_status = Ret.OK
-    mem_access = MemAccessU8()
+    mem_access = mem_access_get_api_by_data_type(binary_data_endianess)
     mem_access.set_binary_data(binary_data)
-
     offset = 0
     count = (end_address - start_address) / mem_access.get_size()
-
-    # Valid bit widths: 8, 16, 32
-    if bit_width not in (8, 16, 32):
-        ret_status = Ret.ERROR_CRC_CACLULATION
-        return ret_status, 0
 
     bit_width_mask = pow(2, bit_width) - 1
     msb_mask = 1 << bit_width
@@ -92,17 +87,21 @@ def calc_checksum(binary_data, start_address, end_address,\
 
         word = mem_access.get_value(start_address + offset)
 
-        if reverse_input is True:
-            tmp = f"{word:08b}"
-            word = int(tmp[::-1], 2)
+        for idx in range(mem_access.get_size()):
+            # MSB first
+            byte = word >> (8 * (mem_access.get_size() - idx - 1)) & 0xFF
 
-        crc = crc ^ (word << (bit_width - 8))
+            if reverse_input is True:
+                tmp = f"{byte:08b}"
+                byte = int(tmp[::-1], 2)
 
-        for _ in range(8):
-            crc = crc << 1
+            crc = crc ^ (byte << (bit_width - 8))
 
-            if (crc & msb_mask) != 0:
-                crc = crc ^ polynomial
+            for _ in range(8):
+                crc = crc << 1
+
+                if (crc & msb_mask) != 0:
+                    crc = crc ^ polynomial
 
         offset += mem_access.get_size()
 
@@ -115,15 +114,17 @@ def calc_checksum(binary_data, start_address, end_address,\
     if final_xor:
         crc = crc ^ bit_width_mask
 
-    return ret_status, crc
+    return crc
 
-def _cmd_checksum(binary_file, start_address, end_address, \
-    polynomial, bit_width, seed, reverse_input, reverse_output, final_xor): #pylint: disable=too-many-arguments
+#pylint: disable-next=too-many-arguments
+def _cmd_checksum(binary_file, binary_data_endianess, start_address, end_address, \
+    polynomial, bit_width, seed, reverse_input, reverse_output, final_xor):
     """Print the checksum for the given address and the given number of bytes
     to the console.
 
     Args:
         binary_file (str): File name of the binary file
+        binary_data_endianess (str): Binary data endianess and data bit width, e.g. u32le.
         start_address (int): Address where to start the calculation
         end_address (int):  Address where to end the calculation (not included)
         polynomial(int): Generator polynomial to use in the CRC calculation.
@@ -141,10 +142,11 @@ def _cmd_checksum(binary_file, start_address, end_address, \
     ret_status, intel_hex = common_load_binary_file(binary_file)
 
     if ret_status == Ret.OK:
-        ret_status, checksum = calc_checksum(intel_hex, start_address, end_address, \
-            polynomial, bit_width, seed, reverse_input, reverse_output, final_xor)
+        checksum = calc_checksum(intel_hex, binary_data_endianess,
+                                 start_address, end_address, polynomial, \
+                                 bit_width, seed, reverse_input, \
+                                 reverse_output, final_xor)
 
-    if ret_status == Ret.OK:
         value_width = bit_width // 4
         value_format = "{:0" + str(value_width) + "X}"
         common_print_value(checksum, value_format)
@@ -161,6 +163,7 @@ def _exec(args):
         Ret: If successful, it will return Ret.OK otherwise a corresponding error.
     """
     return _cmd_checksum(args.binaryFile[0], \
+                         args.binaryDataEndianess, \
                          args.saddr, args.eaddr,\
                          args.polynomial, args.bitWidth, \
                          args.seed, args.reverseIn, \
@@ -191,6 +194,15 @@ def cmd_checksum_register(arg_sub_parsers):
         type=str,
         nargs=1,
         help="Binary file in intel hex format (.hex) or binary (.bin)."
+    )
+    parser.add_argument(
+        "-bde",
+        "--binaryDataEndianess",
+        metavar="BINARY_DATA_ENDIANESS",
+        type=str,
+        required=False,
+        default="u8",
+        help="The binary data endianess.\nDefault: u8"
     )
     parser.add_argument(
         "-sa",
