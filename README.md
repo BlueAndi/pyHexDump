@@ -12,6 +12,7 @@ There are a lot of hex viewers already, but I was not able to find one which I c
 - [Examples](#examples)
   - [Dump data as 8-bit](#dump-data-as-8-bit)
   - [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
+  - [Calculate the checksum](#calc-checksum)
   - [Print configuration](#print-configuration)
   - [Print report with template](#print-report-with-template)
     - [Example](#example)
@@ -84,6 +85,15 @@ Result:
 800000F0: 00000000 FFFFFFFF FFFFFFFF FFFFFFFF
 80000100: F8000091 3048FFD9 0200000D 0FDCF402
 80000110: 00000000 00000000 00000000 00000000
+```
+
+## Calc checksum
+
+```$ pyHexDump checksum ./test/aurix_tc397.hex -sa 0x80000020 -ea 0x80000040```
+
+Result:
+```
+219725A2
 ```
 
 ## Print configuration
