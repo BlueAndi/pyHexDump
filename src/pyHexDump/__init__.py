@@ -22,4 +22,4 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from .version import __version__, __author__, __email__
+from .version import __version__, __author__, __email__, __github__, __license__
