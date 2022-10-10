@@ -96,6 +96,22 @@ Result:
 219725A2
 ```
 
+The following optional arguments are supported:
+* ```-bde``` The binary data endianess and bit width:
+    * "u8": unsigned 8-bit
+    * "u16le": unsigned 16-bit little endian
+    * "u16be": unsigned 16-bit big endian
+    * "u32le": unsigned 32-bit little endian
+    * "u32be": unsigned 32-bit big endian
+* ```-sa```: Start address of the CRC calculation.
+* ```-ea```: End address of the CRC calculation (not included).
+* ```-p```: The polynomial for the CRC calculation. Default: 0x04C11DB7
+* ```-bw```: The bit width, e.g. 8 in case of a CRC-8. Default: 32
+* ```-s```-: The seed value which to use. Default: 0
+* ```-ri```: If the input data shall be reflected, set to True. Default: False
+* ```-ro```: If the output data shall be reflected, set to True. Default: False
+* ```-fx```: If the output shall be have a final XOR with all bits set, set to True. Default: False
+
 ## Print configuration
 
 ```$ pyHexDump print ./test/aurix_tc397.hex ./test/config.json```
