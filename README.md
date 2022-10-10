@@ -12,6 +12,7 @@ There are a lot of hex viewers already, but I was not able to find one which I c
 - [Examples](#examples)
   - [Dump data as 8-bit](#dump-data-as-8-bit)
   - [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
+  - [Calculate the checksum](#calc-checksum)
   - [Print configuration](#print-configuration)
   - [Print report with template](#print-report-with-template)
     - [Example](#example)
@@ -85,6 +86,31 @@ Result:
 80000100: F8000091 3048FFD9 0200000D 0FDCF402
 80000110: 00000000 00000000 00000000 00000000
 ```
+
+## Calc checksum
+
+```$ pyHexDump checksum ./test/aurix_tc397.hex -sa 0x80000020 -ea 0x80000040```
+
+Result:
+```
+219725A2
+```
+
+The following optional arguments are supported:
+* ```-bde``` The binary data endianess and bit width:
+    * "u8": unsigned 8-bit
+    * "u16le": unsigned 16-bit little endian
+    * "u16be": unsigned 16-bit big endian
+    * "u32le": unsigned 32-bit little endian
+    * "u32be": unsigned 32-bit big endian
+* ```-sa```: Start address of the CRC calculation.
+* ```-ea```: End address of the CRC calculation (not included).
+* ```-p```: The polynomial for the CRC calculation. Default: 0x04C11DB7
+* ```-bw```: The bit width, e.g. 8 in case of a CRC-8. Default: 32
+* ```-s```-: The seed value which to use. Default: 0
+* ```-ri```: If the input data shall be reflected, set to True. Default: False
+* ```-ro```: If the output data shall be reflected, set to True. Default: False
+* ```-fx```: If the output shall be have a final XOR with all bits set, set to True. Default: False
 
 ## Print configuration
 
