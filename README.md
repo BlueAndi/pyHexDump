@@ -36,6 +36,10 @@ There are a lot of hex viewers already, but I was not able to find one which I c
   - [m\_read\_s32be()](#m_read_s32be)
   - [m\_read\_s64le()](#m_read_s64le)
   - [m\_read\_s64be()](#m_read_s64be)
+  - [m\_read\_float32le()](#m_read_float32le)
+  - [m\_read\_float32be()](#m_read_float32be)
+  - [m\_read\_float64le()](#m_read_float64le)
+  - [m\_read\_float64be()](#m_read_float64be)
   - [m\_calc\_checksum()](#m_calc_checksum)
   - [m\_swap\_bytes\_u16()](#m_swap_bytes_u16)
   - [m\_swap\_bytes\_u32()](#m_swap_bytes_u32)
@@ -137,6 +141,10 @@ The following datatypes are supported:
     * "s16be": signed 16-bit big endian
     * "s32le": signed 32-bit little endian
     * "s32be": signed 32-bit big endian
+    * "float32le": 32-bit floating point little endian
+    * "float32be": 32-bit floating point big endian
+    * "float64le": 64-bit floating point little endian
+    * "float64be": 64-bit floating point big endian
 
 ```$ pyHexDump print ./test/aurix_tc397.hex ./test/config.json```
 
@@ -566,6 +574,30 @@ Parameters:
 
 ## m_read_s64be()
 Read signed 64-bit big endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_float32le()
+Read floating point 32-bit little endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_float32be()
+Read floating point 32-bit big endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_float64le()
+Read floating point 64-bit little endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_float64be()
+Read floating point 64-bit big endian value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address

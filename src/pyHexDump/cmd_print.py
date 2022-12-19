@@ -30,6 +30,7 @@
 ################################################################################
 # Imports
 ################################################################################
+import struct
 from mako.template import Template
 from pyHexDump.constants import Ret
 from pyHexDump.common import \
@@ -215,6 +216,16 @@ class TmplElement():
             raise TypeError("Template element is not a list.")
         return self._value[idx]
 
+    def _value_to_hex(self, value, prefix):
+
+        if isinstance(self._value, int) is True:
+            if value < 0:
+                value &= (1 << self._bit_width) - 1
+        elif isinstance(self._value, float) is True:
+            value = struct.unpack('<I', struct.pack('<f', self._value))[0]
+
+        return f"{prefix}{value:0{self._bit_width // 4}X}"
+
     def hex(self, prefix="0x"):
         """Get the value in hex format.
 
@@ -227,12 +238,10 @@ class TmplElement():
         output = ""
 
         if isinstance(self._value, int) is True:
-            value = self._value
+            output = self._value_to_hex(self._value, prefix)
 
-            if value < 0:
-                value &= (1 << self._bit_width) - 1
-
-            output = f"{prefix}{value:0{self._bit_width // 4}X}"
+        elif isinstance(self._value, float) is True:
+            output = self._value_to_hex(self._value, prefix)
 
         elif isinstance(self._value, list) is True:
             output = "["
@@ -242,12 +251,12 @@ class TmplElement():
                 if idx > 0:
                     output += ", "
 
-                if value < 0:
-                    value &= (1 << self._bit_width) - 1
-
-                output += f"{prefix}{value:0{self._bit_width // 4}X}"
+                output += self._value_to_hex(value, prefix)
 
             output += "]"
+
+        else:
+            raise NotImplementedError(f"{type(self._value)} is not supported.")
 
         return output
 

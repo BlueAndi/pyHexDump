@@ -154,6 +154,18 @@ def _read_s64le(addr):
 def _read_s64be(addr):
     return _read(addr, "s64be")
 
+def _read_float32le(addr):
+    return _read(addr, "float32le")
+
+def _read_float32be(addr):
+    return _read(addr, "float32be")
+
+def _read_float64le(addr):
+    return _read(addr, "float64le")
+
+def _read_float64be(addr):
+    return _read(addr, "float64be")
+
 # pylint: disable-next=too-many-arguments
 def _calc_checksum(binary_data_endianess, start_address, end_address, polynomial, bit_width, seed, \
     reverse_input, reverse_output, final_xor):
@@ -201,6 +213,11 @@ def get_macro_dict():
     macro_dict["m_read_s32be"] = _read_s32be
     macro_dict["m_read_s64le"] = _read_s64le
     macro_dict["m_read_s64be"] = _read_s64be
+
+    macro_dict["m_read_float32le"] = _read_float32le
+    macro_dict["m_read_float32be"] = _read_float32be
+    macro_dict["m_read_float64le"] = _read_float64le
+    macro_dict["m_read_float64be"] = _read_float64be
 
     macro_dict["m_calc_checksum"] = _calc_checksum
     macro_dict["m_swap_bytes_u16"] = _u16_swap_bytes # Used for LE/BE conversion

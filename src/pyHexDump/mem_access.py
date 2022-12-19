@@ -26,6 +26,7 @@
 # Imports
 ################################################################################
 from abc import ABC, abstractmethod
+import struct
 
 ################################################################################
 # Variables
@@ -98,7 +99,7 @@ class MemAccessInteger(IMemAccess):
         for integer values.
 
     Args:
-        ABC (obj): Abstract base class
+        IMemAccess (obj): Abstract base class
     """
     def __init__(self, binary_data, bit_width, is_little_endian, is_unsigned):
         super().__init__()
@@ -196,6 +197,86 @@ class MemAccessInteger(IMemAccess):
 
         return value
 
+class MemAccessFloat(IMemAccess):
+    """Base class which realizes the abstract memory access interfaces
+        for float values.
+
+    Args:
+        IMemAccess (obj): Abstract base class
+    """
+    def __init__(self, binary_data, bit_width, is_little_endian):
+        super().__init__()
+        self._binary_data = binary_data
+        self._size_byte = bit_width // 8
+        self._is_little_endian = is_little_endian
+
+    def set_binary_data(self, binary_data):
+        """Set binary data which to access.
+
+        Args:
+            binary_data (IntelHex): Binary data
+        """
+        self._binary_data = binary_data
+
+    def _set_endianess(self, is_little_endian):
+        """Set endianess of data which to access.
+
+        Args:
+            is_little_endian (bool): True for little endian, otherwise big endian.
+        """
+        self._is_little_endian = is_little_endian
+
+    def get_value(self, addr):
+        """Get value from the binary data at the given address.
+
+        Args:
+            addr (int): Address of the value
+
+        Returns:
+            int: Value
+        """
+        value = 0
+        if self._is_little_endian is True:
+            value = self._get_value_uxle(self._binary_data, addr, self._size_byte)
+        else:
+            value = self._get_value_uxbe(self._binary_data, addr, self._size_byte)
+
+        return struct.unpack('!f', value.to_bytes(self._size_byte, byteorder="big"))[0]
+
+    def get_size(self):
+        """Get the data type size in byte.
+
+        Returns:
+            int: Data type size in byte
+        """
+        return self._size_byte
+
+    def _get_value_uxle(self, intel_hex, addr, size):
+        value = 0
+
+        if intel_hex is not None:
+            if size == 1:
+                value = intel_hex[addr]
+            elif size > 1:
+                for offset in range(size - 1, -1, -1):
+                    value <<= 8
+                    value += intel_hex[addr + offset]
+
+        return value
+
+    def _get_value_uxbe(self, intel_hex, addr, size):
+        value = 0
+
+        if intel_hex is not None:
+            if size == 1:
+                value = intel_hex[addr]
+            elif size > 1:
+                for offset in range(0, size, 1):
+                    value <<= 8
+                    value += intel_hex[addr + offset]
+
+        return value
+
 ################################################################################
 # Functions
 ################################################################################
@@ -223,7 +304,11 @@ def mem_access_get_api_by_data_type(data_type):
         "u64le": MemAccessInteger(None, 64, True, True),
         "u64be": MemAccessInteger(None, 64, False, True),
         "s64le": MemAccessInteger(None, 64, True, False),
-        "s64be": MemAccessInteger(None, 64, False, False)
+        "s64be": MemAccessInteger(None, 64, False, False),
+        "float32le": MemAccessFloat(None, 32, True),
+        "float32be": MemAccessFloat(None, 32, False),
+        "float64le": MemAccessFloat(None, 64, True),
+        "float64be": MemAccessFloat(None, 64, False)
     }
 
     return mem_access_lookup.get(data_type, None)
