@@ -12,7 +12,7 @@ There are a lot of hex viewers already, but I was not able to find one which I c
 - [Examples](#examples)
   - [Dump data as 8-bit](#dump-data-as-8-bit)
   - [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
-  - [Calculate the checksum](#calc-checksum)
+  - [Calculate checksum](#calculate-checksum)
   - [Print configuration](#print-configuration)
   - [Print report with template](#print-report-with-template)
     - [Example](#example)
@@ -21,16 +21,25 @@ There are a lot of hex viewers already, but I was not able to find one which I c
   - [Define structure as datatype](#define-structure-as-datatype)
     - [Example](#example-2)
 - [Macros](#macros)
-  - [macros_compare_values()](#macros_compare_values)
-  - [m_read_u8()](#m_read_u8)
-  - [m_read_u16le()](#m_read_u16le)
-  - [m_read_u16be()](#m_read_u16be)
-  - [m_read_u32le()](#m_read_u32le)
-  - [m_read_u32be()](#m_read_u32be)
-  - [m_calc_checksum()](#m_calc_checksum)
-  - [m_swap_bytes_u16()](#m_swap_bytes_u16)
-  - [m_swap_bytes_u32()](#m_swap_bytes_u32)
-  - [m_swap_words_u32()](#m_swap_words_u32)
+  - [macros\_compare\_values()](#macros_compare_values)
+  - [m\_read\_u8()](#m_read_u8)
+  - [m\_read\_u16le()](#m_read_u16le)
+  - [m\_read\_u16be()](#m_read_u16be)
+  - [m\_read\_u32le()](#m_read_u32le)
+  - [m\_read\_u32be()](#m_read_u32be)
+  - [m\_read\_u64le()](#m_read_u64le)
+  - [m\_read\_u64be()](#m_read_u64be)
+  - [m\_read\_s8()](#m_read_s8)
+  - [m\_read\_s16le()](#m_read_s16le)
+  - [m\_read\_s16be()](#m_read_s16be)
+  - [m\_read\_s32le()](#m_read_s32le)
+  - [m\_read\_s32be()](#m_read_s32be)
+  - [m\_read\_s64le()](#m_read_s64le)
+  - [m\_read\_s64be()](#m_read_s64be)
+  - [m\_calc\_checksum()](#m_calc_checksum)
+  - [m\_swap\_bytes\_u16()](#m_swap_bytes_u16)
+  - [m\_swap\_bytes\_u32()](#m_swap_bytes_u32)
+  - [m\_swap\_words\_u32()](#m_swap_words_u32)
 - [Issues, Ideas And Bugs](#issues-ideas-and-bugs)
 - [License](#license)
 - [Contribution](#contribution)
@@ -87,7 +96,8 @@ Result:
 80000110: 00000000 00000000 00000000 00000000
 ```
 
-## Calc checksum
+## Calculate checksum
+Calculate a CRC checksum over a specific range.
 
 ```$ pyHexDump checksum ./test/aurix_tc397.hex -sa 0x80000020 -ea 0x80000040```
 
@@ -113,6 +123,20 @@ The following optional arguments are supported:
 * ```-fx```: If the output shall be have a final XOR with all bits set, set to True. Default: False
 
 ## Print configuration
+Elements with their name, address, datatype and count can be configured separately.
+By using the ```print``` command all of the values in the configuration are printed to the CLI.
+
+The following datatypes are supported:
+    * "u8": unsigned 8-bit
+    * "u16le": unsigned 16-bit little endian
+    * "u16be": unsigned 16-bit big endian
+    * "u32le": unsigned 32-bit little endian
+    * "u32be": unsigned 32-bit big endian
+    * "s8": signed 8-bit
+    * "s16le": signed 16-bit little endian
+    * "s16be": signed 16-bit big endian
+    * "s32le": signed 32-bit little endian
+    * "s32be": signed 32-bit big endian
 
 ```$ pyHexDump print ./test/aurix_tc397.hex ./test/config.json```
 
@@ -492,7 +516,62 @@ Read unsigned 32-bit big endian value from binary data at given address and retu
 Parameters:
 * addr: Address
 
+## m_read_u64le()
+Read unsigned 64-bit little endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_u64be()
+Read unsigned 64-bit big endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_s8()
+Read signed 8-bit value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_s16le()
+Read signed 16-bit little endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_s16be()
+Read signed 16-bit big endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_s32le()
+Read signed 32-bit little endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_s32be()
+Read signed 32-bit big endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_s64le()
+Read signed 64-bit little endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
+## m_read_s64be()
+Read signed 64-bit big endian value from binary data at given address and returns it.
+
+Parameters:
+* addr: Address
+
 ## m_calc_checksum()
+Calculate the CRC checksum.
 
 Parameters:
 * binary_data_endianess: The binary data endianess and bit width:

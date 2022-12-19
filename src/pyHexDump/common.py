@@ -138,7 +138,7 @@ def common_print_value(value, value_format="{:02X}"):
         for idx, element in enumerate(value):
             if idx > 0:
                 print(" ", end="")
-            common_print_address(element, value_format)
+            print(value_format.format(element), end="")
     else:
         # Print the single value
         print(value_format.format(value), end="")

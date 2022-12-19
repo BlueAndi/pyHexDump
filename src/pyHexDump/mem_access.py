@@ -35,7 +35,7 @@ from abc import ABC, abstractmethod
 # Classes
 ################################################################################
 
-class MemAccess(ABC):
+class IMemAccess(ABC):
     """Abstract memory access
 
     Args:
@@ -48,6 +48,21 @@ class MemAccess(ABC):
 
         Args:
             binary_data (IntelHex): Binary data
+
+        Raises:
+            NotImplementedError: Subclass implementation is missing.
+        """
+        raise NotImplementedError("Subclass implementation missing.")
+
+    @abstractmethod
+    def _set_endianess(self, is_little_endian):
+        """Set endianess of data which to access.
+
+        Args:
+            is_little_endian (bool): True for little endian, otherwise big endian.
+
+        Raises:
+            NotImplementedError: Subclass implementation is missing.
         """
         raise NotImplementedError("Subclass implementation missing.")
 
@@ -58,6 +73,9 @@ class MemAccess(ABC):
         Args:
             addr (int): Address of the value
 
+        Raises:
+            NotImplementedError: Subclass implementation is missing.
+
         Returns:
             int: Value
         """
@@ -67,10 +85,74 @@ class MemAccess(ABC):
     def get_size(self):
         """Get the data type size in byte.
 
+        Raises:
+            NotImplementedError: Subclass implementation is missing.
+
         Returns:
             int: Data type size in byte
         """
         raise NotImplementedError("Subclass implementation missing.")
+
+class MemAccessInteger(IMemAccess):
+    """Base class which realizes the abstract memory access interfaces
+        for integer values.
+
+    Args:
+        ABC (obj): Abstract base class
+    """
+    def __init__(self, binary_data, bit_width, is_little_endian, is_unsigned):
+        super().__init__()
+        self._binary_data = binary_data
+        self._size_byte = bit_width // 8
+        self._is_little_endian = is_little_endian
+        self._is_unsigned = is_unsigned
+
+    def set_binary_data(self, binary_data):
+        """Set binary data which to access.
+
+        Args:
+            binary_data (IntelHex): Binary data
+        """
+        self._binary_data = binary_data
+
+    def _set_endianess(self, is_little_endian):
+        """Set endianess of data which to access.
+
+        Args:
+            is_little_endian (bool): True for little endian, otherwise big endian.
+        """
+        self._is_little_endian = is_little_endian
+
+    def get_value(self, addr):
+        """Get value from the binary data at the given address.
+
+        Args:
+            addr (int): Address of the value
+
+        Returns:
+            int: Value
+        """
+        value = 0
+        if self._is_little_endian is True:
+            if self._is_unsigned is True:
+                value = self._get_value_uxle(self._binary_data, addr, self._size_byte)
+            else:
+                value = self._get_value_sxle(self._binary_data, addr, self._size_byte)
+        else:
+            if self._is_unsigned is True:
+                value = self._get_value_uxbe(self._binary_data, addr, self._size_byte)
+            else:
+                value = self._get_value_sxbe(self._binary_data, addr, self._size_byte)
+
+        return value
+
+    def get_size(self):
+        """Get the data type size in byte.
+
+        Returns:
+            int: Data type size in byte
+        """
+        return self._size_byte
 
     def _get_value_uxle(self, intel_hex, addr, size):
         value = 0
@@ -98,190 +180,21 @@ class MemAccess(ABC):
 
         return value
 
-class MemAccessU8(MemAccess):
-    """Unsigned 8 bit element.
+    def _get_value_sxle(self, intel_hex, addr, size):
+        value = self._get_value_uxle(intel_hex, addr, size)
+        bit_width = size * 8
+        if value & (1 << (bit_width - 1)):
+            value -= 1 << bit_width
 
-    Args:
-        MemAccess (obj): Parent class
-    """
-    def __init__(self, binary_data = None) -> None:
-        super().__init__()
-        self._binary_data = binary_data
+        return value
 
-    def set_binary_data(self, binary_data):
-        """Set binary data which to access.
+    def _get_value_sxbe(self, intel_hex, addr, size):
+        value = self._get_value_uxbe(intel_hex, addr, size)
+        bit_width = size * 8
+        if value & (1 << (bit_width - 1)):
+            value -= 1 << bit_width
 
-        Args:
-            binary_data (IntelHex): Binary data
-        """
-        self._binary_data = binary_data
-
-    def get_value(self, addr):
-        """Get value from the binary data at the given address.
-
-        Args:
-            addr (int): Address of the value
-
-        Returns:
-            int: Value
-        """
-        return self._get_value_uxle(self._binary_data, addr, self.get_size())
-
-    def get_size(self):
-        """Get the data type size in byte.
-
-        Returns:
-            int: Data type size in byte
-        """
-        return 1
-
-class MemAccessU16LE(MemAccess):
-    """Unsigned 16 bit little endian element.
-
-    Args:
-        MemAccess (obj): Parent class
-    """
-    def __init__(self, binary_data = None) -> None:
-        super().__init__()
-        self._binary_data = binary_data
-
-    def set_binary_data(self, binary_data):
-        """Set binary data which to access.
-
-        Args:
-            binary_data (IntelHex): Binary data
-        """
-        self._binary_data = binary_data
-
-    def get_value(self, addr):
-        """Get value from the binary data at the given address.
-
-        Args:
-            addr (int): Address of the value
-
-        Returns:
-            int: Value
-        """
-        return self._get_value_uxle(self._binary_data, addr, self.get_size())
-
-    def get_size(self):
-        """Get the data type size in byte.
-
-        Returns:
-            int: Data type size in byte
-        """
-        return 2
-
-class MemAccessU16BE(MemAccess):
-    """Unsigned 16 bit big endian element.
-
-    Args:
-        MemAccess (obj): Parent class
-    """
-    def __init__(self, binary_data = None) -> None:
-        super().__init__()
-        self._binary_data = binary_data
-
-    def set_binary_data(self, binary_data):
-        """Set binary data which to access.
-
-        Args:
-            binary_data (IntelHex): Binary data
-        """
-        self._binary_data = binary_data
-
-    def get_value(self, addr):
-        """Get value from the binary data at the given address.
-
-        Args:
-            addr (int): Address of the value
-
-        Returns:
-            int: Value
-        """
-        return self._get_value_uxbe(self._binary_data, addr, self.get_size())
-
-    def get_size(self):
-        """Get the data type size in byte.
-
-        Returns:
-            int: Data type size in byte
-        """
-        return 2
-
-class MemAccessU32LE(MemAccess):
-    """Unsigned 32 bit little endian element.
-
-    Args:
-        MemAccess (obj): Parent class
-    """
-    def __init__(self, binary_data = None) -> None:
-        super().__init__()
-        self._binary_data = binary_data
-
-    def set_binary_data(self, binary_data):
-        """Set binary data which to access.
-
-        Args:
-            binary_data (IntelHex): Binary data
-        """
-        self._binary_data = binary_data
-
-    def get_value(self, addr):
-        """Get value from the binary data at the given address.
-
-        Args:
-            addr (int): Address of the value
-
-        Returns:
-            int: Value
-        """
-        return self._get_value_uxle(self._binary_data, addr, self.get_size())
-
-    def get_size(self):
-        """Get the data type size in byte.
-
-        Returns:
-            int: Data type size in byte
-        """
-        return 4
-
-class MemAccessU32BE(MemAccess):
-    """Unsigned 32 bit big endian element.
-
-    Args:
-        MemAccess (obj): Parent class
-    """
-    def __init__(self, binary_data = None) -> None:
-        super().__init__()
-        self._binary_data = binary_data
-
-    def set_binary_data(self, binary_data):
-        """Set binary data which to access.
-
-        Args:
-            binary_data (IntelHex): Binary data
-        """
-        self._binary_data = binary_data
-
-    def get_value(self, addr):
-        """Get value from the binary data at the given address.
-
-        Args:
-            addr (int): Address of the value
-
-        Returns:
-            int: Value
-        """
-        return self._get_value_uxbe(self._binary_data, addr, self.get_size())
-
-    def get_size(self):
-        """Get the data type size in byte.
-
-        Returns:
-            int: Data type size in byte
-        """
-        return 4
+        return value
 
 ################################################################################
 # Functions
@@ -299,15 +212,33 @@ def mem_access_get_api_by_data_type(data_type):
     mem_access = None
 
     if data_type == "u8":
-        mem_access = MemAccessU8()
+        mem_access = MemAccessInteger(None, 8, True, True)
+    elif data_type == "s8":
+        mem_access = MemAccessInteger(None, 8, True, False)
     elif data_type == "u16le":
-        mem_access = MemAccessU16LE()
+        mem_access = MemAccessInteger(None, 16, True, True)
     elif data_type == "u16be":
-        mem_access = MemAccessU16BE()
+        mem_access = MemAccessInteger(None, 16, False, True)
+    elif data_type == "s16le":
+        mem_access = MemAccessInteger(None, 16, True, False)
+    elif data_type == "s16be":
+        mem_access = MemAccessInteger(None, 16, False, False)
     elif data_type == "u32le":
-        mem_access = MemAccessU32LE()
+        mem_access = MemAccessInteger(None, 32, True, True)
     elif data_type == "u32be":
-        mem_access = MemAccessU32BE()
+        mem_access = MemAccessInteger(None, 32, False, True)
+    elif data_type == "s32le":
+        mem_access = MemAccessInteger(None, 32, True, False)
+    elif data_type == "s32be":
+        mem_access = MemAccessInteger(None, 32, False, False)
+    elif data_type == "u64le":
+        mem_access = MemAccessInteger(None, 64, True, True)
+    elif data_type == "u64be":
+        mem_access = MemAccessInteger(None, 64, False, True)
+    elif data_type == "s64le":
+        mem_access = MemAccessInteger(None, 64, True, False)
+    elif data_type == "s64be":
+        mem_access = MemAccessInteger(None, 64, False, False)
 
     return mem_access
 

@@ -185,7 +185,7 @@ def cmd_checksum_register(arg_sub_parsers):
 
     parser = arg_sub_parsers.add_parser(
         "checksum",
-        help="Calculate the CRC32 checksum for the specified data."
+        help="Calculate the CRCx checksum for the specified data."
     )
 
     parser.add_argument(
@@ -199,7 +199,7 @@ def cmd_checksum_register(arg_sub_parsers):
         "-bde",
         "--binaryDataEndianess",
         metavar="BINARY_DATA_ENDIANESS",
-        type=str,
+        choices=["u8", "u16le", "u16be", "u32le", "u32be", "u64le", "u64be"],
         required=False,
         default="u8",
         help="The binary data endianess.\nDefault: u8"

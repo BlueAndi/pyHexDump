@@ -30,7 +30,7 @@
 # Variables
 ################################################################################
 
-__version__ = "v0.1.0"
+__version__ = "v0.2.0"
 __author__ = "Andreas Merkle"
 __email__ = "web@blue-andi.de"
 __github__ = "https://github.com/BlueAndi/pyHexDump"

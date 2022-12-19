@@ -127,10 +127,11 @@ def cmd_dump_register(arg_sub_parsers):
         "-dt",
         "--dataType",
         metavar="DATA_TYPE",
+        choices=["u8", "u16le", "u16be", "u32le", "u32be", "u64le", "u64be"],
         type=str,
         required=False,
         default="u8",
-        help="The type of a single data element (u8, u16le, u16be, u32le, u32be). Default: u8"
+        help="The type of a single data element. Default: u8"
     )
 
     return cmd_par_dict

@@ -227,13 +227,26 @@ class TmplElement():
         output = ""
 
         if isinstance(self._value, int) is True:
-            output = f"{prefix}{self._value:0{self._bit_width // 4}X}"
+            value = self._value
+
+            if value < 0:
+                value &= (1 << self._bit_width) - 1
+
+            output = f"{prefix}{value:0{self._bit_width // 4}X}"
+
         elif isinstance(self._value, list) is True:
             output = "["
+
             for idx, value in enumerate(self._value):
+
                 if idx > 0:
                     output += ", "
+
+                if value < 0:
+                    value &= (1 << self._bit_width) - 1
+
                 output += f"{prefix}{value:0{self._bit_width // 4}X}"
+
             output += "]"
 
         return output

@@ -127,6 +127,33 @@ def _read_u32le(addr):
 def _read_u32be(addr):
     return _read(addr, "u32be")
 
+def _read_u64le(addr):
+    return _read(addr, "u64le")
+
+def _read_u64be(addr):
+    return _read(addr, "u64be")
+
+def _read_s8(addr):
+    return _read(addr, "s8")
+
+def _read_s16le(addr):
+    return _read(addr, "s16le")
+
+def _read_s16be(addr):
+    return _read(addr, "s16be")
+
+def _read_s32le(addr):
+    return _read(addr, "s32le")
+
+def _read_s32be(addr):
+    return _read(addr, "s32be")
+
+def _read_s64le(addr):
+    return _read(addr, "s64le")
+
+def _read_s64be(addr):
+    return _read(addr, "s64be")
+
 # pylint: disable-next=too-many-arguments
 def _calc_checksum(binary_data_endianess, start_address, end_address, polynomial, bit_width, seed, \
     reverse_input, reverse_output, final_xor):
@@ -158,11 +185,23 @@ def get_macro_dict():
     macro_dict = {}
 
     macro_dict["macros_compare_values"] = _compare_values
+
     macro_dict["m_read_u8"] = _read_u8
     macro_dict["m_read_u16le"] = _read_u16le
     macro_dict["m_read_u16be"] = _read_u16be
     macro_dict["m_read_u32le"] = _read_u32le
     macro_dict["m_read_u32be"] = _read_u32be
+    macro_dict["m_read_u64le"] = _read_u64le
+    macro_dict["m_read_u64be"] = _read_u64be
+
+    macro_dict["m_read_s8"] = _read_s8
+    macro_dict["m_read_s16le"] = _read_s16le
+    macro_dict["m_read_s16be"] = _read_s16be
+    macro_dict["m_read_s32le"] = _read_s32le
+    macro_dict["m_read_s32be"] = _read_s32be
+    macro_dict["m_read_s64le"] = _read_s64le
+    macro_dict["m_read_s64be"] = _read_s64be
+
     macro_dict["m_calc_checksum"] = _calc_checksum
     macro_dict["m_swap_bytes_u16"] = _u16_swap_bytes # Used for LE/BE conversion
     macro_dict["m_swap_bytes_u32"] = _u32_swap_bytes # Used for LE/BE conversion
