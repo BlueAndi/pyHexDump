@@ -209,38 +209,24 @@ def mem_access_get_api_by_data_type(data_type):
     Returns:
         MemAccess: Memory access API; may be None in case there is no available
     """
-    mem_access = None
+    mem_access_lookup = {
+        "u8": MemAccessInteger(None, 8, True, True),
+        "s8": MemAccessInteger(None, 8, True, False),
+        "u16le": MemAccessInteger(None, 16, True, True),
+        "u16be": MemAccessInteger(None, 16, False, True),
+        "s16le": MemAccessInteger(None, 16, True, False),
+        "s16be": MemAccessInteger(None, 16, False, False),
+        "u32le": MemAccessInteger(None, 32, True, True),
+        "u32be": MemAccessInteger(None, 32, False, True),
+        "s32le": MemAccessInteger(None, 32, True, False),
+        "s32be": MemAccessInteger(None, 32, False, False),
+        "u64le": MemAccessInteger(None, 64, True, True),
+        "u64be": MemAccessInteger(None, 64, False, True),
+        "s64le": MemAccessInteger(None, 64, True, False),
+        "s64be": MemAccessInteger(None, 64, False, False)
+    }
 
-    if data_type == "u8":
-        mem_access = MemAccessInteger(None, 8, True, True)
-    elif data_type == "s8":
-        mem_access = MemAccessInteger(None, 8, True, False)
-    elif data_type == "u16le":
-        mem_access = MemAccessInteger(None, 16, True, True)
-    elif data_type == "u16be":
-        mem_access = MemAccessInteger(None, 16, False, True)
-    elif data_type == "s16le":
-        mem_access = MemAccessInteger(None, 16, True, False)
-    elif data_type == "s16be":
-        mem_access = MemAccessInteger(None, 16, False, False)
-    elif data_type == "u32le":
-        mem_access = MemAccessInteger(None, 32, True, True)
-    elif data_type == "u32be":
-        mem_access = MemAccessInteger(None, 32, False, True)
-    elif data_type == "s32le":
-        mem_access = MemAccessInteger(None, 32, True, False)
-    elif data_type == "s32be":
-        mem_access = MemAccessInteger(None, 32, False, False)
-    elif data_type == "u64le":
-        mem_access = MemAccessInteger(None, 64, True, True)
-    elif data_type == "u64be":
-        mem_access = MemAccessInteger(None, 64, False, True)
-    elif data_type == "s64le":
-        mem_access = MemAccessInteger(None, 64, True, False)
-    elif data_type == "s64be":
-        mem_access = MemAccessInteger(None, 64, False, False)
-
-    return mem_access
+    return mem_access_lookup.get(data_type, None)
 
 ################################################################################
 # Main
