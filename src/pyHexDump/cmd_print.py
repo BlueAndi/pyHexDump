@@ -617,7 +617,7 @@ def _cmd_print(binary_file, config_file, template_file, show_only_in_hex):
             # configuration will be printed. Otherwise the template is used to
             # print a corresponding report.
             if template_file is None:
-                ret_status = _print_config_elements(binary_data, tmpl_element_dict, show_only_in_hex)
+                ret_status = _print_config_elements(binary_data, tmpl_element_dict, show_only_in_hex) # pylint: disable=line-too-long
             else:
                 ret_status, template = common_load_template_file(template_file)
 
