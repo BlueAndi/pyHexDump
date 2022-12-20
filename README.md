@@ -66,7 +66,7 @@ $ pyHexDump --help
 
 ## Dump data as 8-bit
 
-```$ pyHexDump dump ./test/aurix_tc397.hex -a 0x80000020```
+```$ pyHexDump dump ./examples/aurix_tc397.hex -a 0x80000020```
 
 Result:
 ```
@@ -78,7 +78,7 @@ Result:
 
 ## Dump data as 32-bit little endian
 
-```$ pyHexDump dump ./test/aurix_tc397.hex -a 0x80000020 -dt u32le```
+```$ pyHexDump dump ./examples/aurix_tc397.hex -a 0x80000020 -dt u32le```
 
 Result:
 ```
@@ -103,7 +103,7 @@ Result:
 ## Calculate checksum
 Calculate a CRC checksum over a specific range.
 
-```$ pyHexDump checksum ./test/aurix_tc397.hex -sa 0x80000020 -ea 0x80000040```
+```$ pyHexDump checksum ./examples/aurix_tc397.hex -sa 0x80000020 -ea 0x80000040```
 
 Result:
 ```
@@ -146,7 +146,7 @@ The following datatypes are supported:
     * "float64le": 64-bit floating point little endian
     * "float64be": 64-bit floating point big endian
 
-```$ pyHexDump print ./test/aurix_tc397.hex ./test/config.json```
+```$ pyHexDump print ./examples/aurix_tc397.hex ./examples/config.json```
 
 with ```config.json``` like
 ```json
@@ -205,7 +205,7 @@ A configuration element can be accessed in the template via:
 * ```${<config-element-name>.addr()}```: Prints the address in decimal.
 
 ### Example
-```$ pyHexDump print ./test/aurix_tc397.hex ./test/config.json --template ./test/markdown.mao```
+```$ pyHexDump print ./examples/aurix_tc397.hex ./examples/config.json --template ./examples/markdown.mao```
 
 with ```config.json``` like
 ```json
