@@ -496,13 +496,14 @@ def _get_config_elements(config_dict):
 
     return cfg_elements_dict
 
-def _print_config_elements(binary_data, tmpl_element_dict, namespace=""):
+def _print_config_elements(binary_data, tmpl_element_dict, show_only_in_hex, namespace=""):
     """Print a single configuration element with its value, read from the
         binary data.
 
     Args:
         binary_data (IntelHex): Binary data
         tmpl_element_dict (dict): Template element objects
+        show_only_in_hex (bool): Show values only in hex format. Only applied without template.
         namespace (str, optional): Namespace which to use. Defaults to "".
 
     Returns:
@@ -515,9 +516,12 @@ def _print_config_elements(binary_data, tmpl_element_dict, namespace=""):
         # The dictionary of elements may contain further dictionaries which
         # corresponds to a structure of elements.
         if isinstance(tmpl_element, dict):
-            _print_config_elements(binary_data, tmpl_element, namespace + key + ".")
+            _print_config_elements(binary_data, tmpl_element, show_only_in_hex, namespace + key + ".") # pylint: disable=line-too-long
         else:
-            print(f"{namespace}{key} @ {tmpl_element.addr():08X}: {tmpl_element.hex()}")
+            if show_only_in_hex is True:
+                print(f"{namespace}{key} @ {tmpl_element.addr():08X}: {tmpl_element.hex()}")
+            else:
+                print(f"{namespace}{key} @ {tmpl_element.addr():08X}: {tmpl_element}")
 
     return ret_status
 
@@ -583,7 +587,7 @@ def _print_template(binary_data, tmpl_element_dict, template):
 
     return ret_status
 
-def _cmd_print(binary_file, config_file, template_file):
+def _cmd_print(binary_file, config_file, template_file, show_only_in_hex):
     """Print configuration element values. The configuration file contains the
         elements with its meta data. A template may be used to format the
         output. If no template is available, the configuration elements will
@@ -593,6 +597,7 @@ def _cmd_print(binary_file, config_file, template_file):
         binary_file (str): File name of the binary file
         config_file (str): File name of the configuration file
         template_file (str): File name of the template file
+        show_only_in_hex (bool): Show values only in hex format. Only applied without template.
 
     Returns:
         Ret: If successful, it will return Ret.OK otherwise a error code.
@@ -612,7 +617,7 @@ def _cmd_print(binary_file, config_file, template_file):
             # configuration will be printed. Otherwise the template is used to
             # print a corresponding report.
             if template_file is None:
-                ret_status = _print_config_elements(binary_data, tmpl_element_dict)
+                ret_status = _print_config_elements(binary_data, tmpl_element_dict, show_only_in_hex)
             else:
                 ret_status, template = common_load_template_file(template_file)
 
@@ -631,7 +636,7 @@ def _exec(args):
     Returns:
         Ret: If successful, it will return Ret.OK otherwise a corresponding error.
     """
-    return _cmd_print(args.binaryFile[0], args.configFile[0], args.templateFile)
+    return _cmd_print(args.binaryFile[0], args.configFile[0], args.templateFile, args.onlyInHex)
 
 def cmd_print_register(arg_sub_parsers):
     """Register the command specific CLI argument parser and get command
@@ -676,6 +681,15 @@ def cmd_print_register(arg_sub_parsers):
         required=False,
         default=None,
         help="Template file in ASCII format."
+    )
+
+    parser.add_argument(
+        "-oih",
+        "--onlyInHex",
+        action="store_true",
+        required=False,
+        default=False,
+        help="Show values in hex format. Only applied valid without template."
     )
 
     return cmd_par_dict

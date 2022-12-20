@@ -147,7 +147,7 @@ The following datatypes are supported:
     * "float64le": 64-bit floating point little endian
     * "float64be": 64-bit floating point big endian
 
-```$ pyHexDump print ./examples/aurix_tc397.hex ./examples/config.json```
+```$ pyHexDump print ./examples/aurix_tc397.hex ./examples/config.json --onlyInHex```
 
 with ```config.json``` like
 ```json
