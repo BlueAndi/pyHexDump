@@ -218,15 +218,15 @@ class TmplElement():
 
     def _value_to_hex(self, value, prefix):
 
-        if isinstance(self._value, int) is True:
+        if isinstance(value, int) is True:
             if value < 0:
                 value &= (1 << self._bit_width) - 1
 
-        elif isinstance(self._value, float) is True:
+        elif isinstance(value, float) is True:
             if self._bit_width == 32:
-                value = struct.unpack('<I', struct.pack('<f', self._value))[0]
+                value = struct.unpack('<I', struct.pack('<f', value))[0]
             elif self._bit_width == 64:
-                value = struct.unpack('<Q', struct.pack('<d', self._value))[0]
+                value = struct.unpack('<Q', struct.pack('<d', value))[0]
             else:
                 raise NotImplementedError(f"Unsupported bit width of {self._bit_width} for float")
 
