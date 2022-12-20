@@ -241,7 +241,14 @@ class MemAccessFloat(IMemAccess):
         else:
             value = self._get_value_uxbe(self._binary_data, addr, self._size_byte)
 
-        return struct.unpack('!f', value.to_bytes(self._size_byte, byteorder="big"))[0]
+        if self._size_byte == 4:
+            value = struct.unpack('!f', value.to_bytes(self._size_byte, byteorder="big"))[0]
+        elif self._size_byte == 8:
+            value = struct.unpack('!d', value.to_bytes(self._size_byte, byteorder="big"))[0]
+        else:
+            raise NotImplementedError(f"Unsupported bit width of {self._size_byte * 8} for float")
+
+        return value
 
     def get_size(self):
         """Get the data type size in byte.

@@ -221,8 +221,14 @@ class TmplElement():
         if isinstance(self._value, int) is True:
             if value < 0:
                 value &= (1 << self._bit_width) - 1
+
         elif isinstance(self._value, float) is True:
-            value = struct.unpack('<I', struct.pack('<f', self._value))[0]
+            if self._bit_width == 32:
+                value = struct.unpack('<I', struct.pack('<f', self._value))[0]
+            elif self._bit_width == 64:
+                value = struct.unpack('<Q', struct.pack('<d', self._value))[0]
+            else:
+                raise NotImplementedError(f"Unsupported bit width of {self._bit_width} for float")
 
         return f"{prefix}{value:0{self._bit_width // 4}X}"
 
