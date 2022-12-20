@@ -373,6 +373,25 @@ def test_macros_swap():
     value = macro_dict["m_swap_words_u32"](value)
     assert hex(expected) == hex(value)
 
+def test_macro_string():
+    """Test macro for reading a string.
+    """
+    binary_data = IntelHex()
+
+    macro_dict = get_macro_dict()
+    set_binary_data(binary_data)
+
+    test_string = "Hello World!"
+    test_string_len = len(test_string)
+
+    for idx in range(test_string_len):
+        binary_data[idx] = ord(test_string[idx])
+    binary_data[test_string_len] = 0
+
+    value = macro_dict["m_read_string"](0)
+
+    assert test_string == value
+
 def test_tmpl_element():
     """Test the template element class with different representations.
     """

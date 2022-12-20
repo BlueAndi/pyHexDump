@@ -40,6 +40,7 @@ There are a lot of hex viewers already, but I was not able to find one which I c
   - [m\_read\_float32be()](#m_read_float32be)
   - [m\_read\_float64le()](#m_read_float64le)
   - [m\_read\_float64be()](#m_read_float64be)
+  - [m\_read\_string()](#m_read_string)
   - [m\_calc\_checksum()](#m_calc_checksum)
   - [m\_swap\_bytes\_u16()](#m_swap_bytes_u16)
   - [m\_swap\_bytes\_u32()](#m_swap_bytes_u32)
@@ -601,6 +602,13 @@ Read floating point 64-bit big endian value from binary data at given address an
 
 Parameters:
 * addr: Address
+
+## m_read_string()
+Read string from binary data at given address and returns it. It will consider the string termination.
+
+Parameters:
+* encoding: The character encoding.
+    * Default: utf-8
 
 ## m_calc_checksum()
 Calculate the CRC checksum.
