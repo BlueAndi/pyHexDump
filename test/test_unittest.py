@@ -277,8 +277,8 @@ def test_macros_read_signed_integers():
     value = macro_dict["m_read_s32be"](0)
     assert test_value == value
 
-def test_macros_read_floats():
-    """Test macros to read floating values.
+def test_macros_read_float32():
+    """Test macros to read 32-bit floating values.
     """
     binary_data = IntelHex()
 
@@ -308,6 +308,14 @@ def test_macros_read_floats():
     epsilon = 0.000001
     assert (test_value + epsilon) > value
     assert (test_value - epsilon) < value
+
+def test_macros_read_float64():
+    """Test macros to read 64-bit floating values.
+    """
+    binary_data = IntelHex()
+
+    macro_dict = get_macro_dict()
+    set_binary_data(binary_data)
 
     # float64le access
     test_value = 1.6789
