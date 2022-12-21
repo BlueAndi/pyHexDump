@@ -32,6 +32,7 @@
 ################################################################################
 import struct
 from mako.template import Template
+from mako.exceptions import SyntaxException, RichTraceback
 from pyHexDump.constants import Ret
 from pyHexDump.common import \
     common_load_binary_file, \
@@ -578,11 +579,28 @@ def _print_template(binary_data, tmpl_element_dict, template):
 
     # Create the template
     tmpl_element_bunch = _dict_to_bunch(tmpl_element_dict)
-    tmpl = Template(template)
 
     try:
+        tmpl = Template(template, strict_undefined=True)
         print(tmpl.render(**tmpl_element_bunch))
-    except ValueError:
+    except (ValueError, NameError) as error:
+        print(f"{type(error).__name__} in template:\n")
+        print(error)
+        ret_status = Ret.ERROR_TEMPLATE
+    except (TypeError, AttributeError, SyntaxException) as error:
+        # Show only relevant part of trace
+        traceback = RichTraceback()
+        show = False
+        print(f"{type(error).__name__} in template:\n")
+        for (filename, lineno, function, line) in traceback.traceback:
+            if show is False and function == "render_body":
+                show = True
+
+            if show is True:
+                print(f"File {filename}, line {lineno}, in {function}")
+                print(line, "\n")
+                print(f"{str(traceback.error.__class__.__name__)}: {traceback}")
+
         ret_status = Ret.ERROR_TEMPLATE
 
     return ret_status
