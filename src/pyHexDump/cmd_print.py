@@ -142,7 +142,8 @@ class Bunch(dict):
 class TmplElement():
     """Template element representing a element with a address, value and bit width.
     """
-    def __init__(self, addr, value, bit_width) -> None:
+    def __init__(self, name, addr, value, bit_width) -> None:
+        self._name = name
         self._addr = addr
         self._value = value
         self._bit_width = bit_width
@@ -266,6 +267,14 @@ class TmplElement():
             raise NotImplementedError(f"{type(self._value)} is not supported.")
 
         return output
+
+    def name(self):
+        """Get name of the element.
+
+        Returns:
+            str: Element name
+        """
+        return self._name
 
     def addr(self):
         """Get the address of the element in the binary data.
@@ -547,7 +556,7 @@ def _get_tmpl_element_dict(binary_data, cfg_elements_dict):
 
             if cfg_element.get_count() == 1:
                 bit_width = cfg_element.get_mem_access().get_size() * 8
-                tmpl_element_dict[key] = TmplElement(cfg_element.get_addr(), cfg_element.get_value(), bit_width) # pylint: disable=line-too-long
+                tmpl_element_dict[key] = TmplElement(key, cfg_element.get_addr(), cfg_element.get_value(), bit_width) # pylint: disable=line-too-long
 
             elif cfg_element.get_count() > 1:
                 bit_width = cfg_element.get_mem_access().get_size() * 8
@@ -555,7 +564,7 @@ def _get_tmpl_element_dict(binary_data, cfg_elements_dict):
                 for idx in range(cfg_element.get_count()):
                     value_list.append(cfg_element.get_value()[idx])
 
-                tmpl_element_dict[key] = TmplElement(cfg_element.get_addr(), value_list, bit_width)
+                tmpl_element_dict[key] = TmplElement(key, cfg_element.get_addr(), value_list, bit_width) # pylint: disable=line-too-long
 
     return tmpl_element_dict
 
@@ -571,6 +580,15 @@ def _print_template(binary_data, tmpl_element_dict, template):
         Ret: If successul printed, it will return Ret.OK otherwise a corresponding error.
     """
     ret_status = Ret.OK
+
+    # Add a list of all config elements to be able to iterate in the template over all.
+    tmpl_element_list = []
+    for tmpl_element_name in tmpl_element_dict.keys():
+        tmpl_element_list.append(tmpl_element_dict[tmpl_element_name])
+
+    tmpl_element_dict.update({
+        "config_elements": tmpl_element_list
+    })
 
     # Add macro functions, so they are available in the template
     tmpl_element_dict.update(get_macro_dict())
