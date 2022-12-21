@@ -64,6 +64,7 @@ $ pyHexDump --help
 ```
 
 # Examples
+Don't miss the examples in the [example](./examples/) folder. In the following chapters you can see how to use pyHexDump and its output.
 
 ## Dump data as 8-bit
 
@@ -206,7 +207,7 @@ A configuration element can be accessed in the template via:
 * ```${<config-element-name>.addr()}```: Prints the address in decimal.
 
 ### Example
-```$ pyHexDump print ./examples/aurix_tc397.hex ./examples/config.json --template ./examples/markdown.mao```
+```$ pyHexDump print ./examples/aurix_tc397.hex ./examples/config.json --templateFile ./examples/markdown.mao```
 
 with ```config.json``` like
 ```json

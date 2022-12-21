@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pd:parameterDef xmlns:pd="http://www.schulznorbert.de/1.0/pargen"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.schulznorbert.de/1.0/pargen ../src/flashcontainer/pargen_1.0.xsd" >
+
+    <pd:container name="CodeFlash" at="0x80000000">
+        <pd:blocks>
+            <pd:block offset="0x00000000" name="paraBlkExampleLE" endianness="LE" fill="0x55">
+                <pd:comment>This block contains parameters in every supported datatype in little endian.</pd:comment>
+                <pd:header id="0xFFFF" major="1" minor="0" version="0" length="0x100"></pd:header>
+                <pd:data>
+
+                    <pd:param offset="0" name="uint8" type="uint8">
+                        <pd:comment>8-bit unsigned integer</pd:comment>
+                        <pd:value>0x12</pd:value>
+                    </pd:param>
+                    <pd:param offset="." name="uint16le" type="uint16">
+                        <pd:comment>16-bit unsigned integer</pd:comment>
+                        <pd:value>0x1234</pd:value>
+                    </pd:param>
+                    <pd:param offset="." name="uint32le" type="uint32">
+                        <pd:comment>32-bit unsigned integer</pd:comment>
+                        <pd:value>0x12345678</pd:value>
+                    </pd:param>
+                    <pd:param offset="." name="uint64le" type="uint64">
+                        <pd:comment>64-bit unsigned integer</pd:comment>
+                        <pd:value>0x1234567812345678</pd:value>
+                    </pd:param>
+
+                    <pd:param offset="." name="int8" type="int8">
+                        <pd:comment>8-bit signed integer</pd:comment>
+                        <pd:value>-1</pd:value>
+                    </pd:param>
+                    <pd:param offset="." name="int16le" type="int16">
+                        <pd:comment>16-bit signed integer</pd:comment>
+                        <pd:value>-2</pd:value>
+                    </pd:param>
+                    <pd:param offset="." name="int32le" type="int32">
+                        <pd:comment>32-bit signed integer</pd:comment>
+                        <pd:value>-3</pd:value>
+                    </pd:param>
+                    <pd:param offset="." name="int64le" type="int64">
+                        <pd:comment>64-bit signed integer</pd:comment>
+                        <pd:value>-4</pd:value>
+                    </pd:param>
+
+                    <pd:param offset="." name="float32le" type="float32">
+                        <pd:comment>32-bit floating point value</pd:comment>
+                        <pd:value>1.234</pd:value>
+                    </pd:param>
+                    <pd:param offset="." name="float64le" type="float64">
+                        <pd:comment>64-bit floating point value</pd:comment>
+                        <pd:value>1.23456789</pd:value>
+                    </pd:param>
+
+                    <pd:param offset="." name="utf8" type="utf8">
+                        <pd:comment>String with utf-8 encoding</pd:comment>
+                        <pd:value>"Hello world!"</pd:value>
+                    </pd:param>
+
+                </pd:data>
+            </pd:block>
+        </pd:blocks>
+    </pd:container>
+</pd:parameterDef>
