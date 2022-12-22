@@ -31,9 +31,6 @@ import setuptools
 # Variables
 ################################################################################
 
-README_FILE_NAME = "README.md"
-LONG_DESCRIPTION = ""
-
 ################################################################################
 # Classes
 ################################################################################
@@ -46,42 +43,5 @@ LONG_DESCRIPTION = ""
 # Main
 ################################################################################
 
-# Use the README as long description
-with open(README_FILE_NAME, "r", encoding="utf-8") as fh:
-    LONG_DESCRIPTION = fh.read()
-
-# Get __version__, __author__ and __email__
-with open("src/pyHexDump/version.py", encoding="utf-8") as version_file:
-    exec(version_file.read()) # pylint: disable=exec-used
-
-setuptools.setup(
-    name="pyHexDump",
-    version=__version__, # type: ignore[reportUndefinedVariable] # pylint: disable=undefined-variable
-    author=__author__, # type: ignore[reportUndefinedVariable] # pylint: disable=undefined-variable
-    author_email=__email__, # type: ignore[reportUndefinedVariable] # pylint: disable=undefined-variable
-    description="Hex dump with report functionality",
-    long_description=LONG_DESCRIPTION,
-    long_description_content_type="text/markdown",
-    url="https://github.com/BlueAndi/pyHexDump",
-    project_urls={
-        "Bug Tracker": "https://github.com/BlueAndi/pyHexDump/issues",
-    },
-    classifiers=[
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-    ],
-    package_dir={"pyHexDump": "src/pyHexDump"},
-    packages=setuptools.find_packages(where="src"),
-    python_requires=">=3.8",
-    include_package_data=True,
-    install_requires=[
-        "intelhex==2.3.0",
-        "Mako==1.2.2"
-    ],
-    entry_points={"console_scripts": [
-        "pyHexDump = pyHexDump.__main__:main",
-    ]}
-)
+if __name__ == "__main__":
+    setuptools.setup()

@@ -1,6 +1,40 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
+requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyHexDump"
+version = "0.2.0"
+description = "A CLI tool to dump data from e.g. intel hex files and is able to generate reports."
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    { name = "Andreas Merkle", email = "web@blue-andi.de" }
+]
+license = {text = "MIT License"}
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10"
+]
+dependencies = [
+    "intelhex>=2.3.0",
+    "Mako>=1.2.2"
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = [
+  "pytest",
+  "pytest-cov[all]"
+]
+
+[project.urls]
+documentation = "https://github.com/BlueAndi/pyHexDump"
+repository = "https://github.com/BlueAndi/pyHexDump"
+tracker = "https://github.com/BlueAndi/pyHexDump/issues"
+
+[project.scripts]
+pyHexDump = "pyHexDump.__main__:main"

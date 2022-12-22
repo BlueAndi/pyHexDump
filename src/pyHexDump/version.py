@@ -25,16 +25,20 @@
 ################################################################################
 # Imports
 ################################################################################
+import toml
 
 ################################################################################
 # Variables
 ################################################################################
 
-__version__ = "v0.2.0"
-__author__ = "Andreas Merkle"
-__email__ = "web@blue-andi.de"
-__github__ = "https://github.com/BlueAndi/pyHexDump"
-__license__ = "MIT"
+# Use the .toml configuration as information source.
+data = toml.load("pyHexDump.toml")
+
+__version__ = data["project"]["version"]
+__author__ = data["project"]["authors"][0]["name"]
+__email__ = data["project"]["authors"][0]["email"]
+__repository__ = data["project"]["urls"]["repository"]
+__license__ = data["project"]["license"]["text"]
 
 ################################################################################
 # Classes

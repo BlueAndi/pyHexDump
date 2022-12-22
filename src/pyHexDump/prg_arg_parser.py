@@ -26,7 +26,7 @@
 # Imports
 ################################################################################
 import argparse
-from pyHexDump.version import __version__, __author__, __email__, __github__, __license__
+from pyHexDump.version import __version__, __author__, __email__, __repository__, __license__
 
 ################################################################################
 # Variables
@@ -53,7 +53,7 @@ class PrgArgParser():
             specifying a memory map configuration or just dump some data to\
             the console.",
             epilog="Copyright (c) 2022 " + __author__ + " - " + __license__ + \
-            " license - Find the project on github: " + __github__)
+            " - Find the project on github: " + __repository__)
         main_parser.set_defaults(which="")
 
         main_parser.add_argument(
