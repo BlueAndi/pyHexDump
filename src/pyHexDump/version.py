@@ -32,7 +32,7 @@ import toml
 ################################################################################
 
 # Use the .toml configuration as information source.
-data = toml.load("pyHexDump.toml")
+data = toml.load("pyproject.toml")
 
 __version__ = data["project"]["version"]
 __author__ = data["project"]["authors"][0]["name"]
