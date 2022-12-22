@@ -1,17 +1,17 @@
 @echo off
 
-parGen --version 2>NUL
+pargen -h >NUL 2>&1
 if errorlevel 1 goto parGen_not_found
 
 pyHexDump --version 2>NUL
 if errorlevel 1 goto pyHexDump_not_found
 
 echo Generate intel hex file powered by https://github.com/nhjschulz/flashcontainer
-parGen --ihex --dump example.xml 2>NUL
-echo
+pargen --ihex --dump --destdir . example.xml
+echo.
 echo Generate report in markdown
 pyHexDump print example.hex example.pyhexdump --templateFile example.mao > example.md
-echo
+echo.
 type example.md
 
 goto :eof

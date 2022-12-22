@@ -5,9 +5,9 @@
 
     <pd:container name="CodeFlash" at="0x80000000">
         <pd:blocks>
-            <pd:block offset="0x00000000" name="paraBlkExampleLE" endianness="LE" fill="0x55">
+            <pd:block offset="0x00000000" name="paraBlkExampleLE" length="0x100" endianness="LE" fill="0x55">
                 <pd:comment>This block contains parameters in every supported datatype in little endian.</pd:comment>
-                <pd:header id="0xFFFF" major="1" minor="0" version="0" length="0x100"></pd:header>
+                <pd:header id="0xFFFF" major="1" minor="0" version="0"></pd:header>
                 <pd:data>
 
                     <pd:param offset="0" name="uint8" type="uint8">
