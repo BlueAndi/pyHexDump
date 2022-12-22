@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools", "setuptools-scm", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -28,7 +28,7 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 test = [
-  "pytest",
+  "pytest > 5.0.0",
   "pytest-cov[all]"
 ]
 
