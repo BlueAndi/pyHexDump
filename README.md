@@ -53,7 +53,7 @@ There are a lot of hex viewers already, but I was not able to find one which I c
 ```cmd
 $ git clone https://github.com/BlueAndi/pyHexDump.git
 $ cd pyHexDump
-$ python setup.py install
+$ pip install .
 ```
 
 # Usage
