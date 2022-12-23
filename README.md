@@ -66,7 +66,7 @@ $ pyHexDump --help
 
 # Overview
 
-![goverview](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/BlueAndi/pyHexDump/main/doc/uml/static_view.wsd)
+![goverview](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/BlueAndi/pyHexDump/main/doc/uml/static_view.wsd)
 
 # Examples
 Don't miss the examples in the [example](./examples/) folder. In the following chapters you can see how to use pyHexDump and its output.
