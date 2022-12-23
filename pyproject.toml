@@ -24,7 +24,6 @@ dependencies = [
     "Mako>=1.2.2",
     "toml>=0.10.2"
 ]
-dynamic = ["version"]
 
 [project.optional-dependencies]
 test = [
