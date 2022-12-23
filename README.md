@@ -9,6 +9,7 @@ There are a lot of hex viewers already, but I was not able to find one which I c
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Overview](#overview)
 - [Examples](#examples)
   - [Dump data as 8-bit](#dump-data-as-8-bit)
   - [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
@@ -62,6 +63,10 @@ Show help information:
 ```cmd
 $ pyHexDump --help
 ```
+
+# Overview
+
+![goverview](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/BlueAndi/pyHexDump/main/doc/uml/static_view.wsd)
 
 # Examples
 Don't miss the examples in the [example](./examples/) folder. In the following chapters you can see how to use pyHexDump and its output.

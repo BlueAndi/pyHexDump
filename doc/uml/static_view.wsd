@@ -1,0 +1,71 @@
+@startuml
+
+file "Intel Hex File" as intelHexFile
+file "Binary File" as binaryFile
+file "Configuration File" as cfgFile
+file "Template File" as tmplFile<<optional>>
+
+file "Checksum result" as checksum
+file "Data dump" as dataDump
+file "Report" as report
+
+package "pyHexDump" as pyHexDump {
+
+    component "main" as main
+    component "Command: checksum" as cmdChecksum
+    component "Command: dump" as cmdDump
+    component "Command: print" as cmdPrint
+
+    main --> cmdChecksum: <<flow>>
+    main --> cmdDump: <<flow>>
+    main --> cmdPrint: <<flow>>
+}
+
+intelHexFile ---> main: <<flow>>
+binaryFile ---> main: <<flow>>
+
+cfgFile ----> cmdPrint: <<flow>>
+tmplFile ----> cmdPrint: <<flow>>
+
+cmdChecksum --> checksum: <<flow>>\n<<create>>
+cmdDump --> dataDump: <<flow>>\n<<create>>
+cmdPrint --> report: <<flow>>\n<<create>>
+
+note top of cfgFile
+    Configures elements with their address and
+    type information. They can be easily addressed
+    by name in the template.
+end note
+
+note top of tmplFile
+    The template can be in any ASCII format
+    you like. Consider the possibilities of
+    the Mako template engine here.
+end note
+
+note bottom of report
+    If no report template is available, it
+    will just show all of the elements in
+    the configuration with their address and
+    its value.
+
+    If a template is available, it will be
+    a nice report in the exact that shape
+    you like. :-)
+end note
+
+note bottom of dataDump
+    Dump output in the format:
+    <address>: <data>
+    ...
+end note
+
+note bottom of checksum
+    Just the checksum result.
+
+    Note, the checksum can be calculated
+    in the template as well and used
+    there e.g. for verification.
+end note
+
+@enduml
