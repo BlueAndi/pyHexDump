@@ -61,6 +61,15 @@ class PrgArgParser():
             action="version",
             version="%(prog)s " + __version__)
 
+        main_parser.add_argument(
+            "-v",
+            "--verbose",
+            action="store_true",
+            required=False,
+            default=False,
+            help="Prints more additional information."
+        )
+
         return main_parser
 
     def parse_args(self):

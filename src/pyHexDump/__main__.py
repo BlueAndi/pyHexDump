@@ -80,8 +80,12 @@ def main():
     # Parse all program arguments now
     prg_arg_parser.parse_args()
 
-    # Uncomment for debugging purposes
-    #print(prg_arg_parser.get_args())
+    # In verbose mode print all program arguments
+    if prg_arg_parser.get_args().verbose is True:
+        print("Program arguments: ")
+        for arg in vars(prg_arg_parser.get_args()):
+            print(f"* {arg} = {vars(prg_arg_parser.get_args())[arg]}")
+        print("\n")
 
     # If no program arguments are available, the help information shall be shown.
     if prg_arg_parser.get_args().cmd is None:
