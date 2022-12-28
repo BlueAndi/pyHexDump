@@ -25,20 +25,20 @@
 ################################################################################
 # Imports
 ################################################################################
+import importlib.metadata as meta
+import pathlib
+
 import toml
 
 ################################################################################
 # Variables
 ################################################################################
 
-# Use the .toml configuration as information source.
-data = toml.load("pyproject.toml")
-
-__version__ = data["project"]["version"]
-__author__ = data["project"]["authors"][0]["name"]
-__email__ = data["project"]["authors"][0]["email"]
-__repository__ = data["project"]["urls"]["repository"]
-__license__ = data["project"]["license"]["text"]
+__version__ = "???"
+__author__ = "???"
+__email__ = "???"
+__repository__ = "???"
+__license__ = "???"
 
 ################################################################################
 # Classes
@@ -48,6 +48,49 @@ __license__ = data["project"]["license"]["text"]
 # Functions
 ################################################################################
 
+def init_from_metadata():
+    """Initialize dunders from importlib.metadata
+    Requires that the package was installed.
+
+    Returns:
+        list: Tool related informations
+    """
+
+    my_metadata = meta.metadata('pyHexDump')
+
+    return \
+        my_metadata['Version'],\
+        my_metadata['Author'],\
+        my_metadata['Author-email'],\
+        my_metadata['Project-URL'].replace("repository, ", ""),\
+        my_metadata['License']
+
+def init_from_toml():
+    """Initialize dunders from pypackage.toml file
+
+    Tried if package wasn't installed.
+
+    Returns:
+        list: Tool related informations
+    """
+
+    dist_dir = pathlib.Path(__file__).resolve().parents[2]
+    toml_file = pathlib.Path.joinpath(dist_dir, "pyproject.toml")
+    data = toml.load(toml_file)
+
+    return \
+        data["project"]["version"],\
+        data["project"]["authors"][0]["name"],\
+        data["project"]["authors"][0]["email"],\
+        data["project"]["urls"]["repository"],\
+        data["project"]["license"]["text"]
+
 ################################################################################
 # Main
 ################################################################################
+
+try:
+    __version__, __author__, __email__, __repository__, __license__ = init_from_metadata()
+
+except meta.PackageNotFoundError:
+    __version__, __author__, __email__, __repository__, __license__ = init_from_toml()
