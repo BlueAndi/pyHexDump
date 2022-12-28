@@ -7,7 +7,7 @@ pyHexDump --version 2>NUL
 if errorlevel 1 goto pyHexDump_not_found
 
 echo Generate intel hex file powered by https://github.com/nhjschulz/flashcontainer
-pargen --ihex --dump --destdir . example.xml
+pargen --ihex --pyhexdump --destdir . example.xml
 echo.
 echo Generate report in markdown
 pyHexDump print example.hex example.pyhexdump --templateFile example.mao > example.md

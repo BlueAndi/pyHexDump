@@ -48,6 +48,7 @@ from pyHexDump.macros import get_macro_dict, set_binary_data
 ################################################################################
 
 _CMD_NAME = "print"
+_IS_VERBOSE = False
 
 ################################################################################
 # Classes
@@ -383,7 +384,7 @@ def _get_data_type_from_config_item(item):
 
     return data_type
 
-def _get_config_structure(config_dict, base_addr):
+def _get_config_structure(structure_name, config_dict, base_addr):
     """Get a configuration element object dictionary from the configuration
         item sub dictionary. If not all necessary parameters are available,
         it will be skipped.
@@ -391,6 +392,7 @@ def _get_config_structure(config_dict, base_addr):
         Nested structures are not supported!
 
     Args:
+        name (str): Structure name
         config_dict (dict): Configuration items
         base_addr (int): The base address of the sub dictionary
 
@@ -434,7 +436,8 @@ def _get_config_structure(config_dict, base_addr):
         if offset > 0:
             addr = base_addr + offset
 
-        cfg_elements_dict[name] = ConfigElement(name, addr, data_type, count)
+        name_full = structure_name + "." + name
+        cfg_elements_dict[name] = ConfigElement(name_full, addr, data_type, count)
 
         addr += count * mem_access_get_api_by_data_type(data_type).get_size()
 
@@ -491,18 +494,18 @@ def _get_config_elements(config_dict):
 
                 if structure_definition is not None:
                     if name not in cfg_elements_dict:
-                        cfg_elements_dict[name] = _get_config_structure(structure_definition, addr)
+                        cfg_elements_dict[name] = _get_config_structure(name, structure_definition, addr)   # pylint: disable=line-too-long
                     else:
-                        cfg_elements_dict[name] |= _get_config_structure(structure_definition, addr)
+                        cfg_elements_dict[name] |= _get_config_structure(name, structure_definition, addr)  # pylint: disable=line-too-long
 
             else:
                 cfg_elements_dict[name] = ConfigElement(name, addr, data_type, count)
 
         elif isinstance(data_type, list) is True:
             if name not in cfg_elements_dict:
-                cfg_elements_dict[name] = _get_config_structure(item["dataType"], addr)
+                cfg_elements_dict[name] = _get_config_structure(name, item["dataType"], addr)
             else:
-                cfg_elements_dict[name] |= _get_config_structure(item["dataType"], addr)
+                cfg_elements_dict[name] |= _get_config_structure(name, item["dataType"], addr)
 
     return cfg_elements_dict
 
@@ -556,7 +559,7 @@ def _get_tmpl_element_dict(binary_data, cfg_elements_dict):
 
             if cfg_element.get_count() == 1:
                 bit_width = cfg_element.get_mem_access().get_size() * 8
-                tmpl_element_dict[key] = TmplElement(key, cfg_element.get_addr(), cfg_element.get_value(), bit_width) # pylint: disable=line-too-long
+                tmpl_element_dict[key] = TmplElement(cfg_element.get_name(), cfg_element.get_addr(), cfg_element.get_value(), bit_width) # pylint: disable=line-too-long
 
             elif cfg_element.get_count() > 1:
                 bit_width = cfg_element.get_mem_access().get_size() * 8
@@ -564,9 +567,28 @@ def _get_tmpl_element_dict(binary_data, cfg_elements_dict):
                 for idx in range(cfg_element.get_count()):
                     value_list.append(cfg_element.get_value()[idx])
 
-                tmpl_element_dict[key] = TmplElement(key, cfg_element.get_addr(), value_list, bit_width) # pylint: disable=line-too-long
+                tmpl_element_dict[key] = TmplElement(cfg_element.get_name(), cfg_element.get_addr(), value_list, bit_width) # pylint: disable=line-too-long
 
     return tmpl_element_dict
+
+def _flatten_tmpl_dict(tmpl_element_dict):
+    """Flattens a template element dictionary and provides it as a list.
+
+    Args:
+        tmpl_element_dict (dict): Template elements dictionary
+
+    Returns:
+        list: List of template elements
+    """
+    tmpl_element_list = []
+
+    for key in tmpl_element_dict.keys():
+        if isinstance(tmpl_element_dict[key], dict):
+            tmpl_element_list.extend(_flatten_tmpl_dict(tmpl_element_dict[key]))
+        else:
+            tmpl_element_list.append(tmpl_element_dict[key])
+
+    return tmpl_element_list
 
 def _print_template(binary_data, tmpl_element_dict, template):
     """Print a generated report from template and configuration element dictionary.
@@ -582,13 +604,16 @@ def _print_template(binary_data, tmpl_element_dict, template):
     ret_status = Ret.OK
 
     # Add a list of all config elements to be able to iterate in the template over all.
-    tmpl_element_list = []
-    for tmpl_element_name in tmpl_element_dict.keys():
-        tmpl_element_list.append(tmpl_element_dict[tmpl_element_name])
-
+    tmpl_element_list = _flatten_tmpl_dict(tmpl_element_dict)
     tmpl_element_dict.update({
         "config_elements": tmpl_element_list
     })
+
+    if _IS_VERBOSE is True:
+        print("Configuration elements:")
+        for element in tmpl_element_list:
+            print(f"* {element.name()}")
+        print("\n")
 
     # Add macro functions, so they are available in the template
     tmpl_element_dict.update(get_macro_dict())
@@ -672,6 +697,9 @@ def _exec(args):
     Returns:
         Ret: If successful, it will return Ret.OK otherwise a corresponding error.
     """
+    global _IS_VERBOSE # pylint: disable=global-statement
+    _IS_VERBOSE = args.verbose
+
     return _cmd_print(args.binaryFile[0], args.configFile[0], args.templateFile, args.onlyInHex)
 
 def cmd_print_register(arg_sub_parsers):
@@ -726,6 +754,15 @@ def cmd_print_register(arg_sub_parsers):
         required=False,
         default=False,
         help="Show values in hex format. Only applied valid without template."
+    )
+
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        required=False,
+        default=False,
+        help="Prints more additional information."
     )
 
     return cmd_par_dict

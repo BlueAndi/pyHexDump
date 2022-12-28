@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<pd:parameterDef xmlns:pd="http://www.schulznorbert.de/1.0/pargen"
+<!--
+    Flashcontainer example configuration, see https://github.com/nhjschulz/flashcontainer
+-->
+<pd:pargen xmlns:pd="http://nhjschulz.github.io/1.0/pargen"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.schulznorbert.de/1.0/pargen ../src/flashcontainer/pargen_1.0.xsd" >
+    xsi:schemaLocation="http://nhjschulz.github.io/1.0/pargen http://nhjschulz.github.io/xsd/pargen_1.0.xsd" >
 
     <pd:container name="CodeFlash" at="0x80000000">
         <pd:blocks>
@@ -57,9 +60,8 @@
                         <pd:comment>String with utf-8 encoding</pd:comment>
                         <pd:value>"Hello world!"</pd:value>
                     </pd:param>
-
                 </pd:data>
             </pd:block>
         </pd:blocks>
     </pd:container>
-</pd:parameterDef>
+</pd:pargen>

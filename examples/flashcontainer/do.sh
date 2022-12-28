@@ -13,9 +13,12 @@ then
 fi
 
 echo Generate intel hex file powered by https://github.com/nhjschulz/flashcontainer
-pargen --ihex --dump --destdir . example.xml
+pargen --ihex --pyhexdump --destdir . example.xml
 echo
 echo Generate report in markdown
-pyHexDump print example.hex example.pyhexdump --templateFile example.mao > example.md
+CWD=`pwd`
+pushd ../..
+pyHexDump print $CWD/example.hex $CWD/example.pyhexdump --templateFile $CWD/example.mao > $CWD/example.md
+popd
 echo
 cat example.md
