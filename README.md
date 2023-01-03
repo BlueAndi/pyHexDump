@@ -46,6 +46,7 @@ There are a lot of hex viewers already, but I was not able to find one which I c
   - [m\_swap\_bytes\_u16()](#m_swap_bytes_u16)
   - [m\_swap\_bytes\_u32()](#m_swap_bytes_u32)
   - [m\_swap\_words\_u32()](#m_swap_words_u32)
+- [Used Libraries](#used-libraries)
 - [Issues, Ideas And Bugs](#issues-ideas-and-bugs)
 - [License](#license)
 - [Contribution](#contribution)
@@ -661,6 +662,12 @@ Parameters:
 
 Returns:
 * Swapped value
+
+# Used Libraries
+Used 3rd party libraries which are not part of the standard Python package:
+* [intelhex](https://github.com/python-intelhex/intelhex) - Reading files in IntelHex format - BSD-3 License.
+* [Mako](https://www.makotemplates.org/) - Template engine - MIT License
+* [toml](https://github.com/uiri/toml) - Parsing [TOML](https://en.wikipedia.org/wiki/TOML) - MIT License
 
 # Issues, Ideas And Bugs
 If you have further ideas or you found some bugs, great! Create a [issue](https://github.com/BlueAndi/pyHexDump/issues) or if you are able and willing to fix it by yourself, clone the repository and create a pull request.
