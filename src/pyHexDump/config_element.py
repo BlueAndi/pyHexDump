@@ -26,7 +26,6 @@
 ################################################################################
 # Imports
 ################################################################################
-from pyHexDump.mem_access import mem_access_get_api_by_data_type
 
 ################################################################################
 # Variables
@@ -39,10 +38,10 @@ from pyHexDump.mem_access import mem_access_get_api_by_data_type
 class ConfigElement:
     """Represents a single element in the configuration.
     """
-    def __init__(self, name, addr, data_type, count) -> None:
+    def __init__(self, name, addr, data_type, count):
         self._name = name
         self._addr = addr
-        self._mem_access = mem_access_get_api_by_data_type(data_type)
+        self._data_type = data_type
         self._count = count
 
     def get_name(self):
@@ -61,6 +60,14 @@ class ConfigElement:
         """
         return self._addr
 
+    def get_datatype(self):
+        """Get the configuration element datatype.
+
+        Returns:
+            str: Data type
+        """
+        return self._data_type
+
     def get_count(self):
         """Get the configuration element count.
             A count of 1 means its just one value.
@@ -70,48 +77,6 @@ class ConfigElement:
             int: Configuration element count
         """
         return self._count
-
-    def get_mem_access(self):
-        """Get the memory access API.
-
-        Returns:
-            MemAccess: Memory access API
-        """
-        return self._mem_access
-
-    def set_intel_hex(self, intel_hex):
-        """Set the intel hex ...
-
-        Args:
-            intel_hex (_type_): _description_
-        """
-        if self._mem_access is not None:
-            self._mem_access.set_binary_data(intel_hex)
-
-    def get_value(self):
-        """Get the configuration element value.
-            If the count is 1, only a single value will be returned.
-            If the count is greater than 1, a list of values will be returned.
-
-        Returns:
-            int, list: Configuration element value
-        """
-        value = 0
-
-        if self._mem_access is None:
-            return 0
-
-        if self._count == 1:
-            value = self._mem_access.get_value(self._addr)
-        elif self._count > 1:
-            value = []
-            for idx in range(self._count):
-                offset = idx * self._mem_access.get_size()
-                value.append(self._mem_access.get_value(self._addr + offset))
-        else:
-            value = 0
-
-        return value
 
 ################################################################################
 # Functions
