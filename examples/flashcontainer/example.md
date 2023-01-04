@@ -3,12 +3,6 @@
 
 | Name | Address (hex) | Value (hex) | Value |
 |------|---------------|-------------|-------|
-| paraBlkExampleLE_blkhdr.id | 0x80000000 | 0x3412 | 13330 |
-| paraBlkExampleLE_blkhdr.major | 0x80000002 | 0x7812 | 30738 |
-| paraBlkExampleLE_blkhdr.minor | 0x80000004 | 0x3456 | 13398 |
-| paraBlkExampleLE_blkhdr.dataver | 0x80000006 | 0x7812 | 30738 |
-| paraBlkExampleLE_blkhdr.reserved | 0x80000008 | 0x78123456 | 2014458966 |
-| paraBlkExampleLE_blkhdr.length | 0x8000000C | 0xFF123456 | 4279383126 |
 | paraBlkExampleLE_uint8 | 0x80000000 | 0x12 | 18 |
 | paraBlkExampleLE_uint16le | 0x80000001 | 0x1234 | 4660 |
 | paraBlkExampleLE_uint32le | 0x80000003 | 0x12345678 | 305419896 |
