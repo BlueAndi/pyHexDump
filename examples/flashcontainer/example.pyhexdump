@@ -11,32 +11,32 @@
             "elements": [
                 {
                     "name": "id",
-                    "dataType": "u16le",
+                    "dataType": "uint16le",
                     "count": 1
                 },
                 {
                     "name": "major",
-                    "dataType": "u16le",
+                    "dataType": "uint16le",
                     "count": 1
                 },
                 {
                     "name": "minor",
-                    "dataType": "u16le",
+                    "dataType": "uint16le",
                     "count": 1
                 },
                 {
                     "name": "dataver",
-                    "dataType": "u16le",
+                    "dataType": "uint16le",
                     "count": 1
                 },
                 {
                     "name": "reserved",
-                    "dataType": "u32le",
+                    "dataType": "uint32le",
                     "count": 1
                 },
                 {
                     "name": "length",
-                    "dataType": "u32le",
+                    "dataType": "uint32le",
                     "count": 1
                 }
             ]
@@ -46,32 +46,32 @@
             "elements": [
                 {
                     "name": "id",
-                    "dataType": "u16be",
+                    "dataType": "uint16be",
                     "count": 1
                 },
                 {
                     "name": "major",
-                    "dataType": "u16be",
+                    "dataType": "uint16be",
                     "count": 1
                 },
                 {
                     "name": "minor",
-                    "dataType": "u16be",
+                    "dataType": "uint16be",
                     "count": 1
                 },
                 {
                     "name": "dataver",
-                    "dataType": "u16be",
+                    "dataType": "uint16be",
                     "count": 1
                 },
                 {
                     "name": "reserved",
-                    "dataType": "u32be",
+                    "dataType": "uint32be",
                     "count": 1
                 },
                 {
                     "name": "length",
-                    "dataType": "u32be",
+                    "dataType": "uint32be",
                     "count": 1
                 }
             ]
@@ -87,49 +87,49 @@
         {
             "name": "paraBlkExampleLE_uint8",
             "addr": "0x80000000",
-            "dataType": "u8",
+            "dataType": "uint8",
             "count": 1
         },
         {
             "name": "paraBlkExampleLE_uint16le",
             "addr": "0x80000001",
-            "dataType": "u16le",
+            "dataType": "uint16le",
             "count": 1
         },
         {
             "name": "paraBlkExampleLE_uint32le",
             "addr": "0x80000003",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         },
         {
             "name": "paraBlkExampleLE_uint64le",
             "addr": "0x80000007",
-            "dataType": "u64le",
+            "dataType": "uint64le",
             "count": 1
         },
         {
             "name": "paraBlkExampleLE_int8",
             "addr": "0x8000000f",
-            "dataType": "s8",
+            "dataType": "int8",
             "count": 1
         },
         {
             "name": "paraBlkExampleLE_int16le",
             "addr": "0x80000010",
-            "dataType": "s16le",
+            "dataType": "int16le",
             "count": 1
         },
         {
             "name": "paraBlkExampleLE_int32le",
             "addr": "0x80000012",
-            "dataType": "s32le",
+            "dataType": "int32le",
             "count": 1
         },
         {
             "name": "paraBlkExampleLE_int64le",
             "addr": "0x80000016",
-            "dataType": "s64le",
+            "dataType": "int64le",
             "count": 1
         },
         {
@@ -147,7 +147,7 @@
         {
             "name": "paraBlkExampleLE_utf8",
             "addr": "0x8000002a",
-            "dataType": "u8",
+            "dataType": "uint8",
             "count": 13
         }
     ]

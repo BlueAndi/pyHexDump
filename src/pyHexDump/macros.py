@@ -113,46 +113,46 @@ def _read(addr, data_type):
     return mem_access.get_value(addr)
 
 def _read_u8(addr):
-    return _read(addr, "u8")
+    return _read(addr, "uint8")
 
 def _read_u16le(addr):
-    return _read(addr, "u16le")
+    return _read(addr, "uint16le")
 
 def _read_u16be(addr):
-    return _read(addr, "u16be")
+    return _read(addr, "uint16be")
 
 def _read_u32le(addr):
-    return _read(addr, "u32le")
+    return _read(addr, "uint32le")
 
 def _read_u32be(addr):
-    return _read(addr, "u32be")
+    return _read(addr, "uint32be")
 
 def _read_u64le(addr):
-    return _read(addr, "u64le")
+    return _read(addr, "uint64le")
 
 def _read_u64be(addr):
-    return _read(addr, "u64be")
+    return _read(addr, "uint64be")
 
 def _read_s8(addr):
-    return _read(addr, "s8")
+    return _read(addr, "int8")
 
 def _read_s16le(addr):
-    return _read(addr, "s16le")
+    return _read(addr, "int16le")
 
 def _read_s16be(addr):
-    return _read(addr, "s16be")
+    return _read(addr, "int16be")
 
 def _read_s32le(addr):
-    return _read(addr, "s32le")
+    return _read(addr, "int32le")
 
 def _read_s32be(addr):
-    return _read(addr, "s32be")
+    return _read(addr, "int32be")
 
 def _read_s64le(addr):
-    return _read(addr, "s64le")
+    return _read(addr, "int64le")
 
 def _read_s64be(addr):
-    return _read(addr, "s64be")
+    return _read(addr, "int64be")
 
 def _read_float32le(addr):
     return _read(addr, "float32le")
@@ -212,21 +212,21 @@ def get_macro_dict():
 
     macro_dict["macros_compare_values"] = _compare_values
 
-    macro_dict["m_read_u8"] = _read_u8
-    macro_dict["m_read_u16le"] = _read_u16le
-    macro_dict["m_read_u16be"] = _read_u16be
-    macro_dict["m_read_u32le"] = _read_u32le
-    macro_dict["m_read_u32be"] = _read_u32be
-    macro_dict["m_read_u64le"] = _read_u64le
-    macro_dict["m_read_u64be"] = _read_u64be
+    macro_dict["m_read_uint8"] = _read_u8
+    macro_dict["m_read_uint16le"] = _read_u16le
+    macro_dict["m_read_uint16be"] = _read_u16be
+    macro_dict["m_read_uint32le"] = _read_u32le
+    macro_dict["m_read_uint32be"] = _read_u32be
+    macro_dict["m_read_uint64le"] = _read_u64le
+    macro_dict["m_read_uint64be"] = _read_u64be
 
-    macro_dict["m_read_s8"] = _read_s8
-    macro_dict["m_read_s16le"] = _read_s16le
-    macro_dict["m_read_s16be"] = _read_s16be
-    macro_dict["m_read_s32le"] = _read_s32le
-    macro_dict["m_read_s32be"] = _read_s32be
-    macro_dict["m_read_s64le"] = _read_s64le
-    macro_dict["m_read_s64be"] = _read_s64be
+    macro_dict["m_read_int8"] = _read_s8
+    macro_dict["m_read_int16le"] = _read_s16le
+    macro_dict["m_read_int16be"] = _read_s16be
+    macro_dict["m_read_int32le"] = _read_s32le
+    macro_dict["m_read_int32be"] = _read_s32be
+    macro_dict["m_read_int64le"] = _read_s64le
+    macro_dict["m_read_int64be"] = _read_s64be
 
     macro_dict["m_read_float32le"] = _read_float32le
     macro_dict["m_read_float32be"] = _read_float32be

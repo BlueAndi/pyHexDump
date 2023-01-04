@@ -35,8 +35,8 @@
     if bmhdid == 0xB359:
         is_bmh_valid = "OK"
 
-    calculated_crc_bmhd = m_calc_checksum("u32le", UCB00.BMI_BMHDID.addr(), UCB00.CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, True)
-    calculated_crc_bmhd_n = m_calc_checksum("u32le", UCB00.BMI_BMHDID.addr(), UCB00.CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, False)
+    calculated_crc_bmhd = m_calc_checksum("uint32le", UCB00.BMI_BMHDID.addr(), UCB00.CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, True)
+    calculated_crc_bmhd_n = m_calc_checksum("uint32le", UCB00.BMI_BMHDID.addr(), UCB00.CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, False)
 
     is_bmh_integrity_given = "Not OK"
     if calculated_crc_bmhd == UCB00.CRCBMHD:

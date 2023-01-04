@@ -53,7 +53,7 @@ def _cmd_dump(binary_file, addr, count, data_type):
         binary_file (str): File name of the binary file
         addr (int): Address where to start the dump
         count (int): Number of elements which to dump
-        data_type (str): Data type of a element (u8, u16le, u16be, u32le, u32be)
+        data_type (str): Data type of a element (uint8, uint16le, uint16be, uint32le, uint32be)
 
     Returns:
         Ret: If successful it will return OK, otherwise a corresponding error code.
@@ -127,11 +127,11 @@ def cmd_dump_register(arg_sub_parsers):
         "-dt",
         "--dataType",
         metavar="DATA_TYPE",
-        choices=["u8", "u16le", "u16be", "u32le", "u32be", "u64le", "u64be"],
+        choices=["uint8", "uint16le", "uint16be", "uint32le", "uint32be", "uint64le", "uint64be"],
         type=str,
         required=False,
-        default="u8",
-        help="The type of a single data element. Default: u8"
+        default="uint8",
+        help="The type of a single data element. Default: uint8"
     )
 
     return cmd_par_dict

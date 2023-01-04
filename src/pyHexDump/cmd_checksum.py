@@ -55,7 +55,7 @@ def calc_checksum(binary_data, binary_data_endianess, start_address, end_address
 
     Args:
         binary_data (IntelHex): Binary data
-        binary_data_endianess (str): Binary data endianess and data bit width, e.g. u32le.
+        binary_data_endianess (str): Binary data endianess and data bit width, e.g. uint32le.
         start_address (int): Address where to start the calculation
         end_address (int):  Address where to end the calculation (not included)
         polynomial(int): Generator polynomial to use in the CRC calculation.
@@ -124,7 +124,7 @@ def _cmd_checksum(binary_file, binary_data_endianess, start_address, end_address
 
     Args:
         binary_file (str): File name of the binary file
-        binary_data_endianess (str): Binary data endianess and data bit width, e.g. u32le.
+        binary_data_endianess (str): Binary data endianess and data bit width, e.g. uint32le.
         start_address (int): Address where to start the calculation
         end_address (int):  Address where to end the calculation (not included)
         polynomial(int): Generator polynomial to use in the CRC calculation.
@@ -199,10 +199,10 @@ def cmd_checksum_register(arg_sub_parsers):
         "-bde",
         "--binaryDataEndianess",
         metavar="BINARY_DATA_ENDIANESS",
-        choices=["u8", "u16le", "u16be", "u32le", "u32be", "u64le", "u64be"],
+        choices=["uint8", "uint16le", "uint16be", "uint32le", "uint32be", "uint64le", "uint64be"],
         required=False,
-        default="u8",
-        help="The binary data endianess.\nDefault: u8"
+        default="uint8",
+        help="The binary data endianess.\nDefault: uint8"
     )
     parser.add_argument(
         "-sa",

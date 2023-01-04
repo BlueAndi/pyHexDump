@@ -23,20 +23,20 @@ There are a lot of hex viewers already, but I was not able to find one which I c
     - [Example](#example-2)
 - [Macros](#macros)
   - [macros\_compare\_values()](#macros_compare_values)
-  - [m\_read\_u8()](#m_read_u8)
-  - [m\_read\_u16le()](#m_read_u16le)
-  - [m\_read\_u16be()](#m_read_u16be)
-  - [m\_read\_u32le()](#m_read_u32le)
-  - [m\_read\_u32be()](#m_read_u32be)
-  - [m\_read\_u64le()](#m_read_u64le)
-  - [m\_read\_u64be()](#m_read_u64be)
-  - [m\_read\_s8()](#m_read_s8)
-  - [m\_read\_s16le()](#m_read_s16le)
-  - [m\_read\_s16be()](#m_read_s16be)
-  - [m\_read\_s32le()](#m_read_s32le)
-  - [m\_read\_s32be()](#m_read_s32be)
-  - [m\_read\_s64le()](#m_read_s64le)
-  - [m\_read\_s64be()](#m_read_s64be)
+  - [m\_read\_uint8()](#m_read_uint8)
+  - [m\_read\_uint16le()](#m_read_uint16le)
+  - [m\_read\_uint16be()](#m_read_uint16be)
+  - [m\_read\_uint32le()](#m_read_uint32le)
+  - [m\_read\_uint32be()](#m_read_uint32be)
+  - [m\_read\_uint64le()](#m_read_uint64le)
+  - [m\_read\_uint64be()](#m_read_uint64be)
+  - [m\_read\_int8()](#m_read_int8)
+  - [m\_read\_int16le()](#m_read_int16le)
+  - [m\_read\_int16be()](#m_read_int16be)
+  - [m\_read\_int32le()](#m_read_int32le)
+  - [m\_read\_int32be()](#m_read_int32be)
+  - [m\_read\_int64le()](#m_read_int64le)
+  - [m\_read\_int64be()](#m_read_int64be)
   - [m\_read\_float32le()](#m_read_float32le)
   - [m\_read\_float32be()](#m_read_float32be)
   - [m\_read\_float64le()](#m_read_float64le)
@@ -86,7 +86,7 @@ Result:
 
 ## Dump data as 32-bit little endian
 
-```$ pyHexDump dump ./examples/aurix_tc397.hex -a 0x80000020 -dt u32le```
+```$ pyHexDump dump ./examples/aurix_tc397.hex -a 0x80000020 -dt uint32le```
 
 Result:
 ```
@@ -120,11 +120,11 @@ Result:
 
 The following optional arguments are supported:
 * ```-bde``` The binary data endianess and bit width:
-    * "u8": unsigned 8-bit
-    * "u16le": unsigned 16-bit little endian
-    * "u16be": unsigned 16-bit big endian
-    * "u32le": unsigned 32-bit little endian
-    * "u32be": unsigned 32-bit big endian
+    * "uint8": unsigned 8-bit
+    * "uint16le": unsigned 16-bit little endian
+    * "uint16be": unsigned 16-bit big endian
+    * "uint32le": unsigned 32-bit little endian
+    * "uint32be": unsigned 32-bit big endian
 * ```-sa```: Start address of the CRC calculation.
 * ```-ea```: End address of the CRC calculation (not included).
 * ```-p```: The polynomial for the CRC calculation. Default: 0x04C11DB7
@@ -139,16 +139,16 @@ Elements with their name, address, datatype and count can be configured separate
 By using the ```print``` command all of the values in the configuration are printed to the CLI.
 
 The following datatypes are supported:
-    * "u8": unsigned 8-bit
-    * "u16le": unsigned 16-bit little endian
-    * "u16be": unsigned 16-bit big endian
-    * "u32le": unsigned 32-bit little endian
-    * "u32be": unsigned 32-bit big endian
-    * "s8": signed 8-bit
-    * "s16le": signed 16-bit little endian
-    * "s16be": signed 16-bit big endian
-    * "s32le": signed 32-bit little endian
-    * "s32be": signed 32-bit big endian
+    * "uint8": unsigned 8-bit
+    * "uint16le": unsigned 16-bit little endian
+    * "uint16be": unsigned 16-bit big endian
+    * "uint32le": unsigned 32-bit little endian
+    * "uint32be": unsigned 32-bit big endian
+    * "int8": signed 8-bit
+    * "int16le": signed 16-bit little endian
+    * "int16be": signed 16-bit big endian
+    * "int32le": signed 32-bit little endian
+    * "int32be": signed 32-bit big endian
     * "float32le": 32-bit floating point little endian
     * "float32be": 32-bit floating point big endian
     * "float64le": 64-bit floating point little endian
@@ -162,32 +162,32 @@ with ```config.json``` like
     "elements": [{
         "name": "UCB00_BMI_BMHDID",
         "addr": "0xAF400000",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }, {
         "name": "UCB00_STAD",
         "addr": "0xAF400004",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }, {
         "name": "UCB00_CRCBMHD",
         "addr": "0xAF400008",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }, {
         "name": "UCB00_CRCBMHD_N",
         "addr": "0xAF40000C",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }, {
         "name": "UCB00_PWx",
         "addr": "0xAF400104",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 8
     }, {
         "name": "UCB00_CONFIRMATION",
         "addr": "0xAF4001F0",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }]
 }
@@ -221,32 +221,32 @@ with ```config.json``` like
     "elements": [{
         "name": "UCB00_BMI_BMHDID",
         "addr": "0xAF400000",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }, {
         "name": "UCB00_STAD",
         "addr": "0xAF400004",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }, {
         "name": "UCB00_CRCBMHD",
         "addr": "0xAF400008",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }, {
         "name": "UCB00_CRCBMHD_N",
         "addr": "0xAF40000C",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }, {
         "name": "UCB00_PWx",
         "addr": "0xAF400104",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 8
     }, {
         "name": "UCB00_CONFIRMATION",
         "addr": "0xAF4001F0",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }]
 }
@@ -291,8 +291,8 @@ with ```markdown.mao``` like
     if bmhdid == 0xB359:
         is_bmh_valid = "OK"
     
-    calculated_crc_bmhd = m_calc_checksum("u32le", UCB00_BMI_BMHDID.addr(), UCB00_CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, True)
-    calculated_crc_bmhd_n = m_calc_checksum("u32le", UCB00_BMI_BMHDID.addr(), UCB00_CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, False)
+    calculated_crc_bmhd = m_calc_checksum("uint32le", UCB00_BMI_BMHDID.addr(), UCB00_CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, True)
+    calculated_crc_bmhd_n = m_calc_checksum("uint32le", UCB00_BMI_BMHDID.addr(), UCB00_CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, False)
 
     is_bmh_integrity_given = "Not OK"
     if calculated_crc_bmhd == UCB00_CRCBMHD:
@@ -350,28 +350,28 @@ Note that nested structures are not supported yet!
         "addr": "0xAF400000",
         "dataType": [{
             "name": "BMI_BMHDID",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         }, {
             "name": "STAD",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         }, {
             "name": "CRCBMHD",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         }, {
             "name": "CRCBMHD_N",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         }, {
             "name": "PWx",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "offset": "0x0104",
             "count": 8
         }, {
             "name": "CONFIRMATION",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "offset": "0x01F0",
             "count": 1
         }],
@@ -421,8 +421,8 @@ with ```markdown.mao``` like
     if bmhdid == 0xB359:
         is_bmh_valid = "OK"
 
-    calculated_crc_bmhd = m_calc_checksum("u32le", UCB00.BMI_BMHDID.addr(), UCB00.CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, True)
-    calculated_crc_bmhd_n = m_calc_checksum("u32le", UCB00.BMI_BMHDID.addr(), UCB00.CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, False)
+    calculated_crc_bmhd = m_calc_checksum("uint32le", UCB00.BMI_BMHDID.addr(), UCB00.CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, True)
+    calculated_crc_bmhd_n = m_calc_checksum("uint32le", UCB00.BMI_BMHDID.addr(), UCB00.CRCBMHD.addr(), 0x04c11db7, 32, 0xffffffff, True, True, False)
 
     is_bmh_integrity_given = "Not OK"
     if calculated_crc_bmhd == UCB00.CRCBMHD:
@@ -457,28 +457,28 @@ If a structure shall be used several times, define it as a datatype and use its 
         "name": "UCB_t",
         "elements": [{
             "name": "BMI_BMHDID",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         }, {
             "name": "STAD",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         }, {
             "name": "CRCBMHD",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         }, {
             "name": "CRCBMHD_N",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         }, {
             "name": "PWx",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "offset": "0x0104",
             "count": 8
         }, {
             "name": "CONFIRMATION",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "offset": "0x01F0",
             "count": 1
         }]
@@ -502,85 +502,85 @@ Returns:
 * "Ok": If both values are equal.
 * "Not Ok (Set: &lt;set_value&gt;, Actual: &lt;actual_value&gt;)": If the values are different.
 
-## m_read_u8()
+## m_read_uint8()
 Read unsigned 8-bit value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_u16le()
+## m_read_uint16le()
 Read unsigned 16-bit little endian value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_u16be()
+## m_read_uint16be()
 Read unsigned 16-bit big endian value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_u32le()
+## m_read_uint32le()
 Read unsigned 32-bit little endian value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_u32be()
+## m_read_uint32be()
 Read unsigned 32-bit big endian value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_u64le()
+## m_read_uint64le()
 Read unsigned 64-bit little endian value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_u64be()
+## m_read_uint64be()
 Read unsigned 64-bit big endian value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_s8()
+## m_read_int8()
 Read signed 8-bit value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_s16le()
+## m_read_int16le()
 Read signed 16-bit little endian value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_s16be()
+## m_read_int16be()
 Read signed 16-bit big endian value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_s32le()
+## m_read_int32le()
 Read signed 32-bit little endian value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_s32be()
+## m_read_int32be()
 Read signed 32-bit big endian value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_s64le()
+## m_read_int64le()
 Read signed 64-bit little endian value from binary data at given address and returns it.
 
 Parameters:
 * addr: Address
 
-## m_read_s64be()
+## m_read_int64be()
 Read signed 64-bit big endian value from binary data at given address and returns it.
 
 Parameters:
@@ -622,11 +622,11 @@ Calculate the CRC checksum.
 
 Parameters:
 * binary_data_endianess: The binary data endianess and bit width:
-    * "u8": unsigned 8-bit
-    * "u16le": unsigned 16-bit little endian
-    * "u16be": unsigned 16-bit big endian
-    * "u32le": unsigned 32-bit little endian
-    * "u32be": unsigned 32-bit big endian
+    * "uint8": unsigned 8-bit
+    * "uint16le": unsigned 16-bit little endian
+    * "uint16be": unsigned 16-bit big endian
+    * "uint32le": unsigned 32-bit little endian
+    * "uint32be": unsigned 32-bit big endian
 * start_address: Start address of the CRC calculation.
 * end_address: End address of the CRC calculation (not included).
 * polynomial: The polynomial for the CRC calculation.

@@ -21,7 +21,7 @@ def test_dump(capsys):
         binary_data[idx] = ord(test_data[idx])
 
     # unsigned 8-bit dump
-    mem_access_api = mem_access_get_api_by_data_type("u8")
+    mem_access_api = mem_access_get_api_by_data_type("uint8")
     mem_access_api.set_binary_data(binary_data)
 
     ret_status = common_dump_intel_hex(mem_access_api, 0, len(test_data))
@@ -32,7 +32,7 @@ def test_dump(capsys):
     assert captured.out == "0000: 31 32 33 34 35 36 37 38"
 
     # unsigned 16-bit LE dump
-    mem_access_api = mem_access_get_api_by_data_type("u16le")
+    mem_access_api = mem_access_get_api_by_data_type("uint16le")
     mem_access_api.set_binary_data(binary_data)
 
     ret_status = common_dump_intel_hex(mem_access_api, 0, len(test_data) // 2)
@@ -43,7 +43,7 @@ def test_dump(capsys):
     assert captured.out == "0000: 3231 3433 3635 3837"
 
     # unsigned 16-bit BE dump
-    mem_access_api = mem_access_get_api_by_data_type("u16be")
+    mem_access_api = mem_access_get_api_by_data_type("uint16be")
     mem_access_api.set_binary_data(binary_data)
 
     ret_status = common_dump_intel_hex(mem_access_api, 0, len(test_data) // 2)
@@ -54,7 +54,7 @@ def test_dump(capsys):
     assert captured.out == "0000: 3132 3334 3536 3738"
 
     # unsigned 32-bit LE dump
-    mem_access_api = mem_access_get_api_by_data_type("u32le")
+    mem_access_api = mem_access_get_api_by_data_type("uint32le")
     mem_access_api.set_binary_data(binary_data)
 
     ret_status = common_dump_intel_hex(mem_access_api, 0, len(test_data) // 4)
@@ -65,7 +65,7 @@ def test_dump(capsys):
     assert captured.out == "0000: 34333231 38373635"
 
     # unsigned 32-bit BE dump
-    mem_access_api = mem_access_get_api_by_data_type("u32be")
+    mem_access_api = mem_access_get_api_by_data_type("uint32be")
     mem_access_api.set_binary_data(binary_data)
 
     ret_status = common_dump_intel_hex(mem_access_api, 0, len(test_data) // 4)
@@ -76,7 +76,7 @@ def test_dump(capsys):
     assert captured.out == "0000: 31323334 35363738"
 
     # unsigned 8-bit dump - next line after half number of bytes
-    mem_access_api = mem_access_get_api_by_data_type("u8")
+    mem_access_api = mem_access_get_api_by_data_type("uint8")
     mem_access_api.set_binary_data(binary_data)
 
     ret_status = common_dump_intel_hex(mem_access_api, 0, len(test_data), len(test_data) // 2)
@@ -99,7 +99,7 @@ def test_calc_checksum():
         binary_data[idx] = ord(test_data[idx])
 
     test_case_list = [{
-        "binary_data_endianess": "u8",
+        "binary_data_endianess": "uint8",
         "start_addr": 0,
         "end_addr": len(test_data),
         "polynomial": 0x07,
@@ -110,7 +110,7 @@ def test_calc_checksum():
         "final_xor": False,
         "expected": 0xC7
     }, {
-        "binary_data_endianess": "u8",
+        "binary_data_endianess": "uint8",
         "start_addr": 0,
         "end_addr": len(test_data),
         "polynomial": 0x07,
@@ -121,7 +121,7 @@ def test_calc_checksum():
         "final_xor": False,
         "expected": 0xE3
     }, {
-        "binary_data_endianess": "u8",
+        "binary_data_endianess": "uint8",
         "start_addr": 0,
         "end_addr": len(test_data),
         "polynomial": 0x07,
@@ -132,7 +132,7 @@ def test_calc_checksum():
         "final_xor": True, # Inverted
         "expected": 0x38
     }, {
-        "binary_data_endianess": "u8",
+        "binary_data_endianess": "uint8",
         "start_addr": 0,
         "end_addr": len(test_data),
         "polynomial": 0x04C11DB7,
@@ -176,47 +176,47 @@ def test_macros_read_unsigned_integers():
     macro_dict = get_macro_dict()
     set_binary_data(binary_data)
 
-    # u8 access
-    value = macro_dict["m_read_u8"](0)
+    # uint8 access
+    value = macro_dict["m_read_uint8"](0)
     assert test_data[0] == value
 
-    # u16le access
-    value = macro_dict["m_read_u16le"](0)
+    # uint16le access
+    value = macro_dict["m_read_uint16le"](0)
     expected = 0
     for idx in range(2):
         expected |= test_data[idx] << (idx * 8)
     assert hex(expected) == hex(value)
 
-    # u16be access
-    value = macro_dict["m_read_u16be"](0)
+    # uint16be access
+    value = macro_dict["m_read_uint16be"](0)
     expected = 0
     for idx in range(2):
         expected |= test_data[idx] << (8 - idx * 8)
     assert hex(expected) == hex(value)
 
-    # u32le access
-    value = macro_dict["m_read_u32le"](0)
+    # uint32le access
+    value = macro_dict["m_read_uint32le"](0)
     expected = 0
     for idx in range(4):
         expected |= test_data[idx] << (idx * 8)
     assert hex(expected) == hex(value)
 
-    # u32be access
-    value = macro_dict["m_read_u32be"](0)
+    # uint32be access
+    value = macro_dict["m_read_uint32be"](0)
     expected = 0
     for idx in range(4):
         expected |= test_data[idx] << (24 - idx * 8)
     assert hex(expected) == hex(value)
 
-    # u64le access
-    value = macro_dict["m_read_u64le"](0)
+    # uint64le access
+    value = macro_dict["m_read_uint64le"](0)
     expected = 0
     for idx in range(8):
         expected |= test_data[idx] << (idx * 8)
     assert hex(expected) == hex(value)
 
-    # u64be access
-    value = macro_dict["m_read_u64be"](0)
+    # uint64be access
+    value = macro_dict["m_read_uint64be"](0)
     expected = 0
     for idx in range(8):
         expected |= test_data[idx] << (56 - idx * 8)
@@ -230,33 +230,33 @@ def test_macros_read_signed_integers():
     macro_dict = get_macro_dict()
     set_binary_data(binary_data)
 
-    # s8 access
+    # int8 access
     test_value = -128
     bit_width = 8
     value_raw = test_value & (2**bit_width - 1)
     binary_data[0] = value_raw
-    value = macro_dict["m_read_s8"](0)
+    value = macro_dict["m_read_int8"](0)
     assert test_value == value
 
-    # s16le access
+    # int16le access
     test_value = -512
     bit_width = 16
     value_raw = test_value & (2**bit_width - 1)
     binary_data[0] = (value_raw >> 0) & 0xff
     binary_data[1] = (value_raw >> 8) & 0xff
-    value = macro_dict["m_read_s16le"](0)
+    value = macro_dict["m_read_int16le"](0)
     assert test_value == value
 
-    # s16be access
+    # int16be access
     test_value = -513
     bit_width = 16
     value_raw = test_value & (2**bit_width - 1)
     binary_data[0] = (value_raw >> 8) & 0xff
     binary_data[1] = (value_raw >> 0) & 0xff
-    value = macro_dict["m_read_s16be"](0)
+    value = macro_dict["m_read_int16be"](0)
     assert test_value == value
 
-    # s32le access
+    # int32le access
     test_value = -80001
     bit_width = 32
     value_raw = test_value & (2**bit_width - 1)
@@ -264,10 +264,10 @@ def test_macros_read_signed_integers():
     binary_data[1] = (value_raw >>  8) & 0xff
     binary_data[2] = (value_raw >> 16) & 0xff
     binary_data[3] = (value_raw >> 24) & 0xff
-    value = macro_dict["m_read_s32le"](0)
+    value = macro_dict["m_read_int32le"](0)
     assert test_value == value
 
-    # s32be access
+    # int32be access
     test_value = -80002
     bit_width = 32
     value_raw = test_value & (2**bit_width - 1)
@@ -275,7 +275,7 @@ def test_macros_read_signed_integers():
     binary_data[1] = (value_raw >> 16) & 0xff
     binary_data[2] = (value_raw >>  8) & 0xff
     binary_data[3] = (value_raw >>  0) & 0xff
-    value = macro_dict["m_read_s32be"](0)
+    value = macro_dict["m_read_int32be"](0)
     assert test_value == value
 
 def test_macros_read_float32():

@@ -2,32 +2,32 @@
     "elements": [{
         "name": "UCB00_BMI_BMHDID",
         "addr": "0xAF400000",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }, {
         "name": "UCB00_STAD",
         "addr": "0xAF400004",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }, {
         "name": "UCB00_CRCBMHD",
         "addr": "0xAF400008",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }, {
         "name": "UCB00_CRCBMHD_N",
         "addr": "0xAF40000C",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }, {
         "name": "UCB00_PWx",
         "addr": "0xAF400104",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 8
     }, {
         "name": "UCB00_CONFIRMATION",
         "addr": "0xAF4001F0",
-        "dataType": "u32le",
+        "dataType": "uint32le",
         "count": 1
     }]
 }

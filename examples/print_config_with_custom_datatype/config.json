@@ -4,28 +4,28 @@
         "addr": "0xAF400000",
         "dataType": [{
             "name": "BMI_BMHDID",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         }, {
             "name": "STAD",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         }, {
             "name": "CRCBMHD",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         }, {
             "name": "CRCBMHD_N",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "count": 1
         }, {
             "name": "PWx",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "offset": "0x0104",
             "count": 8
         }, {
             "name": "CONFIRMATION",
-            "dataType": "u32le",
+            "dataType": "uint32le",
             "offset": "0x01F0",
             "count": 1
         }],
