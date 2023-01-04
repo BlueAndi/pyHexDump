@@ -8,7 +8,7 @@ from pyHexDump.mem_access import mem_access_get_api_by_data_type
 from pyHexDump.common import common_dump_intel_hex
 from pyHexDump.cmd_checksum import calc_checksum
 from pyHexDump.macros import get_macro_dict, set_binary_data
-from pyHexDump.cmd_print import TmplElement
+from pyHexDump.tmpl_element import TmplElement
 
 def test_dump(capsys):
     """Test the dump of binary data.

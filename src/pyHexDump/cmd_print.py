@@ -30,7 +30,6 @@
 ################################################################################
 # Imports
 ################################################################################
-import struct
 from mako.template import Template
 from mako.exceptions import SyntaxException, RichTraceback
 from pyHexDump.constants import Ret
@@ -40,6 +39,9 @@ from pyHexDump.common import \
     common_load_template_file
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 from pyHexDump.macros import get_macro_dict, set_binary_data
+from pyHexDump.config_element import ConfigElement
+from pyHexDump.tmpl_element import TmplElement
+from pyHexDump.bunch import dict_to_bunch
 
 # pylint: disable=duplicate-code
 
@@ -54,259 +56,9 @@ _IS_VERBOSE = False
 # Classes
 ################################################################################
 
-class ConfigElement:
-    """Represents a single element in the configuration.
-    """
-    def __init__(self, name, addr, data_type, count) -> None:
-        self._name = name
-        self._addr = addr
-        self._mem_access = mem_access_get_api_by_data_type(data_type)
-        self._count = count
-
-    def get_name(self):
-        """Get the configuration element name.
-
-        Returns:
-            str: Configuration element name
-        """
-        return self._name
-
-    def get_addr(self):
-        """Get the configuration element address.
-
-        Returns:
-            int: Configuration element address
-        """
-        return self._addr
-
-    def get_count(self):
-        """Get the configuration element count.
-            A count of 1 means its just one value.
-            Greater than 1 for a array of values.
-
-        Returns:
-            int: Configuration element count
-        """
-        return self._count
-
-    def get_mem_access(self):
-        """Get the memory access API.
-
-        Returns:
-            MemAccess: Memory access API
-        """
-        return self._mem_access
-
-    def set_intel_hex(self, intel_hex):
-        """Set the intel hex ...
-
-        Args:
-            intel_hex (_type_): _description_
-        """
-        if self._mem_access is not None:
-            self._mem_access.set_binary_data(intel_hex)
-
-    def get_value(self):
-        """Get the configuration element value.
-            If the count is 1, only a single value will be returned.
-            If the count is greater than 1, a list of values will be returned.
-
-        Returns:
-            int, list: Configuration element value
-        """
-        value = 0
-
-        if self._mem_access is None:
-            return 0
-
-        if self._count == 1:
-            value = self._mem_access.get_value(self._addr)
-        elif self._count > 1:
-            value = []
-            for idx in range(self._count):
-                offset = idx * self._mem_access.get_size()
-                value.append(self._mem_access.get_value(self._addr + offset))
-        else:
-            value = 0
-
-        return value
-
-class Bunch(dict):
-    """Bunch is a dictionary that supports attribute-style access, a la JavaScript.
-        A dictionary must be accessed via myDict["test"].
-        A bunch can access the same with myDict.test.
-    """
-    def __init__(self, dict_of_items):
-        dict.__init__(self, dict_of_items)
-        self.__dict__.update(dict_of_items)
-
-class TmplElement():
-    """Template element representing a element with a address, value and bit width.
-    """
-    def __init__(self, name, addr, value, bit_width) -> None:
-        self._name = name
-        self._addr = addr
-        self._value = value
-        self._bit_width = bit_width
-
-    def __int__(self):
-        if isinstance(self._value, int) is False:
-            raise TypeError("Template element is not a int.")
-        return self._value
-
-    def __str__(self):
-        return str(self._value)
-
-    def __add__(self, value):
-        return self._value + value
-
-    def __sub__(self, value):
-        return self._value - value
-
-    def __mul__(self, value):
-        return self._value * value
-
-    def __pow__(self, value):
-        return self._value ** value
-
-    def __truediv__(self, value):
-        return self._value / value
-
-    def __floordiv__(self, value):
-        return self._value // value
-
-    def __mod__(self, value):
-        return self._value % value
-
-    def __lshift__(self, value):
-        return self._value << value
-
-    def __rshift__(self, value):
-        return self._value >> value
-
-    def __and__(self, value):
-        return self._value & value
-
-    def __or__(self, value):
-        return self._value | value
-
-    def __xor__(self, value):
-        return self._value ^ value
-
-    def __invert__(self):
-        return ~self._value
-
-    def __lt__(self, value):
-        return self._value < value
-
-    def __le__(self, value):
-        return self._value <= value
-
-    def __eq__(self, value):
-        return self._value == value
-
-    def __ne__(self, value):
-        return self._value != value
-
-    def __gt__(self, value):
-        return self._value > value
-
-    def __ge__(self, value):
-        return self._value >= value
-
-    def __getitem__(self, idx):
-        if isinstance(self._value, list) is False:
-            raise TypeError("Template element is not a list.")
-        return self._value[idx]
-
-    def _value_to_hex(self, value, prefix):
-
-        if isinstance(value, int) is True:
-            if value < 0:
-                value &= (1 << self._bit_width) - 1
-
-        elif isinstance(value, float) is True:
-            if self._bit_width == 32:
-                value = struct.unpack('<I', struct.pack('<f', value))[0]
-            elif self._bit_width == 64:
-                value = struct.unpack('<Q', struct.pack('<d', value))[0]
-            else:
-                raise NotImplementedError(f"Unsupported bit width of {self._bit_width} for float")
-
-        return f"{prefix}{value:0{self._bit_width // 4}X}"
-
-    def hex(self, prefix="0x"):
-        """Get the value in hex format.
-
-        Args:
-            prefix (str, optional): Prefix. Defaults to "0x".
-
-        Returns:
-            str: Hex value
-        """
-        output = ""
-
-        if isinstance(self._value, int) is True:
-            output = self._value_to_hex(self._value, prefix)
-
-        elif isinstance(self._value, float) is True:
-            output = self._value_to_hex(self._value, prefix)
-
-        elif isinstance(self._value, list) is True:
-            output = "["
-
-            for idx, value in enumerate(self._value):
-
-                if idx > 0:
-                    output += ", "
-
-                output += self._value_to_hex(value, prefix)
-
-            output += "]"
-
-        else:
-            raise NotImplementedError(f"{type(self._value)} is not supported.")
-
-        return output
-
-    def name(self):
-        """Get name of the element.
-
-        Returns:
-            str: Element name
-        """
-        return self._name
-
-    def addr(self):
-        """Get the address of the element in the binary data.
-
-        Returns:
-            int: Address
-        """
-        return self._addr
-
 ################################################################################
 # Functions
 ################################################################################
-
-def _dict_to_bunch(dict_of_items):
-    """Convert a dictionary to a bunch.
-
-    Args:
-        dict_of_items (dict): Dictionary of items
-
-    Returns:
-        Bunch: Bunch of items
-    """
-    bunch_of_items = {}
-
-    for key, value in dict_of_items.items():
-        if isinstance(value, dict):
-            value = _dict_to_bunch(value)
-
-        bunch_of_items[key] = value
-
-    return Bunch(bunch_of_items)
 
 def _find_structure_definition(config_dict, structure_name):
     """Find a structure definition by its name.
@@ -621,7 +373,7 @@ def _print_template(binary_data, tmpl_element_dict, template):
     set_binary_data(binary_data)
 
     # Create the template
-    tmpl_element_bunch = _dict_to_bunch(tmpl_element_dict)
+    tmpl_element_bunch = dict_to_bunch(tmpl_element_dict)
 
     try:
         tmpl = Template(template, strict_undefined=True)
