@@ -315,7 +315,8 @@ def mem_access_get_api_by_data_type(data_type):
         "float32le": MemAccessFloat(None, 32, True),
         "float32be": MemAccessFloat(None, 32, False),
         "float64le": MemAccessFloat(None, 64, True),
-        "float64be": MemAccessFloat(None, 64, False)
+        "float64be": MemAccessFloat(None, 64, False),
+        "utf8": MemAccessInteger(None, 8, True, True)
     }
 
     return mem_access_lookup.get(data_type, None)

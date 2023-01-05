@@ -10,6 +10,7 @@ There are a lot of hex viewers already, but I was not able to find one which I c
 - [Installation](#installation)
 - [Usage](#usage)
 - [Overview](#overview)
+- [Datatypes](#datatypes)
 - [Examples](#examples)
   - [Dump data as 8-bit](#dump-data-as-8-bit)
   - [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
@@ -68,6 +69,28 @@ $ pyHexDump --help
 # Overview
 
 ![goverview](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/BlueAndi/pyHexDump/main/doc/uml/static_view.wsd)
+
+# Datatypes
+
+* "int8": signed 8-bit
+* "uint8": unsigned 8-bit
+* "int16le": signed 16-bit little endian
+* "int16be": signed 16-bit big endian
+* "uint16le": unsigned 16-bit little endian
+* "uint16be": unsigned 16-bit big endian
+* "int32le": signed 32-bit little endian
+* "int32be": signed 32-bit big endian
+* "uint32le": unsigned 32-bit little endian
+* "uint32be": unsigned 32-bit big endian
+* "int64le": signed 64-bit little endian
+* "int64be": signed 64-bit big endian
+* "uint64le": unsigned 64-bit little endian
+* "uint64be": unsigned 64-bit big endian
+* "float32le": floating point 32-bit little endian
+* "float32be": floating point 32-bit big endian
+* "float64le": floating point 64-bit little endian
+* "float64be": floating point 64-bit big endian
+* "utf8": String encoded in UTF-8
 
 # Examples
 Don't miss the examples in the [example](./examples/) folder. In the following chapters you can see how to use pyHexDump and its output.
