@@ -56,7 +56,7 @@ _IS_VERBOSE = False
 # Functions
 ################################################################################
 
-def _print_config_elements(tmpl_model, show_only_in_hex, namespace=""):
+def _print_config_elements(tmpl_element_dict, show_only_in_hex, namespace=""):
     """Print a single configuration element with its value, read from the
         binary data.
 
@@ -70,17 +70,20 @@ def _print_config_elements(tmpl_model, show_only_in_hex, namespace=""):
     """
     ret_status = Ret.OK
 
-    for key, tmpl_element in tmpl_model.get().items():
+    for key, tmpl_element in tmpl_element_dict.items():
 
         # The dictionary of elements may contain further dictionaries which
         # corresponds to a structure of elements.
         if isinstance(tmpl_element, dict):
-            _print_config_elements(tmpl_element, show_only_in_hex, namespace + key + ".") # pylint: disable=line-too-long
+            ret_status = _print_config_elements(tmpl_element, show_only_in_hex, namespace + key + ".") # pylint: disable=line-too-long
         else:
             if show_only_in_hex is True:
                 print(f"{namespace}{key} @ {tmpl_element.addr():08X}: {tmpl_element.hex()}")
             else:
                 print(f"{namespace}{key} @ {tmpl_element.addr():08X}: {tmpl_element}")
+
+        if ret_status != Ret.OK:
+            break
 
     return ret_status
 
@@ -88,7 +91,7 @@ def _print_template(tmpl_model, template):
     """Print a generated report from template and configuration element dictionary.
 
     Args:
-        tmpl_element_dict (dict): The template element objects.
+        tmpl_model (obj): The template element model
         template (str): The template content
 
     Returns:
@@ -96,10 +99,16 @@ def _print_template(tmpl_model, template):
     """
     ret_status = Ret.OK
     tmpl_element_dict = tmpl_model.get()
+    tmpl_element_list = tmpl_model.get_list()
+
+    # Add a list of all config elements to be able to iterate in the template over all.
+    tmpl_element_dict.update({
+        "config_elements": tmpl_element_list
+    })
 
     if _IS_VERBOSE is True:
         print("Configuration elements:")
-        for element in tmpl_model.get_list():
+        for element in tmpl_element_list:
             print(f"* {element.name()}")
         print("\n")
 
@@ -167,7 +176,7 @@ def _cmd_print(binary_file, config_file, template_file, show_only_in_hex):
             # configuration will be printed. Otherwise the template is used to
             # print a corresponding report.
             if template_file is None:
-                ret_status = _print_config_elements(tmpl_model, show_only_in_hex) # pylint: disable=line-too-long
+                ret_status = _print_config_elements(tmpl_model.get(), show_only_in_hex) # pylint: disable=line-too-long
             else:
                 ret_status, template = common_load_template_file(template_file)
 

@@ -124,6 +124,36 @@ def test_macros_read_signed_integers():
     value = macro_dict["m_read_int32be"](0)
     assert test_value == value
 
+    # int64le access
+    test_value = -80001
+    bit_width = 64
+    value_raw = test_value & (2**bit_width - 1)
+    binary_data[0] = (value_raw >>  0) & 0xff
+    binary_data[1] = (value_raw >>  8) & 0xff
+    binary_data[2] = (value_raw >> 16) & 0xff
+    binary_data[3] = (value_raw >> 24) & 0xff
+    binary_data[4] = (value_raw >> 32) & 0xff
+    binary_data[5] = (value_raw >> 40) & 0xff
+    binary_data[6] = (value_raw >> 48) & 0xff
+    binary_data[7] = (value_raw >> 56) & 0xff
+    value = macro_dict["m_read_int64le"](0)
+    assert test_value == value
+
+    # int64be access
+    test_value = -80002
+    bit_width = 64
+    value_raw = test_value & (2**bit_width - 1)
+    binary_data[0] = (value_raw >> 56) & 0xff
+    binary_data[1] = (value_raw >> 48) & 0xff
+    binary_data[2] = (value_raw >> 40) & 0xff
+    binary_data[3] = (value_raw >> 32) & 0xff
+    binary_data[4] = (value_raw >> 24) & 0xff
+    binary_data[5] = (value_raw >> 16) & 0xff
+    binary_data[6] = (value_raw >>  8) & 0xff
+    binary_data[7] = (value_raw >>  0) & 0xff
+    value = macro_dict["m_read_int64be"](0)
+    assert test_value == value
+
 def test_macros_read_float32():
     """Test macros to read 32-bit floating values.
     """

@@ -79,13 +79,18 @@ class ConfigModel():
         structure_pos = None
 
         if "structures" in config_dict:
-            for item in config_dict["structures"]:
+            for idx, item in enumerate(config_dict["structures"]):
                 if "name" in item:
-                    if item["name"] == structure_name:
+                    name = item["name"]
+                    if name == structure_name:
                         if "elements" in item:
                             structure_pos = item["elements"]
-
+                        else:
+                            print(f"Warning: \"elements\" is missing for {name} element.")
                         break
+
+                else:
+                    print(f"Warning: \"name\" is missing for {idx + 1}. structure element.")
 
         return structure_pos
 
@@ -160,18 +165,20 @@ class ConfigModel():
         cfg_elements_dict = {}
         addr = base_addr
 
-        for item in config_dict:
+        for idx, item in enumerate(config_dict):
 
             # "name" is mandatory
             name = self._get_name_from_config_item(item)
 
             if name is None:
+                print(f"Warning: \"name\" is missing for {idx + 1}. structure element.")
                 break
 
             # "count" is mandatory
             count = self._get_count_from_config_item(item)
 
             if count is None:
+                print(f"Warning: \"count\" is missing for {name} structure element.")
                 break
 
             # "offset" is optional
@@ -185,9 +192,11 @@ class ConfigModel():
 
             # Nested structures not supported yet!
             if isinstance(data_type, list) is True:
+                print(f"Warning: Nested structures are not supported yet!")
                 break
 
             if data_type is None:
+                print(f"Warning: \"dataTyüe\" is missing for {name} structure element.")
                 break
 
             # A offset is always relative to the given base address.
@@ -216,32 +225,37 @@ class ConfigModel():
         cfg_elements_dict = {}
 
         if "elements" not in config_dict:
+            print("Warning: No elements found.")
             return cfg_elements_dict
 
-        for item in config_dict["elements"]:
+        for idx, item in enumerate(config_dict["elements"]):
 
             # "name" is mandatory
             name = self._get_name_from_config_item(item)
 
             if name is None:
+                print(f"Warning: \"name\" is missing for {idx + 1}. element.")
                 continue
 
             # "addr" is mandatory
             addr = self._get_addr_from_config_item(item)
 
             if addr is None:
+                print(f"Warning: \"addr\" is missing for {name}.")
                 continue
 
             # "count" is mandatory
             count = self._get_count_from_config_item(item)
 
             if count is None:
+                print(f"Warning: \"count\" is missing for {name}.")
                 continue
 
             # "data_type" is mandatory
             data_type = self._get_data_type_from_config_item(item)
 
             if data_type is None:
+                print(f"Warning: \"dataType\" is missing for {name}.")
                 continue
 
             # Is it a builtin or custom datatype?
@@ -251,7 +265,9 @@ class ConfigModel():
                 if mem_access_get_api_by_data_type(data_type) is None:
                     structure_definition = self._find_structure_definition(config_dict, data_type)
 
-                    if structure_definition is not None:
+                    if structure_definition is None:
+                        print(f"Warning: Datatype {data_type} not found.")
+                    else:
                         if name not in cfg_elements_dict:
                             cfg_elements_dict[name] = self._get_config_structure(name, structure_definition, addr)   # pylint: disable=line-too-long
                         else:

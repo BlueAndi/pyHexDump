@@ -26,12 +26,11 @@
 ################################################################################
 # Imports
 ################################################################################
-from pyHexDump.tmpl_element import \
-    TmplElementInt, \
-    TmplElementIntList, \
-    TmplElementFloat, \
-    TmplElementFloatList, \
-    TmplElementStr
+from pyHexDump.tmpl_element import TmplElementInt, \
+                                    TmplElementIntList, \
+                                    TmplElementFloat, \
+                                    TmplElementFloatList, \
+                                    TmplElementStr
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 
 ################################################################################
@@ -68,10 +67,7 @@ class TmplModel():
         Returns:
             dict: Configuration elements
         """
-        complete_dict = self._tmpl_element_dict
-        complete_dict.update({"config_elements": self._tmpl_element_list})
-
-        return complete_dict
+        return self._tmpl_element_dict
 
     def get_list(self):
         """Get list of configuration elements.
@@ -113,10 +109,10 @@ class TmplModel():
 
         return tmpl_element
 
-    def _read_string_(self, mem_access, addr, encoding="utf-8"):
+    def _read_string_(self, mem_access, addr, max_length = 256, encoding="utf-8"):
         value_list = []
         idx = 0
-        while True:
+        while max_length > idx:
             value = mem_access.get_value(addr + idx)
             if value == 0:
                 break
@@ -131,7 +127,8 @@ class TmplModel():
         bit_width = mem_access.get_size() * 8
 
         if self._is_str(cfg_element.get_datatype()) is True:
-            str_utf8 = self._read_string_(mem_access, cfg_element.get_addr(), "utf-8")
+            max_length = cfg_element.get_count() * mem_access.get_size()
+            str_utf8 = self._read_string_(mem_access, cfg_element.get_addr(), max_length, "utf-8")
             tmpl_element = TmplElementStr(cfg_element.get_name(), cfg_element.get_addr(), str_utf8, bit_width)              # pylint: disable=line-too-long
 
         else:
