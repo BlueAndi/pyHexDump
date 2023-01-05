@@ -68,7 +68,7 @@ def test_macros_read_unsigned_integers():
         expected |= test_data[idx] << (56 - idx * 8)
     assert hex(expected) == hex(value)
 
-def test_macros_read_signed_integers():
+def test_macros_read_signed_integers(): #pylint: disable=too-many-statements
     """Test macros to read signed integer values.
     """
     binary_data = IntelHex()
