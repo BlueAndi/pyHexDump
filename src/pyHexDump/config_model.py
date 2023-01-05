@@ -192,7 +192,7 @@ class ConfigModel():
 
             # Nested structures not supported yet!
             if isinstance(data_type, list) is True:
-                print(f"Warning: Nested structures are not supported yet!")
+                print("Warning: Nested structures are not supported yet!")
                 break
 
             if data_type is None:
