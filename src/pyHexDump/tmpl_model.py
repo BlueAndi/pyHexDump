@@ -33,6 +33,8 @@ from pyHexDump.tmpl_element import TmplElementInt, \
                                     TmplElementStr
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 
+# pylint: disable=duplicate-code
+
 ################################################################################
 # Variables
 ################################################################################
