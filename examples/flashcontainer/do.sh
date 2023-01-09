@@ -13,7 +13,7 @@ then
 fi
 
 echo Generate intel hex file powered by https://github.com/nhjschulz/flashcontainer
-pargen --ihex --pyhexdump --destdir . example.xml
+pargen --static --ihex --pyhexdump --destdir . example.xml
 echo
 echo Generate report in markdown
 CWD=`pwd`
