@@ -1,0 +1,38 @@
+{
+    "elements": [{
+        "name": "UCB00",
+        "addr": "0xAF400000",
+        "dataType": "UCB_t",
+        "count": 1
+    }],
+    "structures": [{
+        "name": "UCB_t",
+        "elements": [{
+            "name": "BMI_BMHDID",
+            "dataType": "uint32le",
+            "count": 1
+        }, {
+            "name": "STAD",
+            "dataType": "uint32le",
+            "count": 1
+        }, {
+            "name": "CRCBMHD",
+            "dataType": "uint32le",
+            "count": 1
+        }, {
+            "name": "CRCBMHD_N",
+            "dataType": "uint32le",
+            "count": 1
+        }, {
+            "name": "PWx",
+            "dataType": "uint32le",
+            "offset": "0x0104",
+            "count": 8
+        }, {
+            "name": "CONFIRMATION",
+            "dataType": "uint32le",
+            "offset": "0x01F0",
+            "count": 1
+        }]
+    }]
+}
