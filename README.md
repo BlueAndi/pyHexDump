@@ -7,50 +7,50 @@ There are a lot of hex viewers already, but I was not able to find one which I c
 [![Repo Status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 ![CI Status](https://github.com/BlueAndi/pyHexDump/actions/workflows/test.yml/badge.svg)
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [Overview](#overview)
-- [Datatypes](#datatypes)
-- [Examples](#examples)
-  - [Dump data as 8-bit](#dump-data-as-8-bit)
-  - [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
-  - [Calculate checksum](#calculate-checksum)
-  - [Print configuration](#print-configuration)
-  - [Print report with template](#print-report-with-template)
-    - [Example](#example)
-  - [Configuration using structures](#configuration-using-structures)
-    - [Example](#example-1)
-  - [Define structure as datatype](#define-structure-as-datatype)
-    - [Example](#example-2)
-- [Macros](#macros)
-  - [macros\_compare\_values()](#macros_compare_values)
-  - [m\_read\_uint8()](#m_read_uint8)
-  - [m\_read\_uint16le()](#m_read_uint16le)
-  - [m\_read\_uint16be()](#m_read_uint16be)
-  - [m\_read\_uint32le()](#m_read_uint32le)
-  - [m\_read\_uint32be()](#m_read_uint32be)
-  - [m\_read\_uint64le()](#m_read_uint64le)
-  - [m\_read\_uint64be()](#m_read_uint64be)
-  - [m\_read\_int8()](#m_read_int8)
-  - [m\_read\_int16le()](#m_read_int16le)
-  - [m\_read\_int16be()](#m_read_int16be)
-  - [m\_read\_int32le()](#m_read_int32le)
-  - [m\_read\_int32be()](#m_read_int32be)
-  - [m\_read\_int64le()](#m_read_int64le)
-  - [m\_read\_int64be()](#m_read_int64be)
-  - [m\_read\_float32le()](#m_read_float32le)
-  - [m\_read\_float32be()](#m_read_float32be)
-  - [m\_read\_float64le()](#m_read_float64le)
-  - [m\_read\_float64be()](#m_read_float64be)
-  - [m\_read\_string()](#m_read_string)
-  - [m\_calc\_checksum()](#m_calc_checksum)
-  - [m\_swap\_bytes\_u16()](#m_swap_bytes_u16)
-  - [m\_swap\_bytes\_u32()](#m_swap_bytes_u32)
-  - [m\_swap\_words\_u32()](#m_swap_words_u32)
-- [Used Libraries](#used-libraries)
-- [Issues, Ideas And Bugs](#issues-ideas-and-bugs)
-- [License](#license)
-- [Contribution](#contribution)
+* [Installation](#installation)
+* [Usage](#usage)
+* [Overview](#overview)
+* [Datatypes](#datatypes)
+* [Examples](#examples)
+  * [Dump data as 8-bit](#dump-data-as-8-bit)
+  * [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
+  * [Calculate checksum](#calculate-checksum)
+  * [Print configuration](#print-configuration)
+  * [Print report with template](#print-report-with-template)
+    * [Example](#example)
+  * [Configuration using structures](#configuration-using-structures)
+    * [Example](#example-1)
+  * [Define structure as datatype](#define-structure-as-datatype)
+    * [Example](#example-2)
+* [Macros](#macros)
+  * [macros\_compare\_values()](#macros_compare_values)
+  * [m\_read\_uint8()](#m_read_uint8)
+  * [m\_read\_uint16le()](#m_read_uint16le)
+  * [m\_read\_uint16be()](#m_read_uint16be)
+  * [m\_read\_uint32le()](#m_read_uint32le)
+  * [m\_read\_uint32be()](#m_read_uint32be)
+  * [m\_read\_uint64le()](#m_read_uint64le)
+  * [m\_read\_uint64be()](#m_read_uint64be)
+  * [m\_read\_int8()](#m_read_int8)
+  * [m\_read\_int16le()](#m_read_int16le)
+  * [m\_read\_int16be()](#m_read_int16be)
+  * [m\_read\_int32le()](#m_read_int32le)
+  * [m\_read\_int32be()](#m_read_int32be)
+  * [m\_read\_int64le()](#m_read_int64le)
+  * [m\_read\_int64be()](#m_read_int64be)
+  * [m\_read\_float32le()](#m_read_float32le)
+  * [m\_read\_float32be()](#m_read_float32be)
+  * [m\_read\_float64le()](#m_read_float64le)
+  * [m\_read\_float64be()](#m_read_float64be)
+  * [m\_read\_string()](#m_read_string)
+  * [m\_calc\_checksum()](#m_calc_checksum)
+  * [m\_swap\_bytes\_u16()](#m_swap_bytes_u16)
+  * [m\_swap\_bytes\_u32()](#m_swap_bytes_u32)
+  * [m\_swap\_words\_u32()](#m_swap_words_u32)
+* [Used Libraries](#used-libraries)
+* [Issues, Ideas And Bugs](#issues-ideas-and-bugs)
+* [License](#license)
+* [Contribution](#contribution)
 
 # Installation
 ```cmd
@@ -236,7 +236,7 @@ A configuration element can be accessed in the template via:
 * ```${<config-element-name>.addr()}```: Prints the address in decimal.
 
 ### Example
-```$ pyHexDump print ./examples/aurix_tc397.hex ./examples/config.json --templateFile ./examples/markdown.mao```
+```$ pyHexDump print ./examples/aurix_tc397.hex ./examples/config.json --templateFile ./examples/markdown.mako```
 
 with ```config.json``` like
 ```json
@@ -275,7 +275,7 @@ with ```config.json``` like
 }
 ```
 
-with ```markdown.mao``` like
+with ```markdown.mako``` like
 ```mako
 <%text># Aurix TC397 - Blinky Example</%text>
 
@@ -405,7 +405,7 @@ Note that nested structures are not supported yet!
 
 To access it in the template, you can use the "." notation or Python dictionary syntax.
 
-with ```markdown.mao``` like
+with ```markdown.mako``` like
 ```mako
 <%text># Aurix TC397 - Blinky Example</%text>
 

@@ -18,7 +18,7 @@ echo
 echo Generate report in markdown
 CWD=`pwd`
 pushd ../..
-pyHexDump print $CWD/example.hex $CWD/example.pyhexdump --templateFile $CWD/example.mao > $CWD/example.md
+pyHexDump print $CWD/example.hex $CWD/example.pyhexdump --templateFile $CWD/example.mako > $CWD/example.md
 popd
 echo
 cat example.md

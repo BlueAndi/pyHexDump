@@ -7,5 +7,5 @@ then
 fi
 
 echo Print configuration and template
-pyHexDump print ../data/aurix_tc397.hex config.json --template markdown.mao
+pyHexDump print ../data/aurix_tc397.hex config.json --template markdown.mako
 echo
