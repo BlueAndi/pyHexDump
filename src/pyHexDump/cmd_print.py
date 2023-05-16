@@ -212,7 +212,10 @@ def _cmd_print(binary_file, config_file, template_file, show_only_in_hex, consta
                     # Ensure that the macros can access the binary data
                     set_binary_data(binary_data)
 
-                    constants_dict = _constants_to_dict(constants)
+                    constants_dict = {}
+                    if constants is not None:
+                        constants_dict = _constants_to_dict(constants)
+
                     ret_status = _print_template(tmpl_model, template, constants_dict)
 
     return ret_status
@@ -229,7 +232,10 @@ def _exec(args):
     global _IS_VERBOSE # pylint: disable=global-statement
     _IS_VERBOSE = args.verbose
 
-    return _cmd_print(args.binaryFile[0], args.configFile[0], args.templateFile, args.onlyInHex, args.constant) # pylint: disable=line-too-long,too-many-function-args
+    # Constants are optional
+    constants = getattr(args, 'constant', None)
+
+    return _cmd_print(args.binaryFile[0], args.configFile[0], args.templateFile, args.onlyInHex, constants) # pylint: disable=line-too-long,too-many-function-args
 
 def cmd_print_register(arg_sub_parsers):
     """Register the command specific CLI argument parser and get command
