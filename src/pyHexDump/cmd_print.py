@@ -89,12 +89,13 @@ def _print_config_elements(tmpl_element_dict, show_only_in_hex, namespace=""):
 
     return ret_status
 
-def _print_template(tmpl_model, template):
+def _print_template(tmpl_model, template, constants): # pylint: disable=too-many-locals
     """Print a generated report from template and configuration element dictionary.
 
     Args:
         tmpl_model (obj): The template element model
         template (str): The template content
+        constants (dict): Dictionary of constants to be used in the template.
 
     Returns:
         Ret: If successul printed, it will return Ret.OK otherwise a corresponding error.
@@ -116,6 +117,9 @@ def _print_template(tmpl_model, template):
 
     # Add macro functions, so they are available in the template
     tmpl_element_dict.update(get_macro_dict())
+
+    # Add constants to be available in the template
+    tmpl_element_dict.update(constants)
 
     # Create the template
     tmpl_element_bunch = dict_to_bunch(tmpl_element_dict)
@@ -145,7 +149,26 @@ def _print_template(tmpl_model, template):
 
     return ret_status
 
-def _cmd_print(binary_file, config_file, template_file, show_only_in_hex):
+def _constants_to_dict(constants):
+    """Convert list of constants in key:value format to a dictionary.
+
+    Args:
+        constants (list(str)): List of constants
+
+    Returns:
+        dict(str): Dictionary with constants
+    """
+    constants_dict = {}
+
+    for constant in constants:
+        key_value_pair = constant.split(":", 1)
+
+        if key_value_pair is not None:
+            constants_dict[key_value_pair[0]] = key_value_pair[1]
+
+    return constants_dict
+
+def _cmd_print(binary_file, config_file, template_file, show_only_in_hex, constants):
     """Print configuration element values. The configuration file contains the
         elements with its meta data. A template may be used to format the
         output. If no template is available, the configuration elements will
@@ -156,6 +179,7 @@ def _cmd_print(binary_file, config_file, template_file, show_only_in_hex):
         config_file (str): File name of the configuration file
         template_file (str): File name of the template file
         show_only_in_hex (bool): Show values only in hex format. Only applied without template.
+        constants (list): List of constants to be used in the template. Format "key:value".
 
     Returns:
         Ret: If successful, it will return Ret.OK otherwise a error code.
@@ -188,7 +212,11 @@ def _cmd_print(binary_file, config_file, template_file, show_only_in_hex):
                     # Ensure that the macros can access the binary data
                     set_binary_data(binary_data)
 
-                    ret_status = _print_template(tmpl_model, template)
+                    constants_dict = {}
+                    if constants is not None:
+                        constants_dict = _constants_to_dict(constants)
+
+                    ret_status = _print_template(tmpl_model, template, constants_dict)
 
     return ret_status
 
@@ -204,7 +232,10 @@ def _exec(args):
     global _IS_VERBOSE # pylint: disable=global-statement
     _IS_VERBOSE = args.verbose
 
-    return _cmd_print(args.binaryFile[0], args.configFile[0], args.templateFile, args.onlyInHex)
+    # Constants are optional
+    constants = getattr(args, 'constant', None)
+
+    return _cmd_print(args.binaryFile[0], args.configFile[0], args.templateFile, args.onlyInHex, constants) # pylint: disable=line-too-long,too-many-function-args
 
 def cmd_print_register(arg_sub_parsers):
     """Register the command specific CLI argument parser and get command
@@ -267,6 +298,15 @@ def cmd_print_register(arg_sub_parsers):
         required=False,
         default=False,
         help="Prints more additional information."
+    )
+
+    parser.add_argument(
+        "-c",
+        "--constant",
+        action="append",
+        required=False,
+        help="Constant key/value pair to be used in the template. " \
+                "Can be applied several times. Example --constant name:value"
     )
 
     return cmd_par_dict

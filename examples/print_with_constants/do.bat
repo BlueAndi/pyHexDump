@@ -4,7 +4,7 @@ pyHexDump --version 2>NUL
 if errorlevel 1 goto pyHexDump_not_found
 
 echo Print configuration and template
-pyHexDump print ..\data\aurix_tc397.hex config.json --templateFile markdown.mako
+pyHexDump print ..\data\aurix_tc397.hex config.json --templateFile markdown.mako --constant "MCU:Aurix TC397" --constant "MANUFACTURER:Infineon"
 echo.
 goto :eof
 
