@@ -158,7 +158,7 @@ def _constants_to_dict(constants):
     Returns:
         dict(str): Dictionary with constants
     """
-    constants_dict = dict()
+    constants_dict = {}
 
     for constant in constants:
         key_value_pair = constant.split(":", 1)
