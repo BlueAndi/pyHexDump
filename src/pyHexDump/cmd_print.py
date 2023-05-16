@@ -89,7 +89,7 @@ def _print_config_elements(tmpl_element_dict, show_only_in_hex, namespace=""):
 
     return ret_status
 
-def _print_template(tmpl_model, template, constants):
+def _print_template(tmpl_model, template, constants): # pylint: disable=too-many-locals
     """Print a generated report from template and configuration element dictionary.
 
     Args:
