@@ -190,13 +190,13 @@ class ConfigModel():
             # "data_type" is mandatory
             data_type = self._get_data_type_from_config_item(item)
 
+            if data_type is None:
+                print(f"Warning: \"dataType\" is missing for {name} structure element.")
+                break
+
             # Nested structures not supported yet!
             if isinstance(data_type, list) is True:
                 print("Warning: Nested structures are not supported yet!")
-                break
-
-            if data_type is None:
-                print(f"Warning: \"dataTyüe\" is missing for {name} structure element.")
                 break
 
             # A offset is always relative to the given base address.
@@ -205,6 +205,12 @@ class ConfigModel():
 
             name_full = structure_name + "." + name
             cfg_elements_dict[name] = ConfigElement(name_full, addr, data_type, count)
+
+            mem_access = mem_access_get_api_by_data_type(data_type)
+
+            if mem_access is None:
+                print(f"Warning: Nested structures ({data_type}) are not supported yet!")
+                break
 
             addr += count * mem_access_get_api_by_data_type(data_type).get_size()
 
@@ -266,7 +272,7 @@ class ConfigModel():
                     structure_definition = self._find_structure_definition(config_dict, data_type)
 
                     if structure_definition is None:
-                        print(f"Warning: Datatype {data_type} not found.")
+                        print(f"Warning: Data type {data_type} not found.")
                     else:
                         if name not in cfg_elements_dict:
                             cfg_elements_dict[name] = self._get_config_structure(name, structure_definition, addr)   # pylint: disable=line-too-long
