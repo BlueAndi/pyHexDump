@@ -50,7 +50,7 @@ class TmplModel():
     def __init__(self):
         self._tmpl_element_dict = {}
 
-        # List of all config elements to be able to iterate in the template over all.
+        # List of all template elements to be able to iterate in the template over all.
         self._tmpl_element_list = []
 
     def load_from_config_elements(self, binary_data, cfg_elements_dict):
