@@ -147,6 +147,7 @@ class ConfigModel():
 
         return data_type
 
+    # pylint: disable=too-many-locals,too-many-branches
     def _get_config_structure(self, structure_name, structure_definition, config_dict, base_addr):
         """Get a configuration element object dictionary from the configuration
             item sub dictionary. If not all necessary parameters are available,
