@@ -97,17 +97,17 @@ class TmplModel():
         return data_type in data_types
 
     def _create_template_element_single(self, cfg_element, mem_access):
-        value = mem_access.get_value(cfg_element.get_addr())
+        value = mem_access.get_value(cfg_element.addr)
         bit_width = mem_access.get_size() * 8
 
-        if self._is_integer(cfg_element.get_datatype()) is True:
-            tmpl_element = TmplElementInt(cfg_element.get_name(), cfg_element.get_addr(), value, bit_width)     # pylint: disable=line-too-long
-        elif self._is_float(cfg_element.get_datatype()) is True:
-            tmpl_element = TmplElementFloat(cfg_element.get_name(), cfg_element.get_addr(), value, bit_width)   # pylint: disable=line-too-long
-        elif self._is_str(cfg_element.get_datatype()) is True:
-            tmpl_element = TmplElementStr(cfg_element.get_name(), cfg_element.get_addr(), chr(value), bit_width)     # pylint: disable=line-too-long
+        if self._is_integer(cfg_element.data_type) is True:
+            tmpl_element = TmplElementInt(cfg_element.name, cfg_element.addr, value, bit_width)
+        elif self._is_float(cfg_element.data_type) is True:
+            tmpl_element = TmplElementFloat(cfg_element.name, cfg_element.addr, value, bit_width)
+        elif self._is_str(cfg_element.data_type) is True:
+            tmpl_element = TmplElementStr(cfg_element.name, cfg_element.addr, chr(value), bit_width)
         else:
-            raise NotImplementedError(f"Datatype {cfg_element.get_datatype()} is not supported.")
+            raise NotImplementedError(f"Datatype {cfg_element.data_type} is not supported.")
 
         return tmpl_element
 
@@ -128,35 +128,35 @@ class TmplModel():
     def _create_template_element_list(self, cfg_element, mem_access):
         bit_width = mem_access.get_size() * 8
 
-        if self._is_str(cfg_element.get_datatype()) is True:
-            max_length = cfg_element.get_count() * mem_access.get_size()
-            str_utf8 = self._read_string_(mem_access, cfg_element.get_addr(), max_length, "utf-8")
-            tmpl_element = TmplElementStr(cfg_element.get_name(), cfg_element.get_addr(), str_utf8, bit_width)              # pylint: disable=line-too-long
+        if self._is_str(cfg_element.data_type) is True:
+            max_length = cfg_element.count * mem_access.get_size()
+            str_utf8 = self._read_string_(mem_access, cfg_element.addr, max_length, "utf-8")
+            tmpl_element = TmplElementStr(cfg_element.name, cfg_element.addr, str_utf8, bit_width)
 
         else:
 
             value_list = []
-            for idx in range(cfg_element.get_count()):
-                value_list.append(mem_access.get_value(cfg_element.get_addr() + idx * mem_access.get_size()))               # pylint: disable=line-too-long
+            for idx in range(cfg_element.count):
+                value_list.append(mem_access.get_value(cfg_element.addr + idx * mem_access.get_size()))         # pylint: disable=line-too-long
 
-            if self._is_integer(cfg_element.get_datatype()) is True:
-                tmpl_element = TmplElementIntList(cfg_element.get_name(), cfg_element.get_addr(), value_list, bit_width)    # pylint: disable=line-too-long
-            elif self._is_float(cfg_element.get_datatype()) is True:
-                tmpl_element = TmplElementFloatList(cfg_element.get_name(), cfg_element.get_addr(), value_list, bit_width)  # pylint: disable=line-too-long
+            if self._is_integer(cfg_element.data_type) is True:
+                tmpl_element = TmplElementIntList(cfg_element.name, cfg_element.addr, value_list, bit_width)    # pylint: disable=line-too-long
+            elif self._is_float(cfg_element.data_type) is True:
+                tmpl_element = TmplElementFloatList(cfg_element.name, cfg_element.addr, value_list, bit_width)  # pylint: disable=line-too-long
             else:
-                raise NotImplementedError(f"Datatype {cfg_element.get_datatype()} is not supported.")                       # pylint: disable=line-too-long
+                raise NotImplementedError(f"Datatype {cfg_element.data_type} is not supported.")                # pylint: disable=line-too-long
 
         return tmpl_element
 
     def _create_template_element(self, cfg_element, mem_access):
-        if cfg_element.get_count() == 1:
+        if cfg_element.count == 1:
             tmpl_element = self._create_template_element_single(cfg_element, mem_access)
 
-        elif cfg_element.get_count() > 1:
+        elif cfg_element.count > 1:
             tmpl_element = self._create_template_element_list(cfg_element, mem_access)
 
         else:
-            raise TypeError(f"Count of {cfg_element.get_count()} is invalid.")
+            raise TypeError(f"Count of {cfg_element.count} is invalid.")
 
         return tmpl_element
 
@@ -177,7 +177,7 @@ class TmplModel():
             if isinstance(cfg_element, dict):
                 tmpl_element_dict[key] = self._get_tmpl_element_dict(binary_data, cfg_element)
             else:
-                mem_access = mem_access_get_api_by_data_type(cfg_element.get_datatype())
+                mem_access = mem_access_get_api_by_data_type(cfg_element.data_type)
 
                 if mem_access is not None:
                     mem_access.set_binary_data(binary_data)

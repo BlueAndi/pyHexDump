@@ -35,48 +35,15 @@
 # Classes
 ################################################################################
 
+# pylint: disable=too-few-public-methods
 class ConfigElement:
     """Represents a single element in the configuration.
     """
-    def __init__(self, name, addr, data_type, count):
-        self._name = name
-        self._addr = addr
-        self._data_type = data_type
-        self._count = count
-
-    def get_name(self):
-        """Get the configuration element name.
-
-        Returns:
-            str: Configuration element name
-        """
-        return self._name
-
-    def get_addr(self):
-        """Get the configuration element address.
-
-        Returns:
-            int: Configuration element address
-        """
-        return self._addr
-
-    def get_datatype(self):
-        """Get the configuration element datatype.
-
-        Returns:
-            str: Data type
-        """
-        return self._data_type
-
-    def get_count(self):
-        """Get the configuration element count.
-            A count of 1 means its just one value.
-            Greater than 1 for a array of values.
-
-        Returns:
-            int: Configuration element count
-        """
-        return self._count
+    def __init__(self, name, addr, data_type, count): # pylint: disable=too-many-arguments
+        self.name = name
+        self.addr = addr
+        self.data_type = data_type
+        self.count = count
 
 ################################################################################
 # Functions

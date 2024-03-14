@@ -36,4 +36,6 @@ def test_call(capsys):
     assert captured_lines[2] == "utf8 @ 00000000: 12345678"
     assert captured_lines[3] == "uint8_custom_single.element @ 00000000: 49"
     assert captured_lines[4] == "uint8_custom_list.element @ 00000000: [49, 50, 51, 52, 53, 54, 55, 56]" #pylint: disable=line-too-long
-    assert captured_lines[5] == ""
+    assert captured_lines[5] == "ubyte_list.element.a @ 00000000: 49" #pylint: disable=line-too-long
+    assert captured_lines[6] == "ubyte_list.element.b @ 00000001: 50" #pylint: disable=line-too-long
+    assert captured_lines[7] == ""
