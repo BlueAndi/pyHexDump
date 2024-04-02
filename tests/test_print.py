@@ -3,7 +3,7 @@
 
 from pyHexDump.constants import Ret
 from pyHexDump.prg_arg_parser import PrgArgParser
-from pyHexDump.cmd_print import cmd_print_register, _exec
+from pyHexDump.cmd_print import _exec,  cmd_register as cmd_print_register
 from pyHexDump.bunch import dict_to_bunch
 
 def test_cmd_registration():
