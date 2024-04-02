@@ -169,7 +169,7 @@ def _exec(args):
                          args.seed, args.reverseIn, \
                          args.reverseOut, args.finalXOR)
 
-def cmd_checksum_register(arg_sub_parsers):
+def cmd_register(arg_sub_parsers):
     """Register the command specific CLI argument parser and get command
         specific paramters.
 
@@ -184,7 +184,7 @@ def cmd_checksum_register(arg_sub_parsers):
     cmd_par_dict["execFunc"] = _exec
 
     parser = arg_sub_parsers.add_parser(
-        "checksum",
+        _CMD_NAME,
         help="Calculate the CRCx checksum for the specified data."
     )
 

@@ -6,7 +6,7 @@ from pyHexDump.constants import Ret
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 from pyHexDump.common import common_dump_intel_hex
 from pyHexDump.prg_arg_parser import PrgArgParser
-from pyHexDump.cmd_dump import cmd_dump_register, _exec
+from pyHexDump.cmd_dump import _exec, cmd_register as cmd_dump_register
 from pyHexDump.bunch import dict_to_bunch
 
 def test_cmd_registration():

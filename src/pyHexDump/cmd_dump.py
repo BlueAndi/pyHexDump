@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 - 2023 Andreas Merkle (web@blue-andi.de)
+# Copyright (c) 2022 - 2024 Andreas Merkle (web@blue-andi.de)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -79,7 +79,7 @@ def _exec(args):
     """
     return _cmd_dump(args.binaryFile[0], args.addr, args.count, args.dataType)
 
-def cmd_dump_register(arg_sub_parsers):
+def cmd_register(arg_sub_parsers):
     """Register the command specific CLI argument parser and get command
         specific paramters.
 
@@ -94,7 +94,7 @@ def cmd_dump_register(arg_sub_parsers):
     cmd_par_dict["execFunc"] = _exec
 
     parser = arg_sub_parsers.add_parser(
-        "dump",
+        _CMD_NAME,
         help="Dump a range of data from a start address."
     )
 

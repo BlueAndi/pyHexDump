@@ -1,7 +1,7 @@
 """Tests
 """
 
-from pyHexDump.cmd_checksum import cmd_checksum_register
+from pyHexDump.cmd_checksum import cmd_register as cmd_checksum_register
 from pyHexDump.prg_arg_parser import PrgArgParser
 from pyHexDump.bunch import dict_to_bunch
 

@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 - 2023 Andreas Merkle (web@blue-andi.de)
+# Copyright (c) 2022 - 2024 Andreas Merkle (web@blue-andi.de)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -52,7 +52,7 @@ class PrgArgParser():
             description="Binary files in different formats can be analyzed by\
             specifying a memory map configuration or just dump some data to\
             the console.",
-            epilog="Copyright (c) 2022 - 2023 " + __author__ + " - " + __license__ + \
+            epilog="Copyright (c) 2022 - 2024 " + __author__ + " - " + __license__ + \
             " - Find the project on github: " + __repository__)
         main_parser.set_defaults(which="")
 

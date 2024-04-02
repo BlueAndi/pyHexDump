@@ -3,7 +3,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 - 2023 Andreas Merkle (web@blue-andi.de)
+# Copyright (c) 2022 - 2024 Andreas Merkle (web@blue-andi.de)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -147,25 +147,25 @@ class ConfigModel():
 
         return data_type
 
-    def _get_config_structure(self, structure_name, config_dict, base_addr):
+    # pylint: disable=too-many-locals,too-many-branches
+    def _get_config_structure(self, structure_name, structure_definition, config_dict, base_addr):
         """Get a configuration element object dictionary from the configuration
             item sub dictionary. If not all necessary parameters are available,
             it will be skipped.
 
-            Nested structures are not supported!
-
         Args:
-            name (str): Structure name
+            structure_name (str): Structure name
+            structure_definition (dict): Structure definition
             config_dict (dict): Configuration items
             base_addr (int): The base address of the sub dictionary
 
         Returns:
-            dict: Configuration element objects
+            tuple[dict, int]: Configuration element objects and size of structure.
         """
         cfg_elements_dict = {}
         addr = base_addr
 
-        for idx, item in enumerate(config_dict):
+        for idx, item in enumerate(structure_definition):
 
             # "name" is mandatory
             name = self._get_name_from_config_item(item)
@@ -187,28 +187,47 @@ class ConfigModel():
             if offset is None:
                 offset = 0
 
-            # "data_type" is mandatory
-            data_type = self._get_data_type_from_config_item(item)
-
-            # Nested structures not supported yet!
-            if isinstance(data_type, list) is True:
-                print("Warning: Nested structures are not supported yet!")
-                break
-
-            if data_type is None:
-                print(f"Warning: \"dataTyüe\" is missing for {name} structure element.")
-                break
-
             # A offset is always relative to the given base address.
             if offset > 0:
                 addr = base_addr + offset
 
+            # "data_type" is mandatory
+            data_type = self._get_data_type_from_config_item(item)
+
+            if data_type is None:
+                print(f"Warning: \"dataType\" is missing for {name} structure element.")
+                break
+
             name_full = structure_name + "." + name
-            cfg_elements_dict[name] = ConfigElement(name_full, addr, data_type, count)
 
-            addr += count * mem_access_get_api_by_data_type(data_type).get_size()
+            # Is it a builtin or custom datatype?
+            if isinstance(data_type, str) is True:
 
-        return cfg_elements_dict
+                # Is it a custom datatype which is defined separately?
+                mem_access = mem_access_get_api_by_data_type(data_type)
+                if mem_access is None:
+                    sub_structure_definition = self._find_structure_definition(config_dict, data_type) # pylint: disable=line-too-long
+
+                    if sub_structure_definition is None:
+                        print(f"Warning: Data type {data_type} not found.")
+                    else:
+                        cfg_elements_dict[name], structure_size = self._get_config_structure(name_full, sub_structure_definition, config_dict, addr) # pylint: disable=line-too-long
+                        addr += structure_size
+
+                # Builtin datatype
+                else:
+                    cfg_elements_dict[name] = ConfigElement(name_full, addr, data_type, count)
+                    addr += count * mem_access.get_size()
+
+            # Does the datatype contain the structure information in itself?
+            elif isinstance(data_type, list) is True:
+                cfg_elements_dict[name], structure_size = self._get_config_structure(name_full, item["dataType"], config_dict, addr) # pylint: disable=line-too-long
+                addr += structure_size
+
+            else:
+                raise NotImplementedError
+
+        return cfg_elements_dict, (addr - base_addr)
 
     #pylint: disable-next=too-many-branches
     def _get_config_elements(self, config_dict):
@@ -266,23 +285,29 @@ class ConfigModel():
                     structure_definition = self._find_structure_definition(config_dict, data_type)
 
                     if structure_definition is None:
-                        print(f"Warning: Datatype {data_type} not found.")
+                        print(f"Warning: Data type {data_type} not found.")
                     else:
-                        if name not in cfg_elements_dict:
-                            cfg_elements_dict[name] = self._get_config_structure(name, structure_definition, addr)   # pylint: disable=line-too-long
-                        else:
-                            cfg_elements_dict[name] |= self._get_config_structure(name, structure_definition, addr)  # pylint: disable=line-too-long
+                        structure_elements_dict, _ = self._get_config_structure(name, structure_definition, config_dict, addr) # pylint: disable=line-too-long
 
+                        if name not in cfg_elements_dict:
+                            cfg_elements_dict[name] = structure_elements_dict
+                        else:
+                            cfg_elements_dict[name] |= structure_elements_dict
+
+                # Builtin datatype
                 else:
-                    # Builtin datatype
                     cfg_elements_dict[name] = ConfigElement(name, addr, data_type, count)
 
             # Does the datatype contain the structure information in itself?
             elif isinstance(data_type, list) is True:
+                structure_elements_dict, _ = self._get_config_structure(name, item["dataType"], config_dict, addr) # pylint: disable=line-too-long
+
                 if name not in cfg_elements_dict:
-                    cfg_elements_dict[name] = self._get_config_structure(name, item["dataType"], addr)  # pylint: disable=line-too-long
+                    cfg_elements_dict[name] = structure_elements_dict
                 else:
-                    cfg_elements_dict[name] |= self._get_config_structure(name, item["dataType"], addr) # pylint: disable=line-too-long
+                    cfg_elements_dict[name] |= structure_elements_dict
+            else:
+                raise NotImplementedError
 
         return cfg_elements_dict
 

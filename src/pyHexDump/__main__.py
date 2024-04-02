@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 - 2023 Andreas Merkle (web@blue-andi.de)
+# Copyright (c) 2022 - 2024 Andreas Merkle (web@blue-andi.de)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +29,9 @@ import sys
 from pyHexDump.constants import Ret
 from pyHexDump.prg_arg_parser import PrgArgParser
 
-from pyHexDump.cmd_dump import cmd_dump_register
-from pyHexDump.cmd_print import cmd_print_register
-from pyHexDump.cmd_checksum import cmd_checksum_register
+from pyHexDump.cmd_dump import cmd_register as cmd_dump_register
+from pyHexDump.cmd_print import cmd_register as cmd_print_register
+from pyHexDump.cmd_checksum import cmd_register as cmd_checksum_register
 
 ################################################################################
 # Variables

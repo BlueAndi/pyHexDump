@@ -1,0 +1,27 @@
+{
+    "elements": [{
+        "name": "ubyte_list",
+        "addr": 0,
+        "dataType": "nested_t",
+        "count": 1
+    }],
+    "structures": [{
+        "name": "nested_t",
+        "elements": [{
+            "name": "element",
+            "dataType": "ubyte_t",
+            "count": 1
+        }]
+    }, {
+        "name": "ubyte_t",
+        "elements": [{
+            "name": "a",
+            "dataType": "uint8",
+            "count": 1
+        }, {
+            "name": "b",
+            "dataType": "uint8",
+            "count": 1
+        }]
+    }]
+}

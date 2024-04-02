@@ -7,7 +7,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 - 2023 Andreas Merkle (web@blue-andi.de)
+# Copyright (c) 2022 - 2024 Andreas Merkle (web@blue-andi.de)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -237,7 +237,7 @@ def _exec(args):
 
     return _cmd_print(args.binaryFile[0], args.configFile[0], args.templateFile, args.onlyInHex, constants) # pylint: disable=line-too-long,too-many-function-args
 
-def cmd_print_register(arg_sub_parsers):
+def cmd_register(arg_sub_parsers):
     """Register the command specific CLI argument parser and get command
         specific paramters.
 
@@ -252,7 +252,7 @@ def cmd_print_register(arg_sub_parsers):
     cmd_par_dict["execFunc"] = _exec
 
     parser = arg_sub_parsers.add_parser(
-        "print",
+        _CMD_NAME,
         help="Retrieve the elements from configuration and print them."
     )
 
