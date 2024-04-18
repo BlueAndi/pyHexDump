@@ -16,20 +16,20 @@ package "pyHexDump" as pyHexDump {
     component "Command: dump" as cmdDump
     component "Command: print" as cmdPrint
 
-    main --> cmdChecksum: <<flow>>
-    main --> cmdDump: <<flow>>
-    main --> cmdPrint: <<flow>>
+    main ..> cmdChecksum: <<flow>>
+    main ..> cmdDump: <<flow>>
+    main ..> cmdPrint: <<flow>>
 }
 
-intelHexFile ---> main: <<flow>>
-binaryFile ---> main: <<flow>>
+intelHexFile ...> main: <<flow>>
+binaryFile ...> main: <<flow>>
 
-cfgFile ----> cmdPrint: <<flow>>
-tmplFile ----> cmdPrint: <<flow>>
+cfgFile ....> cmdPrint: <<flow>>
+tmplFile ....> cmdPrint: <<flow>>
 
-cmdChecksum --> checksum: <<flow>>\n<<create>>
-cmdDump --> dataDump: <<flow>>\n<<create>>
-cmdPrint --> report: <<flow>>\n<<create>>
+cmdChecksum ..> checksum: <<flow>>\n<<create>>
+cmdDump ..> dataDump: <<flow>>\n<<create>>
+cmdPrint ..> report: <<flow>>\n<<create>>
 
 note top of cfgFile
     Configures elements with their address and
