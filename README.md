@@ -162,20 +162,20 @@ Elements with their name, address, datatype and count can be configured separate
 By using the ```print``` command all of the values in the configuration are printed to the CLI.
 
 The following datatypes are supported:
-    * "uint8": unsigned 8-bit
-    * "uint16le": unsigned 16-bit little endian
-    * "uint16be": unsigned 16-bit big endian
-    * "uint32le": unsigned 32-bit little endian
-    * "uint32be": unsigned 32-bit big endian
-    * "int8": signed 8-bit
-    * "int16le": signed 16-bit little endian
-    * "int16be": signed 16-bit big endian
-    * "int32le": signed 32-bit little endian
-    * "int32be": signed 32-bit big endian
-    * "float32le": 32-bit floating point little endian
-    * "float32be": 32-bit floating point big endian
-    * "float64le": 64-bit floating point little endian
-    * "float64be": 64-bit floating point big endian
+* "uint8": unsigned 8-bit
+* "uint16le": unsigned 16-bit little endian
+* "uint16be": unsigned 16-bit big endian
+* "uint32le": unsigned 32-bit little endian
+* "uint32be": unsigned 32-bit big endian
+* "int8": signed 8-bit
+* "int16le": signed 16-bit little endian
+* "int16be": signed 16-bit big endian
+* "int32le": signed 32-bit little endian
+* "int32be": signed 32-bit big endian
+* "float32le": 32-bit floating point little endian
+* "float32be": 32-bit floating point big endian
+* "float64le": 64-bit floating point little endian
+* "float64be": 64-bit floating point big endian
 
 ```$ pyHexDump print ./examples/data/aurix_tc397.hex ./examples/config.json --onlyInHex```
 
