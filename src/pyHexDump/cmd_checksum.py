@@ -202,7 +202,8 @@ def cmd_register(arg_sub_parsers):
         choices=["uint8", "uint16le", "uint16be", "uint32le", "uint32be", "uint64le", "uint64be"],
         required=False,
         default="uint8",
-        help="The binary data endianess.\nDefault: uint8"
+        help="The binary data endianess.\n" \
+            "(default: %(default)s)"
     )
     parser.add_argument(
         "-sa",
@@ -227,7 +228,8 @@ def cmd_register(arg_sub_parsers):
         type=lambda x: int(x, 0), # Support "0x" notation
         required=False,
         default=0x04C11DB7,
-        help="The polynomial for the CRC calculation.\nDefault: 0x04C11DB7"
+        help="The polynomial for the CRC calculation.\n" \
+            "(default: 0x%(default)x)"
     )
     parser.add_argument(
         "-bw",
@@ -236,7 +238,8 @@ def cmd_register(arg_sub_parsers):
         type=lambda x: int(x, 0), # Support "0x" notation
         required=False,
         default=32,
-        help="The bit width of the CRC calculation.\nDefault: 32"
+        help="The bit width of the CRC calculation.\n" \
+            "(default: %(default)s)"
     )
     parser.add_argument(
         "-s",
@@ -245,7 +248,8 @@ def cmd_register(arg_sub_parsers):
         type=lambda x: int(x, 0), # Support "0x" notation
         required=False,
         default=0,
-        help="The seed value for the CRC calculation.\nDefault: 0"
+        help="The seed value for the CRC calculation.\n" \
+            "(default: %(default)d)"
     )
     parser.add_argument(
         "-ri",
@@ -253,7 +257,8 @@ def cmd_register(arg_sub_parsers):
         action="store_true",
         required=False,
         default=False,
-        help="Use reverse input.\nDefault: False"
+        help="Use reverse input.\n" \
+            "(default: %(default)s)"
     )
     parser.add_argument(
         "-ro",
@@ -261,7 +266,8 @@ def cmd_register(arg_sub_parsers):
         action="store_true",
         required=False,
         default=False,
-        help="Use reverse output.\nDefault: False"
+        help="Use reverse output.\n" \
+            "(default: %(default)s)"
     )
     parser.add_argument(
         "-fx",
@@ -269,7 +275,8 @@ def cmd_register(arg_sub_parsers):
         action="store_true",
         required=False,
         default=False,
-        help="Use a final XOR with all bits 1.\nDefault: False"
+        help="Use a final XOR with all bits 1.\n" \
+            "(default: %(default)s)"
     )
 
     return cmd_par_dict
