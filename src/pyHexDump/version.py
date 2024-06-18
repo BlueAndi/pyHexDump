@@ -26,8 +26,8 @@
 # Imports
 ################################################################################
 import importlib.metadata as meta
-import pathlib
-
+import os
+import sys
 import toml
 
 ################################################################################
@@ -47,6 +47,19 @@ __license__ = "???"
 ################################################################################
 # Functions
 ################################################################################
+
+
+def resource_path(relative_path):
+    """ Get the absolute path to the resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        # pylint: disable=protected-access
+        # pylint: disable=no-member
+        base_path = sys._MEIPASS
+    except Exception:  # pylint: disable=broad-except
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 def init_from_metadata():
     """Initialize dunders from importlib.metadata
@@ -74,8 +87,7 @@ def init_from_toml():
         list: Tool related informations
     """
 
-    dist_dir = pathlib.Path(__file__).resolve().parents[2]
-    toml_file = pathlib.Path.joinpath(dist_dir, "pyproject.toml")
+    toml_file = resource_path("pyproject.toml")
     data = toml.load(toml_file)
 
     return \
