@@ -1,2 +1,2 @@
-disable=
-    duplicate-code
+[MESSAGES CONTROL]
+disable = duplicate-code

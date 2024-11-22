@@ -41,8 +41,6 @@ from pyHexDump.bunch import dict_to_bunch
 from pyHexDump.config_model import ConfigModel
 from pyHexDump.tmpl_model import TmplModel
 
-# pylint: disable=duplicate-code
-
 ################################################################################
 # Variables
 ################################################################################

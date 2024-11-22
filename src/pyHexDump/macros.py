@@ -28,8 +28,6 @@
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 from pyHexDump.cmd_checksum import calc_checksum
 
-# pylint: disable=duplicate-code
-
 ################################################################################
 # Variables
 ################################################################################

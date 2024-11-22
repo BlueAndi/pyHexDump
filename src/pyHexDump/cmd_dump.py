@@ -29,8 +29,6 @@ from pyHexDump.constants import Ret
 from pyHexDump.common import common_load_binary_file, common_dump_intel_hex
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 
-# pylint: disable=duplicate-code
-
 ################################################################################
 # Variables
 ################################################################################
