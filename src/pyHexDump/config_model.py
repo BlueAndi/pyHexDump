@@ -229,7 +229,7 @@ class ConfigModel():
 
         return cfg_elements_dict, (addr - base_addr)
 
-    #pylint: disable-next=too-many-branches
+    # pylint: disable=too-many-branches
     def _get_config_elements(self, config_dict):
         """Get a configuration element object dictionary from the configuration
             item dictionary. If a configuration item doesn't contain all
