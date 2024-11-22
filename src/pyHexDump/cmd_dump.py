@@ -29,8 +29,6 @@ from pyHexDump.constants import Ret
 from pyHexDump.common import common_load_binary_file, common_dump_intel_hex
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 
-# pylint: disable=duplicate-code
-
 ################################################################################
 # Variables
 ################################################################################
@@ -112,7 +110,8 @@ def cmd_register(arg_sub_parsers):
         type=lambda x: int(x, 0), # Support "0x" notation
         required=False,
         default=0,
-        help="The dump starts at this address. Default: 0x00000000."
+        help="The dump starts at this address.\n" \
+            "(default: %(default)d)."
     )
     parser.add_argument(
         "-c",
@@ -121,7 +120,8 @@ def cmd_register(arg_sub_parsers):
         type=lambda x: int(x, 0), # Support "0x" notation
         required=False,
         default=64,
-        help="The number of elements in the dump.\nDefault: 16"
+        help="The number of elements (choosen by datatype) in the dump.\n" \
+            "(default: %(default)d)"
     )
     parser.add_argument(
         "-dt",
@@ -131,7 +131,8 @@ def cmd_register(arg_sub_parsers):
         type=str,
         required=False,
         default="uint8",
-        help="The type of a single data element. Default: uint8"
+        help="The type of a single data element.\n" \
+            "(default: %(default)s)"
     )
 
     return cmd_par_dict

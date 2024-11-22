@@ -1,0 +1,2 @@
+rem Please run this script from the root path. ".\util\create_executable.bat"
+pyinstaller --noconfirm --onefile --console --name "pyHexDump" --add-data "./pyproject.toml;."  "./src/pyHexDump/__main__.py"

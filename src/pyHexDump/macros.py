@@ -28,8 +28,6 @@
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 from pyHexDump.cmd_checksum import calc_checksum
 
-# pylint: disable=duplicate-code
-
 ################################################################################
 # Variables
 ################################################################################
@@ -182,12 +180,12 @@ def _read_string(addr, encoding="utf-8"):
 
     return byte_values.decode(encoding)
 
-# pylint: disable-next=too-many-arguments
+# pylint: disable=too-many-arguments
 def _calc_checksum(binary_data_endianess, start_address, end_address, polynomial, bit_width, seed, \
     reverse_input, reverse_output, final_xor):
 
     binary_data = globals()["BINARY_DATA"]
-    # pylint: disable-next=too-many-function-args
+    # pylint: disable=too-many-function-args
     checksum = calc_checksum(binary_data, binary_data_endianess, start_address, end_address, \
                              polynomial, bit_width, seed, reverse_input, reverse_output, \
                              final_xor)

@@ -10,10 +10,10 @@ There are a lot of hex viewers already, but I was not able to find one which I c
 * [Installation](#installation)
 * [Usage](#usage)
 * [Overview](#overview)
-* [Datatypes](#datatypes)
 * [Examples](#examples)
-  * [Dump data as 8-bit](#dump-data-as-8-bit)
-  * [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
+  * [Dump data](#dump-data)
+    * [Dump data as 8-bit](#dump-data-as-8-bit)
+    * [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
   * [Calculate checksum](#calculate-checksum)
   * [Print configuration](#print-configuration)
   * [Print report with template](#print-report-with-template)
@@ -70,32 +70,14 @@ $ pyHexDump --help
 
 ![goverview](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/BlueAndi/pyHexDump/main/doc/uml/static_view.wsd)
 
-# Datatypes
-
-* "int8": signed 8-bit
-* "uint8": unsigned 8-bit
-* "int16le": signed 16-bit little endian
-* "int16be": signed 16-bit big endian
-* "uint16le": unsigned 16-bit little endian
-* "uint16be": unsigned 16-bit big endian
-* "int32le": signed 32-bit little endian
-* "int32be": signed 32-bit big endian
-* "uint32le": unsigned 32-bit little endian
-* "uint32be": unsigned 32-bit big endian
-* "int64le": signed 64-bit little endian
-* "int64be": signed 64-bit big endian
-* "uint64le": unsigned 64-bit little endian
-* "uint64be": unsigned 64-bit big endian
-* "float32le": floating point 32-bit little endian
-* "float32be": floating point 32-bit big endian
-* "float64le": floating point 64-bit little endian
-* "float64be": floating point 64-bit big endian
-* "utf8": String encoded in UTF-8
-
 # Examples
 Don't miss the examples in the [example](./examples/) folder. In the following chapters you can see how to use pyHexDump and its output.
 
-## Dump data as 8-bit
+## Dump data
+Dump bytes in the classic way by address.
+
+### Dump data as 8-bit
+
 
 ```$ pyHexDump dump ./examples/data/aurix_tc397.hex -a 0x80000020```
 
@@ -107,7 +89,7 @@ Result:
 80000050: 4B 0F 31 F1 3B 80 3E 00 4B 0F 01 02 E2 08 3C 01
 ```
 
-## Dump data as 32-bit little endian
+### Dump data as 32-bit little endian
 
 ```$ pyHexDump dump ./examples/data/aurix_tc397.hex -a 0x80000020 -dt uint32le```
 
@@ -162,20 +144,25 @@ Elements with their name, address, datatype and count can be configured separate
 By using the ```print``` command all of the values in the configuration are printed to the CLI.
 
 The following datatypes are supported:
-* "uint8": unsigned 8-bit
-* "uint16le": unsigned 16-bit little endian
-* "uint16be": unsigned 16-bit big endian
-* "uint32le": unsigned 32-bit little endian
-* "uint32be": unsigned 32-bit big endian
 * "int8": signed 8-bit
+* "uint8": unsigned 8-bit
 * "int16le": signed 16-bit little endian
 * "int16be": signed 16-bit big endian
+* "uint16le": unsigned 16-bit little endian
+* "uint16be": unsigned 16-bit big endian
 * "int32le": signed 32-bit little endian
 * "int32be": signed 32-bit big endian
-* "float32le": 32-bit floating point little endian
-* "float32be": 32-bit floating point big endian
-* "float64le": 64-bit floating point little endian
-* "float64be": 64-bit floating point big endian
+* "uint32le": unsigned 32-bit little endian
+* "uint32be": unsigned 32-bit big endian
+* "int64le": signed 64-bit little endian
+* "int64be": signed 64-bit big endian
+* "uint64le": unsigned 64-bit little endian
+* "uint64be": unsigned 64-bit big endian
+* "float32le": floating point 32-bit little endian
+* "float32be": floating point 32-bit big endian
+* "float64le": floating point 64-bit little endian
+* "float64be": floating point 64-bit big endian
+* "utf8": String encoded in UTF-8
 
 ```$ pyHexDump print ./examples/data/aurix_tc397.hex ./examples/config.json --onlyInHex```
 

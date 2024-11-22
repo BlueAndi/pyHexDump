@@ -41,8 +41,6 @@ from pyHexDump.bunch import dict_to_bunch
 from pyHexDump.config_model import ConfigModel
 from pyHexDump.tmpl_model import TmplModel
 
-# pylint: disable=duplicate-code
-
 ################################################################################
 # Variables
 ################################################################################
@@ -288,7 +286,8 @@ def cmd_register(arg_sub_parsers):
         action="store_true",
         required=False,
         default=False,
-        help="Show values in hex format. Only applied valid without template."
+        help="Show values in hex format. Only applied valid without template.\n" \
+            "(default: %(default)s)"
     )
 
     parser.add_argument(
@@ -297,7 +296,8 @@ def cmd_register(arg_sub_parsers):
         action="store_true",
         required=False,
         default=False,
-        help="Prints more additional information."
+        help="Prints more additional information.\n" \
+            "(default: %(default)s)"
     )
 
     parser.add_argument(

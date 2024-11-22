@@ -31,8 +31,6 @@ from pyHexDump.constants import Ret
 from pyHexDump.common import common_load_binary_file, common_print_value
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
 
-# pylint: disable=duplicate-code
-
 ################################################################################
 # Variables
 ################################################################################
@@ -47,7 +45,7 @@ _CMD_NAME = "checksum"
 # Functions
 ################################################################################
 
-#pylint: disable-next=too-many-arguments,too-many-locals
+# pylint: disable=too-many-arguments, too-many-locals
 def calc_checksum(binary_data, binary_data_endianess, start_address, end_address,\
     polynomial, bit_width, seed, reverse_input, reverse_output, final_xor):
     """Calcuate the checksum for the given address in the binary_data and the
@@ -116,7 +114,7 @@ def calc_checksum(binary_data, binary_data_endianess, start_address, end_address
 
     return crc
 
-#pylint: disable-next=too-many-arguments
+# pylint: disable=too-many-arguments
 def _cmd_checksum(binary_file, binary_data_endianess, start_address, end_address, \
     polynomial, bit_width, seed, reverse_input, reverse_output, final_xor):
     """Print the checksum for the given address and the given number of bytes
@@ -202,7 +200,8 @@ def cmd_register(arg_sub_parsers):
         choices=["uint8", "uint16le", "uint16be", "uint32le", "uint32be", "uint64le", "uint64be"],
         required=False,
         default="uint8",
-        help="The binary data endianess.\nDefault: uint8"
+        help="The binary data endianess.\n" \
+            "(default: %(default)s)"
     )
     parser.add_argument(
         "-sa",
@@ -227,7 +226,8 @@ def cmd_register(arg_sub_parsers):
         type=lambda x: int(x, 0), # Support "0x" notation
         required=False,
         default=0x04C11DB7,
-        help="The polynomial for the CRC calculation.\nDefault: 0x04C11DB7"
+        help="The polynomial for the CRC calculation.\n" \
+            "(default: 0x%(default)x)"
     )
     parser.add_argument(
         "-bw",
@@ -236,7 +236,8 @@ def cmd_register(arg_sub_parsers):
         type=lambda x: int(x, 0), # Support "0x" notation
         required=False,
         default=32,
-        help="The bit width of the CRC calculation.\nDefault: 32"
+        help="The bit width of the CRC calculation.\n" \
+            "(default: %(default)s)"
     )
     parser.add_argument(
         "-s",
@@ -245,7 +246,8 @@ def cmd_register(arg_sub_parsers):
         type=lambda x: int(x, 0), # Support "0x" notation
         required=False,
         default=0,
-        help="The seed value for the CRC calculation.\nDefault: 0"
+        help="The seed value for the CRC calculation.\n" \
+            "(default: %(default)d)"
     )
     parser.add_argument(
         "-ri",
@@ -253,7 +255,8 @@ def cmd_register(arg_sub_parsers):
         action="store_true",
         required=False,
         default=False,
-        help="Use reverse input.\nDefault: False"
+        help="Use reverse input.\n" \
+            "(default: %(default)s)"
     )
     parser.add_argument(
         "-ro",
@@ -261,7 +264,8 @@ def cmd_register(arg_sub_parsers):
         action="store_true",
         required=False,
         default=False,
-        help="Use reverse output.\nDefault: False"
+        help="Use reverse output.\n" \
+            "(default: %(default)s)"
     )
     parser.add_argument(
         "-fx",
@@ -269,7 +273,8 @@ def cmd_register(arg_sub_parsers):
         action="store_true",
         required=False,
         default=False,
-        help="Use a final XOR with all bits 1.\nDefault: False"
+        help="Use a final XOR with all bits 1.\n" \
+            "(default: %(default)s)"
     )
 
     return cmd_par_dict
