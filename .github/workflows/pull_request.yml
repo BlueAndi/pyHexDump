@@ -28,3 +28,7 @@ jobs:
     - name: Create coverage report
       run: |
         pytest tests -v --cov=./src/pyHexDump --cov-report=html:coverage_report
+    - uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report-${{ matrix.python-version }}
+        path: coverage_report/
