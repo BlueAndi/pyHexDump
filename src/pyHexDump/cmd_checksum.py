@@ -47,7 +47,7 @@ _CMD_NAME = "checksum"
 # Functions
 ################################################################################
 
-# pylint: disable=too-many-arguments, too-many-locals, too-many-positional-arguments
+# pylint: disable=too-many-arguments, too-many-locals
 def calc_checksum(binary_data, binary_data_endianess, start_address, end_address,\
     polynomial, bit_width, seed, reverse_input, reverse_output, final_xor):
     """Calcuate the checksum for the given address in the binary_data and the
@@ -116,7 +116,7 @@ def calc_checksum(binary_data, binary_data_endianess, start_address, end_address
 
     return crc
 
-# pylint: disable=too-many-arguments, too-many-positional-arguments
+# pylint: disable=too-many-arguments
 def _cmd_checksum(binary_file, binary_data_endianess, start_address, end_address, \
     polynomial, bit_width, seed, reverse_input, reverse_output, final_xor):
     """Print the checksum for the given address and the given number of bytes
