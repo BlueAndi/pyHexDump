@@ -164,7 +164,7 @@ The following datatypes are supported:
 * "float64be": floating point 64-bit big endian
 * "utf8": String encoded in UTF-8
 
-```$ pyHexDump print ./examples/data/aurix_tc397.hex ./examples/config.json --onlyInHex```
+```$ pyHexDump print ./examples/data/aurix_tc397.hex ./examples/print_config/config.json --onlyInHex```
 
 with ```config.json``` like
 ```json
@@ -223,7 +223,7 @@ A configuration element can be accessed in the template via:
 * ```${<config-element-name>.addr()}```: Prints the address in decimal.
 
 ### Example
-```$ pyHexDump print ./examples/data/aurix_tc397.hex ./examples/config.json --templateFile ./examples/markdown.mako```
+```$ pyHexDump print ./examples/data/aurix_tc397.hex ./examples/print_config_and_template/config.json --templateFile ./examples/print_config_and_template/markdown.mako```
 
 with ```config.json``` like
 ```json
