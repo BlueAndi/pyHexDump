@@ -44,11 +44,14 @@
             is_bmh_integrity_given = "OK"
 %>
 <%text>### Boot Mode Index (BMI)</%text>
+
 * Mode selection by configuration pins: ${mode_by_hwcfg}
 * Start-up mode: ${start_up_mode}
 
 <%text>### Boot Mode Header Identifier (BMHDID)</%text>
+
 Is boot mode header valid: ${is_bmh_valid}
 
 <%text>### Boot Mode Header CRC (CRCBMHD/CRCBMHD_N)</%text>
+
 Is boot mode header integrity given: ${is_bmh_integrity_given}

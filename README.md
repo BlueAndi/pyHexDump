@@ -1,4 +1,5 @@
 # pyHexDump <!-- omit in toc -->
+
 A CLI tool written in Python to dump binary files and files in intel hex format. It can generate a report for any file based on report template. This is useful for images which contain specific data always on the same address, e.g. a CRC, signature, etc.
 
 There are a lot of hex viewers already, but I was not able to find one which I could configure in a way to generate something like a report.
@@ -7,94 +8,99 @@ There are a lot of hex viewers already, but I was not able to find one which I c
 [![Repo Status](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 ![CI Status](https://github.com/BlueAndi/pyHexDump/actions/workflows/push.yml/badge.svg)
 
-* [Installation](#installation)
-* [Usage](#usage)
-* [Overview](#overview)
-* [Examples](#examples)
-  * [Dump data](#dump-data)
-    * [Dump data as 8-bit](#dump-data-as-8-bit)
-    * [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
-  * [Calculate checksum](#calculate-checksum)
-  * [Print configuration](#print-configuration)
-  * [Print report with template](#print-report-with-template)
-    * [Example](#example)
-  * [Configuration using structures](#configuration-using-structures)
-    * [Example](#example-1)
-  * [Define structure as datatype](#define-structure-as-datatype)
-    * [Example](#example-2)
-* [Macros](#macros)
-  * [macros\_compare\_values()](#macros_compare_values)
-  * [m\_read\_uint8()](#m_read_uint8)
-  * [m\_read\_uint16le()](#m_read_uint16le)
-  * [m\_read\_uint16be()](#m_read_uint16be)
-  * [m\_read\_uint32le()](#m_read_uint32le)
-  * [m\_read\_uint32be()](#m_read_uint32be)
-  * [m\_read\_uint64le()](#m_read_uint64le)
-  * [m\_read\_uint64be()](#m_read_uint64be)
-  * [m\_read\_int8()](#m_read_int8)
-  * [m\_read\_int16le()](#m_read_int16le)
-  * [m\_read\_int16be()](#m_read_int16be)
-  * [m\_read\_int32le()](#m_read_int32le)
-  * [m\_read\_int32be()](#m_read_int32be)
-  * [m\_read\_int64le()](#m_read_int64le)
-  * [m\_read\_int64be()](#m_read_int64be)
-  * [m\_read\_float32le()](#m_read_float32le)
-  * [m\_read\_float32be()](#m_read_float32be)
-  * [m\_read\_float64le()](#m_read_float64le)
-  * [m\_read\_float64be()](#m_read_float64be)
-  * [m\_read\_string()](#m_read_string)
-  * [m\_calc\_checksum()](#m_calc_checksum)
-  * [m\_swap\_bytes\_u16()](#m_swap_bytes_u16)
-  * [m\_swap\_bytes\_u32()](#m_swap_bytes_u32)
-  * [m\_swap\_words\_u32()](#m_swap_words_u32)
-* [Used Libraries](#used-libraries)
-* [Issues, Ideas And Bugs](#issues-ideas-and-bugs)
-* [License](#license)
-* [Contribution](#contribution)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Overview](#overview)
+- [Examples](#examples)
+  - [Dump data](#dump-data)
+    - [Dump data as 8-bit](#dump-data-as-8-bit)
+    - [Dump data as 32-bit little endian](#dump-data-as-32-bit-little-endian)
+  - [Calculate checksum](#calculate-checksum)
+  - [Print configuration](#print-configuration)
+  - [Print report with template](#print-report-with-template)
+    - [Example](#example)
+  - [Configuration using structures](#configuration-using-structures)
+    - [Example](#example-1)
+  - [Define structure as datatype](#define-structure-as-datatype)
+    - [Example](#example-2)
+- [Macros](#macros)
+  - [macros\_compare\_values()](#macros_compare_values)
+  - [m\_read\_uint8()](#m_read_uint8)
+  - [m\_read\_uint16le()](#m_read_uint16le)
+  - [m\_read\_uint16be()](#m_read_uint16be)
+  - [m\_read\_uint32le()](#m_read_uint32le)
+  - [m\_read\_uint32be()](#m_read_uint32be)
+  - [m\_read\_uint64le()](#m_read_uint64le)
+  - [m\_read\_uint64be()](#m_read_uint64be)
+  - [m\_read\_int8()](#m_read_int8)
+  - [m\_read\_int16le()](#m_read_int16le)
+  - [m\_read\_int16be()](#m_read_int16be)
+  - [m\_read\_int32le()](#m_read_int32le)
+  - [m\_read\_int32be()](#m_read_int32be)
+  - [m\_read\_int64le()](#m_read_int64le)
+  - [m\_read\_int64be()](#m_read_int64be)
+  - [m\_read\_float32le()](#m_read_float32le)
+  - [m\_read\_float32be()](#m_read_float32be)
+  - [m\_read\_float64le()](#m_read_float64le)
+  - [m\_read\_float64be()](#m_read_float64be)
+  - [m\_read\_string()](#m_read_string)
+  - [m\_calc\_checksum()](#m_calc_checksum)
+  - [m\_swap\_bytes\_u16()](#m_swap_bytes_u16)
+  - [m\_swap\_bytes\_u32()](#m_swap_bytes_u32)
+  - [m\_swap\_words\_u32()](#m_swap_words_u32)
+- [Used Libraries](#used-libraries)
+- [Issues, Ideas And Bugs](#issues-ideas-and-bugs)
+- [License](#license)
+- [Contribution](#contribution)
 
-# Installation
+## Installation
+
 ```cmd
 $ git clone https://github.com/BlueAndi/pyHexDump.git
 $ cd pyHexDump
 $ pip install .
 ```
 
-# Usage
+## Usage
 
 Show help information:
 ```cmd
 $ pyHexDump --help
 ```
 
-# Overview
+## Overview
 
 ![goverview](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/BlueAndi/pyHexDump/main/doc/uml/static_view.wsd)
 
-# Examples
+## Examples
+
 Don't miss the examples in the [example](./examples/) folder. In the following chapters you can see how to use pyHexDump and its output.
 
-## Dump data
+### Dump data
+
 Dump bytes in the classic way by address.
 
-### Dump data as 8-bit
+#### Dump data as 8-bit
 
 
 ```$ pyHexDump dump ./examples/data/aurix_tc397.hex -a 0x80000020```
 
 Result:
-```
+
+```text
 80000020: 02 58 DA 01 9B 1F 00 F0 0F 4F 10 F0 6C 41 C5 FF
 80000030: 00 01 BC F1 82 04 6D 00 2F 04 91 30 00 FF 39 FF
 80000040: 30 06 16 0F 4B 0F 41 F1 4B F2 51 F0 3C 01 3C 01
 80000050: 4B 0F 31 F1 3B 80 3E 00 4B 0F 01 02 E2 08 3C 01
 ```
 
-### Dump data as 32-bit little endian
+#### Dump data as 32-bit little endian
 
 ```$ pyHexDump dump ./examples/data/aurix_tc397.hex -a 0x80000020 -dt uint32le```
 
 Result:
-```
+
+```text
 80000020: 01DA5802 F0001F9B F0104F0F FFC5416C
 80000030: F1BC0100 006D0482 3091042F FF39FF00
 80000040: 0F160630 F1410F4B F051F24B 013C013C
@@ -113,17 +119,20 @@ Result:
 80000110: 00000000 00000000 00000000 00000000
 ```
 
-## Calculate checksum
+### Calculate checksum
+
 Calculate a CRC checksum over a specific range.
 
 ```$ pyHexDump checksum ./examples/data/aurix_tc397.hex -sa 0x80000020 -ea 0x80000040```
 
 Result:
-```
+
+```text
 219725A2
 ```
 
 The following optional arguments are supported:
+
 * ```-bde``` The binary data endianess and bit width:
     * "uint8": unsigned 8-bit
     * "uint16le": unsigned 16-bit little endian
@@ -139,11 +148,13 @@ The following optional arguments are supported:
 * ```-ro```: If the output data shall be reflected, set to True. Default: False
 * ```-fx```: If the output shall be have a final XOR with all bits set, set to True. Default: False
 
-## Print configuration
+### Print configuration
+
 Elements with their name, address, datatype and count can be configured separately.
 By using the ```print``` command all of the values in the configuration are printed to the CLI.
 
 The following datatypes are supported:
+
 * "int8": signed 8-bit
 * "uint8": unsigned 8-bit
 * "int16le": signed 16-bit little endian
@@ -167,6 +178,7 @@ The following datatypes are supported:
 ```$ pyHexDump print ./examples/data/aurix_tc397.hex ./examples/print_config/config.json --onlyInHex```
 
 with ```config.json``` like
+
 ```json
 {
     "elements": [{
@@ -204,6 +216,7 @@ with ```config.json``` like
 ```
 
 Result:
+
 ```
 UCB00_BMI_BMHDID @ AF400000: 0xB35900FE
 UCB00_STAD @ AF400004: 0xA0000000
@@ -213,19 +226,23 @@ UCB00_PWx @ AF400104: [0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x0000000
 UCB00_CONFIRMATION @ AF4001F0: 0x43211234
 ```
 
-## Print report with template
+### Print report with template
+
 The [Mako template library](https://www.makotemplates.org/) is used, to provide a lot of functionality. Please have a look to the [Mako documentation](https://docs.makotemplates.org/en/latest/) for details.
 
 A configuration element can be accessed in the template via:
+
 * ```${<config-element-name>}```: Prints the decimal value.
 * ```${<config-element-name>.hex()}```: Prints the value in hex with "0x" as prefix by default.
 * ```${<config-element-name>.hex("")}```: Prints the value in hex without a prefix.
 * ```${<config-element-name>.addr()}```: Prints the address in decimal.
 
-### Example
+#### Example
+
 ```$ pyHexDump print ./examples/data/aurix_tc397.hex ./examples/print_config_and_template/config.json --templateFile ./examples/print_config_and_template/markdown.mako```
 
 with ```config.json``` like
+
 ```json
 {
     "elements": [{
@@ -263,6 +280,7 @@ with ```config.json``` like
 ```
 
 with ```markdown.mako``` like
+
 ```mako
 <%text># Aurix TC397 - Blinky Example</%text>
 
@@ -321,10 +339,11 @@ Is boot mode header integrity given: ${is_bmh_integrity_given}
 ```
 
 Result:
-```markdown
-# Aurix TC397 - Blinky Example
 
-## User Control Block 00
+```markdown
+## Aurix TC397 - Blinky Example
+
+### User Control Block 00
 
 |Short Name|Value|
 |----------|-----|
@@ -335,23 +354,27 @@ Result:
 | PWx | [0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000] |
 | CONFIRMATION | 0x43211234 |
 
-### Boot Mode Index (BMI)
+#### Boot Mode Index (BMI)
+
 * Mode selection by configuration pins: enabled
 * Start-up mode: internal start from flash
 
-### Boot Mode Header Identifier (BMHDID)
+#### Boot Mode Header Identifier (BMHDID)
+
 Is boot mode header valid: OK
 
-### Boot Mode Header CRC (CRCBMHD/CRCBMHD_N)
+#### Boot Mode Header CRC (CRCBMHD/CRCBMHD_N)
+
 Is boot mode header integrity given: OK
 ```
 
-## Configuration using structures
+### Configuration using structures
+
 If several elements are right behind each other like in a structure, it can be configured in a similar way by using a list of elements for a datatype. The address of each element in the structure is calculated by the given base address in the datatype of each element.
 
 Note that nested structures are not supported yet!
 
-### Example
+#### Example
 
 ```json
 {
@@ -393,6 +416,7 @@ Note that nested structures are not supported yet!
 To access it in the template, you can use the "." notation or Python dictionary syntax.
 
 with ```markdown.mako``` like
+
 ```mako
 <%text># Aurix TC397 - Blinky Example</%text>
 
@@ -440,20 +464,24 @@ with ```markdown.mako``` like
             is_bmh_integrity_given = "OK"
 %>
 <%text>### Boot Mode Index (BMI)</%text>
+
 * Mode selection by configuration pins: ${mode_by_hwcfg}
 * Start-up mode: ${start_up_mode}
 
 <%text>### Boot Mode Header Identifier (BMHDID)</%text>
+
 Is boot mode header valid: ${is_bmh_valid}
 
 <%text>### Boot Mode Header CRC (CRCBMHD/CRCBMHD_N)</%text>
+
 Is boot mode header integrity given: ${is_bmh_integrity_given}
 ```
 
-## Define structure as datatype
+### Define structure as datatype
+
 If a structure shall be used several times, define it as a datatype and use its name.
 
-### Example
+#### Example
 
 ```json
 {
@@ -496,141 +524,184 @@ If a structure shall be used several times, define it as a datatype and use its 
 }
 ```
 
-# Macros
+## Macros
 
 The following macros are available in the templates.
 
-## macros_compare_values()
+### macros_compare_values()
+
 Compares the set value with the actual value.
 
 Parameters:
+
 * set_value: Set value
 * actual_value: Actual value
 * value_format="{:02X}": Value format used to print them in case they are different.
 
 Returns:
+
 * "Ok": If both values are equal.
 * "Not Ok (Set: &lt;set_value&gt;, Actual: &lt;actual_value&gt;)": If the values are different.
 
-## m_read_uint8()
+### m_read_uint8()
+
 Read unsigned 8-bit value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_uint16le()
+### m_read_uint16le()
+
 Read unsigned 16-bit little endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_uint16be()
+### m_read_uint16be()
+
 Read unsigned 16-bit big endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_uint32le()
+### m_read_uint32le()
+
 Read unsigned 32-bit little endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_uint32be()
+### m_read_uint32be()
+
 Read unsigned 32-bit big endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_uint64le()
+### m_read_uint64le()
+
 Read unsigned 64-bit little endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_uint64be()
+### m_read_uint64be()
+
 Read unsigned 64-bit big endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_int8()
+### m_read_int8()
+
 Read signed 8-bit value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_int16le()
+### m_read_int16le()
+
 Read signed 16-bit little endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_int16be()
+### m_read_int16be()
+
 Read signed 16-bit big endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_int32le()
+### m_read_int32le()
+
 Read signed 32-bit little endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_int32be()
+### m_read_int32be()
+
 Read signed 32-bit big endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_int64le()
+### m_read_int64le()
+
 Read signed 64-bit little endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_int64be()
+### m_read_int64be()
+
 Read signed 64-bit big endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_float32le()
+### m_read_float32le()
+
 Read floating point 32-bit little endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_float32be()
+### m_read_float32be()
+
 Read floating point 32-bit big endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_float64le()
+### m_read_float64le()
+
 Read floating point 64-bit little endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_float64be()
+### m_read_float64be()
+
 Read floating point 64-bit big endian value from binary data at given address and returns it.
 
 Parameters:
+
 * addr: Address
 
-## m_read_string()
+### m_read_string()
+
 Read string from binary data at given address and returns it. It will consider the string termination.
 
 Parameters:
+
 * encoding: The character encoding.
     * Default: utf-8
 
-## m_calc_checksum()
+### m_calc_checksum()
+
 Calculate the CRC checksum.
 
 Parameters:
+
 * binary_data_endianess: The binary data endianess and bit width:
     * "uint8": unsigned 8-bit
     * "uint16le": unsigned 16-bit little endian
@@ -646,34 +717,44 @@ Parameters:
 * reverse_output: If the output data shall be reflected, set to True otherwise to False.
 * final_xor: If the output shall be have a final XOR with all bits set, set to True otherwise to False.
 
-## m_swap_bytes_u16()
+### m_swap_bytes_u16()
+
 Swaps the bytes of a unsigned 16-bit value.
 
 Parameters:
+
 * value: Source value
 
 Returns:
+
 * Swapped value
 
-## m_swap_bytes_u32()
+### m_swap_bytes_u32()
+
 Swaps the bytes of a unsigned 32-bit value.
 
 Parameters:
+
 * value: Source value
 
 Returns:
+
 * Swapped value
 
-## m_swap_words_u32()
+### m_swap_words_u32()
+
 Swaps the 16-bit words of a unsigned 32-bit value.
 
 Parameters:
+
 * value: Source value
 
 Returns:
+
 * Swapped value
 
-# Used Libraries
+## Used Libraries
+
 Used 3rd party libraries which are not part of the standard Python package:
 
 | Library | Description | License |
@@ -682,12 +763,15 @@ Used 3rd party libraries which are not part of the standard Python package:
 | [Mako](https://www.makotemplates.org/) | Template engine | MIT License |
 | [toml](https://github.com/uiri/toml) | Parsing [TOML](https://en.wikipedia.org/wiki/TOML) | MIT License |
 
-# Issues, Ideas And Bugs
+## Issues, Ideas And Bugs
+
 If you have further ideas or you found some bugs, great! Create a [issue](https://github.com/BlueAndi/pyHexDump/issues) or if you are able and willing to fix it by yourself, clone the repository and create a pull request.
 
-# License
+## License
+
 The whole source code is published under the [MIT license](http://choosealicense.com/licenses/mit/).
 Consider the different licenses of the used third party libraries too!
 
-# Contribution
+## Contribution
+
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, shall be licensed as above, without any additional terms or conditions.
