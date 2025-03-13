@@ -41,7 +41,7 @@ class ConfigElement:
     """Represents a single element in the configuration.
     """
 
-    # pylint: disable=too-many-arguments, too-many-positional-arguments
+    # pylint: disable=too-many-arguments
     def __init__(self, name, addr, data_type, count, elements = None):
         """
         Initialize the configuration element.
