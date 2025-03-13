@@ -1,0 +1,25 @@
+{
+    "elements": [{
+        "name": "uint8_single_custom",
+        "addr": "0",
+        "dataType": [{
+            "name": "element",
+            "dataType": "uint8",
+            "count": 2
+        }],
+        "count": 1
+    }, {
+        "name": "uint8_list_custom",
+        "addr": 0,
+        "dataType": "array_t",
+        "count": 2
+    }],
+    "structures": [{
+        "name": "array_t",
+        "elements": [{
+            "name": "element",
+            "dataType": "uint8",
+            "count": 4
+        }]
+    }]
+}

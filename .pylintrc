@@ -1,2 +1,13 @@
+[FORMAT]
+
+# Maximum number of characters on a single line.
+max-line-length=120
+
+# Regexp for a line that is allowed to be longer than the limit.
+ignore-long-lines=(?x)(
+  ^\s*(\#\ )?<?https?://\S+>?$|
+  ^\s*(from\s+\S+\s+)?import\s+.+$)
+
 [MESSAGES CONTROL]
-disable = duplicate-code, no-self-use
+
+disable = duplicate-code
