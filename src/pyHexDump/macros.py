@@ -180,7 +180,7 @@ def _read_string(addr, encoding="utf-8"):
 
     return byte_values.decode(encoding)
 
-# pylint: disable=too-many-arguments
+# pylint: disable=too-many-arguments, too-many-positional-arguments
 def _calc_checksum(binary_data_endianess, start_address, end_address, polynomial, bit_width, seed, \
     reverse_input, reverse_output, final_xor):
 

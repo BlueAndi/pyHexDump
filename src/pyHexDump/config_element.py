@@ -26,6 +26,7 @@
 ################################################################################
 # Imports
 ################################################################################
+from pyHexDump.mem_access import mem_access_get_api_by_data_type
 
 ################################################################################
 # Variables
@@ -39,11 +40,72 @@
 class ConfigElement:
     """Represents a single element in the configuration.
     """
-    def __init__(self, name, addr, data_type, count): # pylint: disable=too-many-arguments
+
+    # pylint: disable=too-many-arguments, too-many-positional-arguments
+    def __init__(self, name, addr, data_type, count, elements = None):
+        """
+        Initialize the configuration element.
+
+        Args:
+            name (str): _description_
+            addr (int): _description_
+            data_type (str): _description_
+            count (int): _description_
+            elements (list, optional): List of configuration elements. Defaults to None.
+        """
         self.name = name
         self.addr = addr
         self.data_type = data_type
         self.count = count
+        self.elements = elements
+
+    @property
+    def size(self):
+        """Get the size of the configuration element.
+
+        Returns:
+            int: Size of the configuration element in bytes.
+        """
+        size = 0
+
+        if self.elements is None:
+            mem_access = mem_access_get_api_by_data_type(self.data_type)
+            assert mem_access is not None, f"Unsupported data type: {self.data_type}"
+
+            size = mem_access.get_size()
+
+        else:
+            for _, config_element in self.elements.items():
+                size += config_element.size
+
+        size *= self.count
+
+        return size
+
+class PaddingElement(ConfigElement):
+    """
+    Padding element. Its used to fill up the gap between two other elements.
+    A gap can be necessary in case of a specific alignment is required.
+    """
+
+    def __init__(self, size):
+        """
+        Initialize the padding element.
+
+        Args:
+            size (int): Size of the padding element in bytes.
+        """
+        super().__init__("padding", 0, "uint8", 0)
+        self._size = size
+
+    @property
+    def size(self):
+        """Get the size of the padding element.
+
+        Returns:
+            int: Size of the padding element in bytes.
+        """
+        return self._size
 
 ################################################################################
 # Functions

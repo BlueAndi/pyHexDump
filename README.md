@@ -372,8 +372,6 @@ Is boot mode header integrity given: OK
 
 If several elements are right behind each other like in a structure, it can be configured in a similar way by using a list of elements for a datatype. The address of each element in the structure is calculated by the given base address in the datatype of each element.
 
-Note that nested structures are not supported yet!
-
 #### Example
 
 ```json

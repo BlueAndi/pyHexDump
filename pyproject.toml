@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyHexDump"
-version = "1.2.2"
+version = "1.3.0"
 description = "A CLI tool to dump data from e.g. intel hex files and is able to generate reports."
 readme = "README.md"
 requires-python = ">=3.8"
@@ -30,8 +30,8 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-  "pytest > 5.0.0",
-  "pytest-cov[all]"
+  "pytest > 8.3.3",
+  "pytest-cov >= 6.0.0"
 ]
 
 [project.urls]
