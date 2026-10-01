@@ -13,7 +13,7 @@ $ python --version
 You should see something like
 
 ```bash
-Python 3.9.4
+Python 3.10.0
 ```
 
 In the same way check for pyHexDump.
