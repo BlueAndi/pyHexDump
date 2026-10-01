@@ -1,9 +1,48 @@
 """Tests
 """
 
-from pyHexDump.cmd_checksum import cmd_register as cmd_checksum_register
+# MIT License
+#
+# Copyright (c) 2022 - 2026 Andreas Merkle (web@blue-andi.de)
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+################################################################################
+# Imports
+################################################################################
+import pytest
+from pyHexDump.cmd_checksum import _cmd_checksum, calc_checksum, cmd_register as cmd_checksum_register
+from pyHexDump.constants import Ret
 from pyHexDump.prg_arg_parser import PrgArgParser
 from pyHexDump.bunch import dict_to_bunch
+
+################################################################################
+# Variables
+################################################################################
+
+################################################################################
+# Classes
+################################################################################
+
+################################################################################
+# Functions
+################################################################################
 
 def test_cmd_registration():
     """Test the command registration.
@@ -101,3 +140,22 @@ def test_calc_checksum(capsys):
 
         # String compare to see the hex value in the assertion output
         assert f'{test_case["expected"]:02X}' == captured.out
+
+def test_calc_checksum_rejects_unaligned_range():
+    """A checksum range must contain whole elements of the selected type."""
+    with pytest.raises(ValueError, match="aligned"):
+        calc_checksum(None, "uint16le", 0, 3, 0x07, 8, 0, False, False, False)
+
+def test_cmd_checksum_reports_unaligned_range(capsys):
+    """Invalid checksum ranges return the checksum error status."""
+    status = _cmd_checksum(
+        "tests/data/data.txt", "uint16le", 0, 3, 0x07, 8, 0, False, False, False
+    )
+
+    captured = capsys.readouterr()
+    assert status == Ret.ERROR_CRC_CACLULATION
+    assert "aligned to the data type size" in captured.out
+
+################################################################################
+# Main
+################################################################################

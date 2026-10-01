@@ -1,6 +1,31 @@
 """Tests
 """
 
+# MIT License
+#
+# Copyright (c) 2022 - 2026 Andreas Merkle (web@blue-andi.de)
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+################################################################################
+# Imports
+################################################################################
 from intelhex import IntelHex
 from pyHexDump.constants import Ret
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
@@ -8,6 +33,18 @@ from pyHexDump.common import common_dump_intel_hex
 from pyHexDump.prg_arg_parser import PrgArgParser
 from pyHexDump.cmd_dump import _exec, cmd_register as cmd_dump_register
 from pyHexDump.bunch import dict_to_bunch
+
+################################################################################
+# Variables
+################################################################################
+
+################################################################################
+# Classes
+################################################################################
+
+################################################################################
+# Functions
+################################################################################
 
 def test_cmd_registration():
     """Test the command registration.
@@ -109,3 +146,24 @@ def test_dump(capsys):
 
     assert ret_status == Ret.OK
     assert captured.out == "0000: 31 32 33 34\n0004: 35 36 37 38"
+
+def test_dump_partial_last_line(capsys):
+    """Test that a partial final line starts after the complete lines."""
+    binary_data = IntelHex()
+    for addr in range(20):
+        binary_data[addr] = addr
+
+    mem_access_api = mem_access_get_api_by_data_type("uint8")
+    mem_access_api.set_binary_data(binary_data)
+
+    common_dump_intel_hex(mem_access_api, 0, 20)
+
+    captured = capsys.readouterr()
+    assert captured.out == (
+        "0000: 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n"
+        "0010: 10 11 12 13"
+    )
+
+################################################################################
+# Main
+################################################################################
