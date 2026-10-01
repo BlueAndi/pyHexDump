@@ -204,6 +204,7 @@ def common_dump_intel_hex(mem_access, addr, count, next_line=16):
         # Print newline only if this is not the first line (no full lines available)
         if full_lines_cnt > 0:
             print("")
+            offset = full_lines_cnt * next_line
 
         common_print_line(mem_access, addr + offset, last_line_element_cnt)
 
