@@ -159,12 +159,17 @@ def _constants_to_dict(constants):
     constants_dict = {}
 
     for constant in constants:
-        key_value_pair = constant.split(":", 1)
-
-        if key_value_pair is not None:
-            constants_dict[key_value_pair[0]] = key_value_pair[1]
+        key, separator, value = constant.partition(":")
+        if not separator:
+            raise ValueError(f"Invalid constant {constant!r}; expected key:value.")
+        constants_dict[key] = value
 
     return constants_dict
+
+def _validate_constant(constant):
+    if ":" not in constant:
+        raise ValueError("Expected a constant in key:value format.")
+    return constant
 
 def _cmd_print(binary_file, config_file, template_file, show_only_in_hex, constants):
     """Print configuration element values. The configuration file contains the
@@ -304,6 +309,7 @@ def cmd_register(arg_sub_parsers):
         "-c",
         "--constant",
         action="append",
+        type=_validate_constant,
         required=False,
         help="Constant key/value pair to be used in the template. " \
                 "Can be applied several times. Example --constant name:value"
