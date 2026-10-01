@@ -166,19 +166,16 @@ def _read_float64le(addr):
 def _read_float64be(addr):
     return _read(addr, "float64be")
 
-def _read_string(addr, encoding="utf-8"):
+def _read_string(addr, encoding="utf-8", max_length=256):
     value_list = []
-    idx = 0
-    while True:
+    for idx in range(max_length):
         value = _read_u8(addr + idx)
         if value == 0:
-            break
+            byte_values = bytearray(value_list)
+            return byte_values.decode(encoding)
         value_list.append(value)
-        idx += 1
 
-    byte_values = bytearray(value_list)
-
-    return byte_values.decode(encoding)
+    raise ValueError(f"String at address {addr:#x} is not terminated within {max_length} bytes.")
 
 # pylint: disable=too-many-arguments
 def _calc_checksum(binary_data_endianess, start_address, end_address, polynomial, bit_width, seed, \
