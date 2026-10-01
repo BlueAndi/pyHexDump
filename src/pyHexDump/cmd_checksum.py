@@ -71,7 +71,12 @@ def calc_checksum(binary_data, binary_data_endianess, start_address, end_address
     mem_access = mem_access_get_api_by_data_type(binary_data_endianess)
     mem_access.set_binary_data(binary_data)
     offset = 0
-    count = (end_address - start_address) / mem_access.get_size()
+    range_size = end_address - start_address
+    element_size = mem_access.get_size()
+    if range_size < 0 or range_size % element_size != 0:
+        raise ValueError("Checksum range must be non-negative and aligned to the data type size.")
+
+    count = range_size // element_size
 
     bit_width_mask = pow(2, bit_width) - 1
     msb_mask = 1 << bit_width
@@ -140,14 +145,18 @@ def _cmd_checksum(binary_file, binary_data_endianess, start_address, end_address
     ret_status, intel_hex = common_load_binary_file(binary_file)
 
     if ret_status == Ret.OK:
-        checksum = calc_checksum(intel_hex, binary_data_endianess,
-                                 start_address, end_address, polynomial, \
-                                 bit_width, seed, reverse_input, \
-                                 reverse_output, final_xor)
-
-        value_width = bit_width // 4
-        value_format = "{:0" + str(value_width) + "X}"
-        common_print_value(checksum, value_format)
+        try:
+            checksum = calc_checksum(intel_hex, binary_data_endianess,
+                                     start_address, end_address, polynomial, \
+                                     bit_width, seed, reverse_input, \
+                                     reverse_output, final_xor)
+        except ValueError as error:
+            print(f"Invalid checksum parameters: {error}")
+            ret_status = Ret.ERROR_CRC_CACLULATION
+        else:
+            value_width = bit_width // 4
+            value_format = "{:0" + str(value_width) + "X}"
+            common_print_value(checksum, value_format)
 
     return ret_status
 
