@@ -1,7 +1,7 @@
 """Utilities
 """
 
-def get_only_operators(list_of_methods):
+def get_only_operators(list_of_methods: list[str]) -> list[str]:
     """Get only operators back from a list of method names.
 
     Args:
@@ -18,11 +18,14 @@ def get_only_operators(list_of_methods):
 
     return result
 
-def print_operators(obj):
+def print_operators(obj: object) -> None:
     """Print the operators of a object to the CLI.
 
     Args:
         obj (obj): The object which to print the operators.
+
+    Returns:
+        None: Prints the object's operator names to stdout.
     """
     print(f"{obj} operators:")
     operators = get_only_operators(dir(obj))

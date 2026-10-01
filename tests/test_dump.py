@@ -26,6 +26,7 @@
 ################################################################################
 # Imports
 ################################################################################
+import pytest
 from intelhex import IntelHex
 from pyHexDump.constants import Ret
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
@@ -46,7 +47,7 @@ from pyHexDump.bunch import dict_to_bunch
 # Functions
 ################################################################################
 
-def test_cmd_registration():
+def test_cmd_registration() -> None:
     """Test the command registration.
     """
     main_prg_arg_parser = PrgArgParser()
@@ -55,7 +56,7 @@ def test_cmd_registration():
     assert cmd["name"] == "dump"
     assert hasattr(cmd["execFunc"], "__call__") is True
 
-def test_call(capsys):
+def test_call(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the call via command line args."""
     args = {
         "binaryFile": [ "tests/data/data.txt" ],
@@ -71,7 +72,7 @@ def test_call(capsys):
     assert ret_status == Ret.OK
     assert captured.out == "0000: 31 32 33 34 35 36 37 38\n"
 
-def test_dump(capsys):
+def test_dump(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the dump of binary data.
     """
     binary_data = IntelHex()
@@ -147,7 +148,7 @@ def test_dump(capsys):
     assert ret_status == Ret.OK
     assert captured.out == "0000: 31 32 33 34\n0004: 35 36 37 38"
 
-def test_dump_partial_last_line(capsys):
+def test_dump_partial_last_line(capsys: pytest.CaptureFixture[str]) -> None:
     """Test that a partial final line starts after the complete lines."""
     binary_data = IntelHex()
     for addr in range(20):

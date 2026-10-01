@@ -42,7 +42,7 @@ from pyHexDump.tmpl_element import TmplElementInt, TmplElementIntList, \
 # Functions
 ################################################################################
 
-def test_tmpl_element():
+def test_tmpl_element() -> None:
     """Test the template element class with different representations.
     """
     # Test uint8
@@ -111,7 +111,7 @@ def test_tmpl_element():
     assert f"0x{value_raw:016X}" == tmpl_element.hex()
     assert test_value == tmpl_element
 
-def test_tmpl_element_with_array_part_1():
+def test_tmpl_element_with_array_part_1() -> None:
     """Test the template element class with different representations
         in case its an array.
     """
@@ -176,7 +176,7 @@ def test_tmpl_element_with_array_part_1():
     for idx, value in enumerate(test_values):
         assert value == tmpl_element[idx]
 
-def test_tmpl_element_with_array_part_2():
+def test_tmpl_element_with_array_part_2() -> None:
     """Test the template element class with different representations
         in case its an array.
     """
@@ -245,7 +245,7 @@ def test_tmpl_element_with_array_part_2():
     for idx, value in enumerate(test_values):
         assert value == tmpl_element[idx]
 
-def test_tmpl_element_with_array_part_3():
+def test_tmpl_element_with_array_part_3() -> None:
     """Test the template element class with different representations
         in case its an array.
     """

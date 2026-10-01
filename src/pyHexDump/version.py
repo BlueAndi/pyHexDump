@@ -50,8 +50,15 @@ __license__ = "???"
 ################################################################################
 
 
-def resource_path(relative_path):
-    """ Get the absolute path to the resource, works for dev and for PyInstaller """
+def resource_path(relative_path: str) -> str:
+    """Get the absolute path to a packaged resource.
+
+    Args:
+        relative_path: Path relative to the package resource directory.
+
+    Returns:
+        Absolute path to the resource.
+    """
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         # pylint: disable=protected-access
@@ -62,12 +69,12 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-def init_from_metadata():
+def init_from_metadata() -> tuple[str, str, str, str, str]:
     """Initialize dunders from importlib.metadata
     Requires that the package was installed.
 
     Returns:
-        list: Tool related informations
+        Tuple containing version, author, email, repository URL, and license.
     """
 
     my_metadata = meta.metadata('pyHexDump')
@@ -84,13 +91,13 @@ def init_from_metadata():
         repository or my_metadata.get('Home-page') or "???",\
         my_metadata.get('License') or my_metadata.get('License-Expression') or "???"
 
-def init_from_toml():
+def init_from_toml() -> tuple[str, str, str, str, str]:
     """Initialize dunders from pypackage.toml file
 
     Tried if package wasn't installed.
 
     Returns:
-        list: Tool related informations
+        Tuple containing version, author, email, repository URL, and license.
     """
 
     toml_file = resource_path("pyproject.toml")

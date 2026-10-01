@@ -26,6 +26,7 @@
 ################################################################################
 # Imports
 ################################################################################
+from typing import Any
 
 ################################################################################
 # Variables
@@ -40,7 +41,15 @@ class Bunch(dict):
         A dictionary must be accessed via myDict["test"].
         A bunch can access the same with myDict.test.
     """
-    def __init__(self, dict_of_items):
+    def __init__(self, dict_of_items: dict[str, Any]) -> None:
+        """Initialize the bunch from a mapping.
+
+        Args:
+            dict_of_items: Values exposed by both key and attribute access.
+
+        Returns:
+            None: Initializes the mapping and attribute view.
+        """
         dict.__init__(self, dict_of_items)
         self.__dict__.update(dict_of_items)
 
@@ -48,7 +57,7 @@ class Bunch(dict):
 # Functions
 ################################################################################
 
-def dict_to_bunch(dict_of_items):
+def dict_to_bunch(dict_of_items: dict[str, Any]) -> Bunch:
     """Convert a dictionary to a bunch.
 
     Args:

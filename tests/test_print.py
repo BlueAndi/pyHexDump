@@ -44,12 +44,12 @@ from pyHexDump.bunch import dict_to_bunch
 # Functions
 ################################################################################
 
-def test_constants_require_key_value_separator():
+def test_constants_require_key_value_separator() -> None:
     """Malformed template constants are rejected."""
     with pytest.raises(ValueError, match="key:value"):
         _constants_to_dict(["missing-separator"])
 
-def test_cmd_registration():
+def test_cmd_registration() -> None:
     """Test the command registration.
     """
     main_prg_arg_parser = PrgArgParser()
@@ -58,7 +58,7 @@ def test_cmd_registration():
     assert cmd["name"] == "print"
     assert hasattr(cmd["execFunc"], "__call__") is True
 
-def test_config(capsys):
+def test_config(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the call via command line args."""
     args = {
         "binaryFile": [ "tests/data/data.txt" ],
@@ -79,7 +79,7 @@ def test_config(capsys):
     assert captured_lines[2] == "utf8 @ 00000004: 567"
     assert captured_lines[3] == ""
 
-def test_config_structure(capsys):
+def test_config_structure(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the call via command line args."""
     args = {
         "binaryFile": [ "tests/data/data.txt" ],
@@ -99,7 +99,7 @@ def test_config_structure(capsys):
     assert captured_lines[1] == "uint8_list_custom.element @ 00000000: [49, 50, 51, 52, 53, 54, 55, 56]"
     assert captured_lines[2] == ""
 
-def test_config_structure_nested(capsys):
+def test_config_structure_nested(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the call via command line args."""
     args = {
         "binaryFile": [ "tests/data/data.txt" ],
@@ -119,7 +119,7 @@ def test_config_structure_nested(capsys):
     assert captured_lines[1] == "ubyte_list.element.b @ 00000001: 50"
     assert captured_lines[2] == ""
 
-def test_config_structure_array(capsys):
+def test_config_structure_array(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the call via command line args."""
     args = {
         "binaryFile": [ "tests/data/data.txt" ],
@@ -142,7 +142,7 @@ def test_config_structure_array(capsys):
     assert captured_lines[2] == "uint8_list_custom._1_.element @ 00000004: [53, 54, 55, 56]"
     assert captured_lines[3] == ""
 
-def test_config_structure_nested_array(capsys):
+def test_config_structure_nested_array(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the call via command line args."""
     args = {
         "binaryFile": [ "tests/data/data.txt" ],

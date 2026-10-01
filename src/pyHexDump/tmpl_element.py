@@ -43,12 +43,12 @@ class BaseTemplateElement():
     Args:
         ABC (obj): Abstract base class
     """
-    def __init__(self, name, addr):
+    def __init__(self, name: str, addr: int) -> None:
         super().__init__()
         self._name = name
         self._addr = addr
 
-    def name(self):
+    def name(self) -> str:
         """Get name of the element.
 
         Returns:
@@ -56,7 +56,7 @@ class BaseTemplateElement():
         """
         return self._name
 
-    def addr(self):
+    def addr(self) -> int:
         """Get the address of the element in the binary data.
 
         Returns:
@@ -67,99 +67,99 @@ class BaseTemplateElement():
 class TmplElementInt(BaseTemplateElement):
     """Template element representing a single integer element with a address, value and bit width.
     """
-    def __init__(self, name, addr, value, bit_width):
+    def __init__(self, name: str, addr: int, value: int, bit_width: int) -> None:
         super().__init__(name, addr)
         self._value = value
         self._bit_width = bit_width
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return bool(self._value)
 
-    def __int__(self):
+    def __int__(self) -> int:
         return self._value
 
-    def __float__(self):
+    def __float__(self) -> float:
         return float(self._value)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self._value)
 
-    def __add__(self, value):
+    def __add__(self, value: int | float) -> int | float:
         return self._value + value
 
-    def __sub__(self, value):
+    def __sub__(self, value: int | float) -> int | float:
         return self._value - value
 
-    def __mul__(self, value):
+    def __mul__(self, value: int | float) -> int | float:
         return self._value * value
 
-    def __pow__(self, value):
+    def __pow__(self, value: int | float) -> int | float:
         return self._value ** value
 
-    def __truediv__(self, value):
+    def __truediv__(self, value: int | float) -> float:
         return self._value / value
 
-    def __floordiv__(self, value):
+    def __floordiv__(self, value: int | float) -> int | float:
         return self._value // value
 
-    def __mod__(self, value):
+    def __mod__(self, value: int | float) -> int | float:
         return self._value % value
 
-    def __lshift__(self, value):
+    def __lshift__(self, value: int) -> int:
         return self._value << value
 
-    def __rshift__(self, value):
+    def __rshift__(self, value: int) -> int:
         return self._value >> value
 
-    def __and__(self, value):
+    def __and__(self, value: int) -> int:
         return self._value & value
 
-    def __or__(self, value):
+    def __or__(self, value: int) -> int:
         return self._value | value
 
-    def __xor__(self, value):
+    def __xor__(self, value: int) -> int:
         return self._value ^ value
 
-    def __divmod__(self, value):
+    def __divmod__(self, value: int) -> tuple[int, int]:
         return (self._value // value, self._value % value)
 
-    def __lt__(self, value):
+    def __lt__(self, value: int | float) -> bool:
         return self._value < value
 
-    def __le__(self, value):
+    def __le__(self, value: int | float) -> bool:
         return self._value <= value
 
-    def __eq__(self, value):
+    def __eq__(self, value: object) -> bool:
         return self._value == value
 
-    def __ne__(self, value):
+    def __ne__(self, value: object) -> bool:
         return self._value != value
 
-    def __gt__(self, value):
+    def __gt__(self, value: int | float) -> bool:
         return self._value > value
 
-    def __ge__(self, value):
+    def __ge__(self, value: int | float) -> bool:
         return self._value >= value
 
-    def __abs__(self):
+    def __abs__(self) -> int:
         return abs(self._value)
 
-    def __invert__(self):
+    def __invert__(self) -> int:
         return ~self._value
 
-    def __ceil__(self):
+    def __ceil__(self) -> int:
         return math.ceil(self._value)
 
-    def __floor__(self):
+    def __floor__(self) -> int:
         return math.floor(self._value)
 
-    def _value_to_hex(self, value, prefix):
+    def _value_to_hex(self, value: int, prefix: str) -> str:
         if value < 0:
             value &= (1 << self._bit_width) - 1
 
         return f"{prefix}{value:0{self._bit_width // 4}X}"
 
-    def hex(self, prefix="0x"):
+    def hex(self, prefix: str = "0x") -> str:
         """Get the value in hex format.
 
         Args:
@@ -173,48 +173,48 @@ class TmplElementInt(BaseTemplateElement):
 class TmplElementIntList(BaseTemplateElement):
     """Template element representing a list of integer elements with a address, value and bit width.
     """
-    def __init__(self, name, addr, value, bit_width):
+    def __init__(self, name: str, addr: int, value: list[int], bit_width: int) -> None:
         super().__init__(name, addr)
         self._value = value
         self._bit_width = bit_width
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self._value)
 
-    def __add__(self, value):
+    def __add__(self, value: list[int]) -> list[int]:
         return self._value + value
 
-    def __mul__(self, value):
+    def __mul__(self, value: int) -> list[int]:
         return self._value * value
 
-    def __lt__(self, value):
+    def __lt__(self, value: list[int]) -> bool:
         return self._value < value
 
-    def __le__(self, value):
+    def __le__(self, value: list[int]) -> bool:
         return self._value <= value
 
-    def __eq__(self, value):
+    def __eq__(self, value: object) -> bool:
         return self._value == value
 
-    def __ne__(self, value):
+    def __ne__(self, value: object) -> bool:
         return self._value != value
 
-    def __gt__(self, value):
+    def __gt__(self, value: list[int]) -> bool:
         return self._value > value
 
-    def __ge__(self, value):
+    def __ge__(self, value: list[int]) -> bool:
         return self._value >= value
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: int) -> int:
         return self._value[key]
 
-    def _value_to_hex(self, value, prefix):
+    def _value_to_hex(self, value: int, prefix: str) -> str:
         if value < 0:
             value &= (1 << self._bit_width) - 1
 
         return f"{prefix}{value:0{self._bit_width // 4}X}"
 
-    def hex(self, prefix="0x"):
+    def hex(self, prefix: str = "0x") -> str:
         """Get the value in hex format.
 
         Args:
@@ -239,75 +239,75 @@ class TmplElementIntList(BaseTemplateElement):
 class TmplElementFloat(BaseTemplateElement):
     """Template element representing a single float element with a address, value and bit width.
     """
-    def __init__(self, name, addr, value, bit_width):
+    def __init__(self, name: str, addr: int, value: float, bit_width: int) -> None:
         super().__init__(name, addr)
         self._value = value
         self._bit_width = bit_width
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return bool(self._value)
 
-    def __int__(self):
+    def __int__(self) -> int:
         return int(self._value)
 
-    def __float__(self):
+    def __float__(self) -> float:
         return self._value
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self._value)
 
-    def __add__(self, value):
+    def __add__(self, value: int | float) -> float:
         return self._value + value
 
-    def __sub__(self, value):
+    def __sub__(self, value: int | float) -> float:
         return self._value - value
 
-    def __mul__(self, value):
+    def __mul__(self, value: int | float) -> float:
         return self._value * value
 
-    def __pow__(self, value):
+    def __pow__(self, value: int | float) -> float:
         return self._value ** value
 
-    def __truediv__(self, value):
+    def __truediv__(self, value: int | float) -> float:
         return self._value / value
 
-    def __floordiv__(self, value):
+    def __floordiv__(self, value: int | float) -> float:
         return self._value // value
 
-    def __mod__(self, value):
+    def __mod__(self, value: int | float) -> float:
         return self._value % value
 
-    def __divmod__(self, value):
+    def __divmod__(self, value: int | float) -> tuple[float, float]:
         return (self._value // value, self._value % value)
 
-    def __lt__(self, value):
+    def __lt__(self, value: int | float) -> bool:
         return self._value < value
 
-    def __le__(self, value):
+    def __le__(self, value: int | float) -> bool:
         return self._value <= value
 
-    def __eq__(self, value):
+    def __eq__(self, value: object) -> bool:
         return self._value == value
 
-    def __ne__(self, value):
+    def __ne__(self, value: object) -> bool:
         return self._value != value
 
-    def __gt__(self, value):
+    def __gt__(self, value: int | float) -> bool:
         return self._value > value
 
-    def __ge__(self, value):
+    def __ge__(self, value: int | float) -> bool:
         return self._value >= value
 
-    def __abs__(self):
+    def __abs__(self) -> float:
         return abs(self._value)
 
-    def __ceil__(self):
+    def __ceil__(self) -> int:
         return math.ceil(self._value)
 
-    def __floor__(self):
+    def __floor__(self) -> int:
         return math.floor(self._value)
 
-    def _value_to_hex(self, value, prefix):
+    def _value_to_hex(self, value: float, prefix: str) -> str:
         if self._bit_width == 32:
             value = struct.unpack('<I', struct.pack('<f', value))[0]
         elif self._bit_width == 64:
@@ -317,7 +317,7 @@ class TmplElementFloat(BaseTemplateElement):
 
         return f"{prefix}{value:0{self._bit_width // 4}X}"
 
-    def hex(self, prefix="0x"):
+    def hex(self, prefix: str = "0x") -> str:
         """Get the value in hex format.
 
         Args:
@@ -331,42 +331,42 @@ class TmplElementFloat(BaseTemplateElement):
 class TmplElementFloatList(BaseTemplateElement):
     """Template element representing a list of float elements with a address, value and bit width.
     """
-    def __init__(self, name, addr, value, bit_width):
+    def __init__(self, name: str, addr: int, value: list[float], bit_width: int) -> None:
         super().__init__(name, addr)
         self._value = value
         self._bit_width = bit_width
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self._value)
 
-    def __add__(self, value):
+    def __add__(self, value: list[float]) -> list[float]:
         return self._value + value
 
-    def __mul__(self, value):
+    def __mul__(self, value: int) -> list[float]:
         return self._value * value
 
-    def __lt__(self, value):
+    def __lt__(self, value: list[float]) -> bool:
         return self._value < value
 
-    def __le__(self, value):
+    def __le__(self, value: list[float]) -> bool:
         return self._value <= value
 
-    def __eq__(self, value):
+    def __eq__(self, value: object) -> bool:
         return self._value == value
 
-    def __ne__(self, value):
+    def __ne__(self, value: object) -> bool:
         return self._value != value
 
-    def __gt__(self, value):
+    def __gt__(self, value: list[float]) -> bool:
         return self._value > value
 
-    def __ge__(self, value):
+    def __ge__(self, value: list[float]) -> bool:
         return self._value >= value
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: int) -> float:
         return self._value[key]
 
-    def _value_to_hex(self, value, prefix):
+    def _value_to_hex(self, value: float, prefix: str) -> str:
         if self._bit_width == 32:
             value = struct.unpack('<I', struct.pack('<f', value))[0]
         elif self._bit_width == 64:
@@ -376,7 +376,7 @@ class TmplElementFloatList(BaseTemplateElement):
 
         return f"{prefix}{value:0{self._bit_width // 4}X}"
 
-    def hex(self, prefix="0x"):
+    def hex(self, prefix: str = "0x") -> str:
         """Get the value in hex format.
 
         Args:
@@ -401,54 +401,54 @@ class TmplElementFloatList(BaseTemplateElement):
 class TmplElementStr(BaseTemplateElement):
     """Template element representing a single integer element with a address, value and bit width.
     """
-    def __init__(self, name, addr, value, bit_width):
+    def __init__(self, name: str, addr: int, value: str, bit_width: int) -> None:
         super().__init__(name, addr)
         self._value = value
         self._bit_width = bit_width
 
-    def __int__(self):
+    def __int__(self) -> int:
         return int(self._value)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._value
 
-    def __add__(self, value):
+    def __add__(self, value: str) -> str:
         return self._value + value
 
-    def __mul__(self, value):
+    def __mul__(self, value: int) -> str:
         return self._value * value
 
-    def __mod__(self, value):
+    def __mod__(self, value: object) -> str:
         return self._value % value
 
-    def __lt__(self, value):
+    def __lt__(self, value: str) -> bool:
         return self._value < value
 
-    def __le__(self, value):
+    def __le__(self, value: str) -> bool:
         return self._value <= value
 
-    def __eq__(self, value):
+    def __eq__(self, value: object) -> bool:
         return self._value == value
 
-    def __ne__(self, value):
+    def __ne__(self, value: object) -> bool:
         return self._value != value
 
-    def __gt__(self, value):
+    def __gt__(self, value: str) -> bool:
         return self._value > value
 
-    def __ge__(self, value):
+    def __ge__(self, value: str) -> bool:
         return self._value >= value
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: int | slice) -> str:
         return self._value[key]
 
-    def _value_to_hex(self, value, prefix):
+    def _value_to_hex(self, value: int, prefix: str) -> str:
         if value < 0:
             value &= (1 << self._bit_width) - 1
 
         return f"{prefix}{value:0{self._bit_width // 4}X}"
 
-    def hex(self, prefix="0x"):
+    def hex(self, prefix: str = "0x") -> str:
         """Get the value in hex format.
 
         Args:

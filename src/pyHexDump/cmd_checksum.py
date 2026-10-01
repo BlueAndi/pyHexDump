@@ -27,9 +27,14 @@ or from http://ross.net/crc/download/crc_v3.txt."""
 ################################################################################
 # Imports
 ################################################################################
+import argparse
+from typing import Callable
+
+from intelhex import IntelHex
 from pyHexDump.constants import Ret
 from pyHexDump.common import common_load_binary_file, common_print_value
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
+from pyHexDump.bunch import Bunch
 
 ################################################################################
 # Variables
@@ -46,8 +51,18 @@ _CMD_NAME = "checksum"
 ################################################################################
 
 # pylint: disable=too-many-arguments, too-many-locals
-def calc_checksum(binary_data, binary_data_endianess, start_address, end_address,\
-    polynomial, bit_width, seed, reverse_input, reverse_output, final_xor):
+def calc_checksum(
+    binary_data: IntelHex,
+    binary_data_endianess: str,
+    start_address: int,
+    end_address: int,
+    polynomial: int,
+    bit_width: int,
+    seed: int,
+    reverse_input: bool,
+    reverse_output: bool,
+    final_xor: bool,
+) -> int:
     """Calcuate the checksum for the given address in the binary_data and the
     given number of bytes.
 
@@ -66,7 +81,7 @@ def calc_checksum(binary_data, binary_data_endianess, start_address, end_address
         final_xor(bool): Xor the final result with the value 0xff before returning the soulution
 
     Returns:
-        checksum: Checksum
+        int: Checksum calculated over the requested byte range.
     """
     mem_access = mem_access_get_api_by_data_type(binary_data_endianess)
     mem_access.set_binary_data(binary_data)
@@ -120,8 +135,18 @@ def calc_checksum(binary_data, binary_data_endianess, start_address, end_address
     return crc
 
 # pylint: disable=too-many-arguments
-def _cmd_checksum(binary_file, binary_data_endianess, start_address, end_address, \
-    polynomial, bit_width, seed, reverse_input, reverse_output, final_xor):
+def _cmd_checksum(
+    binary_file: str,
+    binary_data_endianess: str,
+    start_address: int,
+    end_address: int,
+    polynomial: int,
+    bit_width: int,
+    seed: int,
+    reverse_input: bool,
+    reverse_output: bool,
+    final_xor: bool,
+) -> Ret:
     """Print the checksum for the given address and the given number of bytes
     to the console.
 
@@ -160,7 +185,7 @@ def _cmd_checksum(binary_file, binary_data_endianess, start_address, end_address
 
     return ret_status
 
-def _exec(args):
+def _exec(args: argparse.Namespace | Bunch) -> Ret:
     """Determine the required parameters from the program arguments and execute the command.
 
     Args:
@@ -176,7 +201,9 @@ def _exec(args):
                          args.seed, args.reverseIn, \
                          args.reverseOut, args.finalXOR)
 
-def cmd_register(arg_sub_parsers):
+def cmd_register(
+    arg_sub_parsers: argparse._SubParsersAction,
+) -> dict[str, str | Callable[[argparse.Namespace], Ret]]:
     """Register the command specific CLI argument parser and get command
         specific paramters.
 
@@ -184,7 +211,7 @@ def cmd_register(arg_sub_parsers):
         arg_sub_parsers (obj): Register the parser here
 
     Returns:
-        obj: Command parameters
+        dict: Registered command name and execution callback.
     """
     cmd_par_dict = {}
     cmd_par_dict["name"] = _CMD_NAME

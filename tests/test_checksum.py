@@ -44,7 +44,7 @@ from pyHexDump.bunch import dict_to_bunch
 # Functions
 ################################################################################
 
-def test_cmd_registration():
+def test_cmd_registration() -> None:
     """Test the command registration.
     """
 
@@ -54,7 +54,7 @@ def test_cmd_registration():
     assert cmd["name"] == "checksum"
     assert hasattr(cmd["execFunc"], "__call__") is True
 
-def test_calc_checksum(capsys):
+def test_calc_checksum(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the checksum calculation algorithm with different
         polynomials, etc.
 
@@ -141,12 +141,12 @@ def test_calc_checksum(capsys):
         # String compare to see the hex value in the assertion output
         assert f'{test_case["expected"]:02X}' == captured.out
 
-def test_calc_checksum_rejects_unaligned_range():
+def test_calc_checksum_rejects_unaligned_range() -> None:
     """A checksum range must contain whole elements of the selected type."""
     with pytest.raises(ValueError, match="aligned"):
         calc_checksum(None, "uint16le", 0, 3, 0x07, 8, 0, False, False, False)
 
-def test_cmd_checksum_reports_unaligned_range(capsys):
+def test_cmd_checksum_reports_unaligned_range(capsys: pytest.CaptureFixture[str]) -> None:
     """Invalid checksum ranges return the checksum error status."""
     status = _cmd_checksum(
         "tests/data/data.txt", "uint16le", 0, 3, 0x07, 8, 0, False, False, False

@@ -26,6 +26,8 @@
 ################################################################################
 # Imports
 ################################################################################
+from typing import Any
+
 from pyHexDump.constants import Ret
 from pyHexDump.common import common_load_json_file
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
@@ -42,14 +44,22 @@ from pyHexDump.config_element import ConfigElement, PaddingElement
 class ConfigModel():
     """The configuration model holds a configuration elements.
     """
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize an empty configuration model.
+
+        Returns:
+            None: Initializes the model state.
+        """
         self._list = []
 
-    def load(self, file_name):
+    def load(self, file_name: str) -> Ret:
         """Load configuration model from file.
 
         Args:
             file_name (str): Name of the configuration file.
+
+        Returns:
+            Ret: Status returned while loading the configuration.
         """
         ret_status, config_dict = common_load_json_file(file_name)
 
@@ -58,15 +68,17 @@ class ConfigModel():
 
         return ret_status
 
-    def get(self):
+    def get(self) -> list[Any] | dict[str, ConfigElement]:
         """Get list of configuration elements.
 
         Returns:
-            list: Configuration elements
+            list or dict: Configuration elements before or after loading.
         """
         return self._list
 
-    def _find_structure_definition(self, config_dict, structure_name):
+    def _find_structure_definition(
+        self, config_dict: dict[str, Any], structure_name: str
+    ) -> list[dict[str, Any]] | None:
         """Find a structure definition by its name.
 
         Args:
@@ -94,7 +106,7 @@ class ConfigModel():
 
         return structure_pos
 
-    def _get_name_from_config_item(self, item):
+    def _get_name_from_config_item(self, item: dict[str, Any]) -> str | None:
         """Get the name from the configuration item.
 
         Args:
@@ -110,7 +122,15 @@ class ConfigModel():
 
         return name
 
-    def _get_count_from_config_item(self, item):
+    def _get_count_from_config_item(self, item: dict[str, Any]) -> int | None:
+        """Read an optional element count from a configuration item.
+
+        Args:
+            item: Configuration item containing an optional ``count`` value.
+
+        Returns:
+            Parsed count, or None when the value is absent or unsupported.
+        """
         count = None
 
         if "count" in item:
@@ -121,7 +141,15 @@ class ConfigModel():
 
         return count
 
-    def _get_addr_from_config_item(self, item):
+    def _get_addr_from_config_item(self, item: dict[str, Any]) -> int | None:
+        """Read an optional base address from a configuration item.
+
+        Args:
+            item: Configuration item containing an optional ``addr`` value.
+
+        Returns:
+            Parsed address, or None when the value is absent or unsupported.
+        """
         addr = None
 
         if "addr" in item:
@@ -132,7 +160,15 @@ class ConfigModel():
 
         return addr
 
-    def _get_offset_from_config_item(self, item):
+    def _get_offset_from_config_item(self, item: dict[str, Any]) -> int | None:
+        """Read an optional structure offset from a configuration item.
+
+        Args:
+            item: Structure item containing an optional ``offset`` value.
+
+        Returns:
+            Parsed offset, or None when the value is absent or unsupported.
+        """
         offset = None
 
         if "offset" in item:
@@ -143,7 +179,17 @@ class ConfigModel():
 
         return offset
 
-    def _get_data_type_from_config_item(self, item):
+    def _get_data_type_from_config_item(
+        self, item: dict[str, Any]
+    ) -> str | list[dict[str, Any]] | None:
+        """Read a built-in type name or inline structure definition.
+
+        Args:
+            item: Configuration item containing an optional ``dataType`` value.
+
+        Returns:
+            Type name, inline structure definition, or None when unsupported.
+        """
         data_type = None
 
         if "dataType" in item:
@@ -156,7 +202,13 @@ class ConfigModel():
         return data_type
 
     # pylint: disable=too-many-locals,too-many-branches
-    def _get_config_structure(self, structure_name, structure_definition, config_dict, base_addr):
+    def _get_config_structure(
+        self,
+        structure_name: str,
+        structure_definition: list[dict[str, Any]],
+        config_dict: dict[str, Any],
+        base_addr: int,
+    ) -> dict[str, ConfigElement]:
         """Get a configuration element object dictionary from the configuration
             item sub dictionary. If not all necessary parameters are available,
             it will be skipped.
@@ -268,7 +320,7 @@ class ConfigModel():
         return cfg_elements_dict
 
     # pylint: disable=too-many-branches
-    def _get_config_elements(self, config_dict):
+    def _get_config_elements(self, config_dict: dict[str, Any]) -> dict[str, ConfigElement]:
         """Get a configuration element object dictionary from the configuration
             item dictionary. If a configuration item doesn't contain all
             necessary parameters, it will be skipped.

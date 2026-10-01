@@ -43,7 +43,7 @@ from pyHexDump.macros import get_macro_dict, set_binary_data
 # Functions
 ################################################################################
 
-def test_macros_read_unsigned_integers():
+def test_macros_read_unsigned_integers() -> None:
     """Test macros to read unsigned integer values.
     """
     binary_data = IntelHex()
@@ -106,7 +106,7 @@ def test_macros_read_unsigned_integers():
         expected |= test_data[idx] << (56 - idx * 8)
     assert hex(expected) == hex(value)
 
-def test_macros_read_signed_integers(): # pylint: disable=too-many-statements
+def test_macros_read_signed_integers() -> None: # pylint: disable=too-many-statements
     """Test macros to read signed integer values.
     """
     binary_data = IntelHex()
@@ -192,7 +192,7 @@ def test_macros_read_signed_integers(): # pylint: disable=too-many-statements
     value = macro_dict["m_read_int64be"](0)
     assert test_value == value
 
-def test_macros_read_float32():
+def test_macros_read_float32() -> None:
     """Test macros to read 32-bit floating values.
     """
     binary_data = IntelHex()
@@ -224,7 +224,7 @@ def test_macros_read_float32():
     assert (test_value + epsilon) > value
     assert (test_value - epsilon) < value
 
-def test_macros_read_float64():
+def test_macros_read_float64() -> None:
     """Test macros to read 64-bit floating values.
     """
     binary_data = IntelHex()
@@ -264,7 +264,7 @@ def test_macros_read_float64():
     assert (test_value + epsilon) > value
     assert (test_value - epsilon) < value
 
-def test_macros_swap():
+def test_macros_swap() -> None:
     """Test macros for data swapping
     """
     macro_dict = get_macro_dict()
@@ -287,7 +287,7 @@ def test_macros_swap():
     value = macro_dict["m_swap_words_u32"](value)
     assert hex(expected) == hex(value)
 
-def test_macro_string():
+def test_macro_string() -> None:
     """Test macro for reading a string.
     """
     binary_data = IntelHex()
@@ -306,7 +306,7 @@ def test_macro_string():
 
     assert test_string == value
 
-def test_macro_string_requires_terminator_within_limit():
+def test_macro_string_requires_terminator_within_limit() -> None:
     """Unterminated strings must stop at the configured maximum length."""
     binary_data = IntelHex()
     binary_data[0] = ord("A")

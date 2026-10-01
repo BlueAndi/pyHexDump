@@ -25,7 +25,10 @@
 ################################################################################
 # Imports
 ################################################################################
+import argparse
 import sys
+from typing import Callable
+
 from pyHexDump.constants import Ret
 from pyHexDump.prg_arg_parser import PrgArgParser
 
@@ -52,7 +55,19 @@ _COMMAND_REG_LIST = [
 # Functions
 ################################################################################
 
-def _get_cmd_exec_func(commands, cmd_name):
+def _get_cmd_exec_func(
+    commands: list[dict[str, str | Callable[[argparse.Namespace], Ret]]],
+    cmd_name: str,
+) -> Callable[[argparse.Namespace], Ret] | None:
+    """Find the execution callback registered for a command.
+
+    Args:
+        commands: Registered command metadata.
+        cmd_name: Command name selected by the user.
+
+    Returns:
+        The matching callback, or None when no command has that name.
+    """
     exec_func = None
 
     for cmd in commands:
@@ -61,11 +76,11 @@ def _get_cmd_exec_func(commands, cmd_name):
 
     return exec_func
 
-def main():
+def main() -> Ret:
     """The program entry point function.
 
     Returns:
-        int: System exit status
+        Ret: Status returned by the selected command.
     """
     ret_status          = Ret.OK
     prg_arg_parser      = PrgArgParser()

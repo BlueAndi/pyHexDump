@@ -40,7 +40,7 @@ from pyHexDump.bunch import dict_to_bunch
 # Functions
 ################################################################################
 
-def test_bunch():
+def test_bunch() -> None:
     """Test bunch
     """
     test_dict = {
