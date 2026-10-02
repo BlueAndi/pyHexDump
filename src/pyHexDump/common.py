@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 - 2025 Andreas Merkle (web@blue-andi.de)
+# Copyright (c) 2022 - 2026 Andreas Merkle (web@blue-andi.de)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,11 @@
 # Imports
 ################################################################################
 import json
+from typing import Any
 
 from intelhex import IntelHex
 from pyHexDump.constants import Ret
+from pyHexDump.mem_access import IMemAccess
 
 ################################################################################
 # Variables
@@ -42,23 +44,19 @@ from pyHexDump.constants import Ret
 # Functions
 ################################################################################
 
-def common_load_binary_file(file_name):
-    """Load binary file which to dump.
-
-        If any error happen, it will return the error code and None instead of
-        the file content.
+def common_load_binary_file(file_name: str) -> tuple[Ret, IntelHex | None]:
+    """Load a binary or Intel HEX file.
 
     Args:
-        file_name (str): File name of the binary file
+        file_name: Path to the input file.
 
     Returns:
-        Ret, IntelHex: Status information and file content
+        A status code and the loaded data, or None when the file is missing.
     """
     ret_status = Ret.OK
     intel_hex_file = IntelHex()
     file_format = "bin"
 
-    # Intel hex file? All others are handled as binary.
     if file_name.endswith(".hex"):
         file_format = "hex"
 
@@ -70,17 +68,14 @@ def common_load_binary_file(file_name):
 
     return ret_status, intel_hex_file
 
-def common_load_json_file(file_name):
-    """Load JSON file to dictionary.
-
-        If any error happen, it will return the error code and None instead of
-        the dictionary.
+def common_load_json_file(file_name: str) -> tuple[Ret, Any | None]:
+    """Load a JSON file.
 
     Args:
-        file_name (str): File name of the JSON file
+        file_name: Path to the JSON file.
 
     Returns:
-        Ret, dict: Status information and dictionary
+        A status code and the decoded JSON value, or None when the file is missing.
     """
     ret_status = Ret.OK
     config = None
@@ -93,17 +88,14 @@ def common_load_json_file(file_name):
 
     return ret_status, config
 
-def common_load_template_file(file_name):
-    """Load template file to dictionary.
-
-        If any error happen, it will return the error code and None instead of
-        the dictionary.
+def common_load_template_file(file_name: str) -> tuple[Ret, str | None]:
+    """Load a text template file.
 
     Args:
-        file_name (str): File name of the template file
+        file_name: Path to the template file.
 
     Returns:
-        Ret, dict: Status information and dictionary
+        A status code and template text, or None when the file is missing.
     """
     ret_status = Ret.OK
     template = None
@@ -116,42 +108,46 @@ def common_load_template_file(file_name):
 
     return ret_status, template
 
-def common_print_address(addr, addr_format="{:04X}"):
-    """Print the memory address in the given format.
+def common_print_address(addr: int, addr_format: str = "{:04X}") -> None:
+    """Print a memory address using the requested format.
 
     Args:
-        addr (int): Memory address
-        addr_format (str, optional): The output format. Defaults to "{:04X}".
+        addr: Address to print.
+        addr_format: Format string applied to the address.
+
+    Returns:
+        None: The formatted address is written to stdout.
     """
     print(addr_format.format(addr), end="")
 
-def common_print_value(value, value_format="{:02X}"):
-    """Print the value in the given format.
+def common_print_value(value: int | float | list[int | float], value_format: str = "{:02X}") -> None:
+    """Print one value or a list of values using the requested format.
 
     Args:
-        value (int, list): A single value or a list of values.
-        value_format (str, optional): The output format. Defaults to "{:02X}".
+        value: Numeric value or list of numeric values to print.
+        value_format: Format string applied to each value.
+
+    Returns:
+        None: The formatted value is written to stdout.
     """
-    # Array of values?
     if isinstance(value, list):
-        # Print the array with a space between
         for idx, element in enumerate(value):
             if idx > 0:
                 print(" ", end="")
             print(value_format.format(element), end="")
     else:
-        # Print the single value
         print(value_format.format(value), end="")
 
-def common_print_line(mem_access, addr, count):
-    """Print a single line in the format:
-        <address>: <data>
+def common_print_line(mem_access: IMemAccess, addr: int, count: int) -> None:
+    """Print one line of memory values.
 
     Args:
-        intel_hex_file (intelhex): The intel hex object.
-        mem_access (MemAccess): The memory access API.
-        addr (int): The memory start address.
-        count (int): The number of elements to show.
+        mem_access: Memory-access implementation used to read values.
+        addr: Starting address of the line.
+        count: Number of values to print.
+
+    Returns:
+        None: The formatted line is written to stdout.
     """
     common_print_address(addr)
     print(": ", end="")
@@ -159,27 +155,24 @@ def common_print_line(mem_access, addr, count):
     value_width = 2 * mem_access.get_size()
     value_format = "{:0" + str(value_width) + "X}"
     for idx in range(count):
-        # Print space between each value
         if idx > 0:
             print(" ", end="")
 
         offset = idx * mem_access.get_size()
         common_print_value(mem_access.get_value(addr + offset), value_format)
 
-def common_dump_intel_hex(mem_access, addr, count, next_line=16):
-    """Dump some data, starting with the address in the format "<addr>: <data>".
-        The address and the data is printed in hex.
+def common_dump_intel_hex(mem_access: IMemAccess, addr: int, count: int, next_line: int = 16) -> Ret:
+    """Print memory values as a hexadecimal dump.
 
     Args:
-        mem_access (MemAccess): Memory access API
-        addr (int): Address
-        count (int): Number of elements
-        next_line (int): A newline will be printed after this number of bytes.
+        mem_access: Memory-access implementation used to read values.
+        addr: Starting address of the dump.
+        count: Number of values to print.
+        next_line: Line width in bytes, or zero to print all values on one line.
 
     Returns:
-        Ret: If successful, it will return Ret.OK otherwise a error code.
+        Ret: Success status after printing the dump.
     """
-
     if next_line == 0:
         next_line = mem_access.get_size() * count
 
@@ -193,7 +186,6 @@ def common_dump_intel_hex(mem_access, addr, count, next_line=16):
 
     offset = 0
     for index in range(full_lines_cnt):
-        # Print newline not for the first line but for all following lines
         if index > 0:
             print("")
 
@@ -201,9 +193,9 @@ def common_dump_intel_hex(mem_access, addr, count, next_line=16):
         common_print_line(mem_access, addr + offset, full_line_cnt)
 
     if last_line_element_cnt > 0:
-        # Print newline only if this is not the first line (no full lines available)
         if full_lines_cnt > 0:
             print("")
+            offset = full_lines_cnt * next_line
 
         common_print_line(mem_access, addr + offset, last_line_element_cnt)
 
@@ -211,4 +203,5 @@ def common_dump_intel_hex(mem_access, addr, count, next_line=16):
 
 ################################################################################
 # Main
+
 ################################################################################

@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 - 2025 Andreas Merkle (web@blue-andi.de)
+# Copyright (c) 2022 - 2026 Andreas Merkle (web@blue-andi.de)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -40,19 +40,27 @@ class PrgArgParser():
     """Parses all program arguments according to its configuration.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Configure parser and parse program arguments.
+
+        Returns:
+            None: Initializes the parser state.
         """
         self._parser = self._create_main_parser()
         self._sub_parsers =  self._parser.add_subparsers(dest="cmd")
         self._args = None
 
-    def _create_main_parser(self):
+    def _create_main_parser(self) -> argparse.ArgumentParser:
+        """Create the parser shared by all CLI commands.
+
+        Returns:
+            argparse.ArgumentParser: Configured top-level parser.
+        """
         main_parser = argparse.ArgumentParser( \
             description="Binary files in different formats can be analyzed by\
             specifying a memory map configuration or just dump some data to\
             the console.",
-            epilog="Copyright (c) 2022 - 2025 " + __author__ + " - " + __license__ + \
+            epilog="Copyright (c) 2022 - 2026 " + __author__ + " - " + __license__ + \
             " - Find the project on github: " + __repository__)
         main_parser.set_defaults(which="")
 
@@ -72,12 +80,15 @@ class PrgArgParser():
 
         return main_parser
 
-    def parse_args(self):
+    def parse_args(self) -> None:
         """Parse the program arguments.
+
+        Returns:
+            None: Stores parsed arguments on this parser instance.
         """
         self._args = self._parser.parse_args()
 
-    def get_sub_parsers(self):
+    def get_sub_parsers(self) -> argparse._SubParsersAction:
         """Get the sub parsers to be able to add additional command specific parsers.
 
         Returns:
@@ -85,16 +96,19 @@ class PrgArgParser():
         """
         return self._sub_parsers
 
-    def print_help(self):
+    def print_help(self) -> None:
         """Print the help information.
+
+        Returns:
+            None: Writes help text to stdout.
         """
         self._parser.print_help()
 
-    def get_args(self):
+    def get_args(self) -> argparse.Namespace | None:
         """Get parsed arguments.
 
         Returns:
-            dict: Arguments
+            argparse.Namespace or None: Parsed arguments, if parsing has run.
         """
         return self._args
 

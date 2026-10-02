@@ -56,16 +56,17 @@ There are a lot of hex viewers already, but I was not able to find one which I c
 ## Installation
 
 ```cmd
-$ git clone https://github.com/BlueAndi/pyHexDump.git
-$ cd pyHexDump
-$ pip install .
+git clone https://github.com/BlueAndi/pyHexDump.git
+cd pyHexDump
+pip install .
 ```
 
 ## Usage
 
 Show help information:
+
 ```cmd
-$ pyHexDump --help
+pyHexDump --help
 ```
 
 ## Overview
@@ -81,7 +82,6 @@ Don't miss the examples in the [example](./examples/) folder. In the following c
 Dump bytes in the classic way by address.
 
 #### Dump data as 8-bit
-
 
 ```$ pyHexDump dump ./examples/data/aurix_tc397.hex -a 0x80000020```
 
@@ -133,20 +133,20 @@ Result:
 
 The following optional arguments are supported:
 
-* ```-bde``` The binary data endianess and bit width:
-    * "uint8": unsigned 8-bit
-    * "uint16le": unsigned 16-bit little endian
-    * "uint16be": unsigned 16-bit big endian
-    * "uint32le": unsigned 32-bit little endian
-    * "uint32be": unsigned 32-bit big endian
-* ```-sa```: Start address of the CRC calculation.
-* ```-ea```: End address of the CRC calculation (not included).
-* ```-p```: The polynomial for the CRC calculation. Default: 0x04C11DB7
-* ```-bw```: The bit width, e.g. 8 in case of a CRC-8. Default: 32
-* ```-s```-: The seed value which to use. Default: 0
-* ```-ri```: If the input data shall be reflected, set to True. Default: False
-* ```-ro```: If the output data shall be reflected, set to True. Default: False
-* ```-fx```: If the output shall be have a final XOR with all bits set, set to True. Default: False
+- ```-bde``` The binary data endianess and bit width:
+  - "uint8": unsigned 8-bit
+  - "uint16le": unsigned 16-bit little endian
+  - "uint16be": unsigned 16-bit big endian
+  - "uint32le": unsigned 32-bit little endian
+  - "uint32be": unsigned 32-bit big endian
+- ```-sa```: Start address of the CRC calculation.
+- ```-ea```: End address of the CRC calculation (not included).
+- ```-p```: The polynomial for the CRC calculation. Default: 0x04C11DB7
+- ```-bw```: The bit width, e.g. 8 in case of a CRC-8. Default: 32
+- ```-s```-: The seed value which to use. Default: 0
+- ```-ri```: If the input data shall be reflected, set to True. Default: False
+- ```-ro```: If the output data shall be reflected, set to True. Default: False
+- ```-fx```: If the output shall be have a final XOR with all bits set, set to True. Default: False
 
 ### Print configuration
 
@@ -155,25 +155,25 @@ By using the ```print``` command all of the values in the configuration are prin
 
 The following datatypes are supported:
 
-* "int8": signed 8-bit
-* "uint8": unsigned 8-bit
-* "int16le": signed 16-bit little endian
-* "int16be": signed 16-bit big endian
-* "uint16le": unsigned 16-bit little endian
-* "uint16be": unsigned 16-bit big endian
-* "int32le": signed 32-bit little endian
-* "int32be": signed 32-bit big endian
-* "uint32le": unsigned 32-bit little endian
-* "uint32be": unsigned 32-bit big endian
-* "int64le": signed 64-bit little endian
-* "int64be": signed 64-bit big endian
-* "uint64le": unsigned 64-bit little endian
-* "uint64be": unsigned 64-bit big endian
-* "float32le": floating point 32-bit little endian
-* "float32be": floating point 32-bit big endian
-* "float64le": floating point 64-bit little endian
-* "float64be": floating point 64-bit big endian
-* "utf8": String encoded in UTF-8
+- "int8": signed 8-bit
+- "uint8": unsigned 8-bit
+- "int16le": signed 16-bit little endian
+- "int16be": signed 16-bit big endian
+- "uint16le": unsigned 16-bit little endian
+- "uint16be": unsigned 16-bit big endian
+- "int32le": signed 32-bit little endian
+- "int32be": signed 32-bit big endian
+- "uint32le": unsigned 32-bit little endian
+- "uint32be": unsigned 32-bit big endian
+- "int64le": signed 64-bit little endian
+- "int64be": signed 64-bit big endian
+- "uint64le": unsigned 64-bit little endian
+- "uint64be": unsigned 64-bit big endian
+- "float32le": floating point 32-bit little endian
+- "float32be": floating point 32-bit big endian
+- "float64le": floating point 64-bit little endian
+- "float64be": floating point 64-bit big endian
+- "utf8": String encoded in UTF-8
 
 ```$ pyHexDump print ./examples/data/aurix_tc397.hex ./examples/print_config/config.json --onlyInHex```
 
@@ -217,7 +217,7 @@ with ```config.json``` like
 
 Result:
 
-```
+```plain
 UCB00_BMI_BMHDID @ AF400000: 0xB35900FE
 UCB00_STAD @ AF400004: 0xA0000000
 UCB00_CRCBMHD @ AF400008: 0x31795570
@@ -232,10 +232,10 @@ The [Mako template library](https://www.makotemplates.org/) is used, to provide 
 
 A configuration element can be accessed in the template via:
 
-* ```${<config-element-name>}```: Prints the decimal value.
-* ```${<config-element-name>.hex()}```: Prints the value in hex with "0x" as prefix by default.
-* ```${<config-element-name>.hex("")}```: Prints the value in hex without a prefix.
-* ```${<config-element-name>.addr()}```: Prints the address in decimal.
+- ```${<config-element-name>}```: Prints the decimal value.
+- ```${<config-element-name>.hex()}```: Prints the value in hex with "0x" as prefix by default.
+- ```${<config-element-name>.hex("")}```: Prints the value in hex without a prefix.
+- ```${<config-element-name>.addr()}```: Prints the address in decimal.
 
 #### Example
 
@@ -532,14 +532,14 @@ Compares the set value with the actual value.
 
 Parameters:
 
-* set_value: Set value
-* actual_value: Actual value
-* value_format="{:02X}": Value format used to print them in case they are different.
+- set_value: Set value
+- actual_value: Actual value
+- value_format="{:02X}": Value format used to print them in case they are different.
 
 Returns:
 
-* "Ok": If both values are equal.
-* "Not Ok (Set: &lt;set_value&gt;, Actual: &lt;actual_value&gt;)": If the values are different.
+- "Ok": If both values are equal.
+- "Not Ok (Set: &lt;set_value&gt;, Actual: &lt;actual_value&gt;)": If the values are different.
 
 ### m_read_uint8()
 
@@ -547,7 +547,7 @@ Read unsigned 8-bit value from binary data at given address and returns it.
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_uint16le()
 
@@ -555,7 +555,7 @@ Read unsigned 16-bit little endian value from binary data at given address and r
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_uint16be()
 
@@ -563,7 +563,7 @@ Read unsigned 16-bit big endian value from binary data at given address and retu
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_uint32le()
 
@@ -571,7 +571,7 @@ Read unsigned 32-bit little endian value from binary data at given address and r
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_uint32be()
 
@@ -579,7 +579,7 @@ Read unsigned 32-bit big endian value from binary data at given address and retu
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_uint64le()
 
@@ -587,7 +587,7 @@ Read unsigned 64-bit little endian value from binary data at given address and r
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_uint64be()
 
@@ -595,7 +595,7 @@ Read unsigned 64-bit big endian value from binary data at given address and retu
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_int8()
 
@@ -603,7 +603,7 @@ Read signed 8-bit value from binary data at given address and returns it.
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_int16le()
 
@@ -611,7 +611,7 @@ Read signed 16-bit little endian value from binary data at given address and ret
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_int16be()
 
@@ -619,7 +619,7 @@ Read signed 16-bit big endian value from binary data at given address and return
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_int32le()
 
@@ -627,7 +627,7 @@ Read signed 32-bit little endian value from binary data at given address and ret
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_int32be()
 
@@ -635,7 +635,7 @@ Read signed 32-bit big endian value from binary data at given address and return
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_int64le()
 
@@ -643,7 +643,7 @@ Read signed 64-bit little endian value from binary data at given address and ret
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_int64be()
 
@@ -651,7 +651,7 @@ Read signed 64-bit big endian value from binary data at given address and return
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_float32le()
 
@@ -659,7 +659,7 @@ Read floating point 32-bit little endian value from binary data at given address
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_float32be()
 
@@ -667,7 +667,7 @@ Read floating point 32-bit big endian value from binary data at given address an
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_float64le()
 
@@ -675,7 +675,7 @@ Read floating point 64-bit little endian value from binary data at given address
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_float64be()
 
@@ -683,7 +683,7 @@ Read floating point 64-bit big endian value from binary data at given address an
 
 Parameters:
 
-* addr: Address
+- addr: Address
 
 ### m_read_string()
 
@@ -691,8 +691,8 @@ Read string from binary data at given address and returns it. It will consider t
 
 Parameters:
 
-* encoding: The character encoding.
-    * Default: utf-8
+- encoding: The character encoding.
+  - Default: utf-8
 
 ### m_calc_checksum()
 
@@ -700,20 +700,20 @@ Calculate the CRC checksum.
 
 Parameters:
 
-* binary_data_endianess: The binary data endianess and bit width:
-    * "uint8": unsigned 8-bit
-    * "uint16le": unsigned 16-bit little endian
-    * "uint16be": unsigned 16-bit big endian
-    * "uint32le": unsigned 32-bit little endian
-    * "uint32be": unsigned 32-bit big endian
-* start_address: Start address of the CRC calculation.
-* end_address: End address of the CRC calculation (not included).
-* polynomial: The polynomial for the CRC calculation.
-* bit_width: The bit width, e.g. 8 in case of a CRC-8.
-* seed: The seed value which to use.
-* reverse_input: If the input data shall be reflected, set to True otherwise to False.
-* reverse_output: If the output data shall be reflected, set to True otherwise to False.
-* final_xor: If the output shall be have a final XOR with all bits set, set to True otherwise to False.
+- binary_data_endianess: The binary data endianess and bit width:
+  - "uint8": unsigned 8-bit
+  - "uint16le": unsigned 16-bit little endian
+  - "uint16be": unsigned 16-bit big endian
+  - "uint32le": unsigned 32-bit little endian
+    - "uint32be": unsigned 32-bit big endian
+- start_address: Start address of the CRC calculation.
+- end_address: End address of the CRC calculation (not included).
+- polynomial: The polynomial for the CRC calculation.
+- bit_width: The bit width, e.g. 8 in case of a CRC-8.
+- seed: The seed value which to use.
+- reverse_input: If the input data shall be reflected, set to True otherwise to False.
+- reverse_output: If the output data shall be reflected, set to True otherwise to False.
+- final_xor: If the output shall be have a final XOR with all bits set, set to True otherwise to False.
 
 ### m_swap_bytes_u16()
 
@@ -721,11 +721,11 @@ Swaps the bytes of a unsigned 16-bit value.
 
 Parameters:
 
-* value: Source value
+- value: Source value
 
 Returns:
 
-* Swapped value
+- Swapped value
 
 ### m_swap_bytes_u32()
 
@@ -733,11 +733,11 @@ Swaps the bytes of a unsigned 32-bit value.
 
 Parameters:
 
-* value: Source value
+- value: Source value
 
 Returns:
 
-* Swapped value
+- Swapped value
 
 ### m_swap_words_u32()
 
@@ -745,11 +745,11 @@ Swaps the 16-bit words of a unsigned 32-bit value.
 
 Parameters:
 
-* value: Source value
+- value: Source value
 
 Returns:
 
-* Swapped value
+- Swapped value
 
 ## Used Libraries
 

@@ -3,7 +3,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 - 2025 Andreas Merkle (web@blue-andi.de)
+# Copyright (c) 2022 - 2026 Andreas Merkle (web@blue-andi.de)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,13 +26,17 @@
 ################################################################################
 # Imports
 ################################################################################
+from typing import Any
+
+from intelhex import IntelHex
 from pyHexDump.tmpl_element import TmplElementInt, \
                                     TmplElementIntList, \
                                     TmplElementFloat, \
                                     TmplElementFloatList, \
-                                    TmplElementStr
-from pyHexDump.mem_access import mem_access_get_api_by_data_type
-from pyHexDump.config_element import PaddingElement
+                                    TmplElementStr, \
+                                    BaseTemplateElement
+from pyHexDump.mem_access import IMemAccess, mem_access_get_api_by_data_type
+from pyHexDump.config_element import ConfigElement, PaddingElement
 
 ################################################################################
 # Variables
@@ -46,23 +50,33 @@ class TmplModel():
     """The template model holds the template elements, which are provided to the
         template engine.
     """
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialize an empty template model.
+
+        Returns:
+            None: Initializes the model's element collections.
+        """
         self._tmpl_element_dict = {}
 
         # List of all template elements to be able to iterate in the template over all.
         self._tmpl_element_list = []
 
-    def load_from_config_elements(self, binary_data, cfg_elements_dict):
+    def load_from_config_elements(
+        self, binary_data: IntelHex, cfg_elements_dict: dict[str, ConfigElement]
+    ) -> None:
         """Load the template element model from configuration elements.
 
         Args:
             binary_data (IntelHex): The binary data used to retrieve the value.
             cfg_elements_dict (dict): Configuration element objects
+
+        Returns:
+            None: Builds this model's template elements from the configuration.
         """
         self._tmpl_element_dict = self._get_tmpl_element_dict(binary_data, cfg_elements_dict)
         self._tmpl_element_list = self._flatten_tmpl_dict(self._tmpl_element_dict)
 
-    def get(self):
+    def get(self) -> dict[str, Any]:
         """Get dictionary of configuration elements.
 
         Returns:
@@ -70,7 +84,7 @@ class TmplModel():
         """
         return self._tmpl_element_dict
 
-    def get_list(self):
+    def get_list(self) -> list[BaseTemplateElement]:
         """Get list of configuration elements.
 
         Returns:
@@ -78,7 +92,7 @@ class TmplModel():
         """
         return self._tmpl_element_list
 
-    def _is_integer(self, data_type):
+    def _is_integer(self, data_type: str) -> bool:
         """Check if the data type is an integer.
 
         Args:
@@ -93,7 +107,7 @@ class TmplModel():
 
         return data_type in data_types
 
-    def _is_float(self, data_type):
+    def _is_float(self, data_type: str) -> bool:
         """Check if the data type is a float.
 
         Args:
@@ -106,7 +120,7 @@ class TmplModel():
 
         return data_type in data_types
 
-    def _is_str(self, data_type):
+    def _is_str(self, data_type: str) -> bool:
         """Check if the data type is a string.
 
         Args:
@@ -119,7 +133,9 @@ class TmplModel():
 
         return data_type in data_types
 
-    def _create_template_element_single(self, cfg_element, mem_access, offset):
+    def _create_template_element_single(
+        self, cfg_element: ConfigElement, mem_access: IMemAccess, offset: int
+    ) -> BaseTemplateElement:
         """Create a single template element.
 
         Args:
@@ -148,7 +164,13 @@ class TmplModel():
 
         return tmpl_element
 
-    def _read_string_(self, mem_access, addr, max_length = 256, encoding="utf-8"):
+    def _read_string_(
+        self,
+        mem_access: IMemAccess,
+        addr: int,
+        max_length: int = 256,
+        encoding: str = "utf-8",
+    ) -> str:
         """Read a string from the memory.
 
         Args:
@@ -173,7 +195,9 @@ class TmplModel():
 
         return byte_values.decode(encoding)
 
-    def _create_template_element_list(self, cfg_element, mem_access, offset):
+    def _create_template_element_list(
+        self, cfg_element: ConfigElement, mem_access: IMemAccess, offset: int
+    ) -> BaseTemplateElement:
         """Create a list of template elements.
 
         Args:
@@ -210,7 +234,9 @@ class TmplModel():
 
         return tmpl_element
 
-    def _create_template_element(self, cfg_element, mem_access, offset):
+    def _create_template_element(
+        self, cfg_element: ConfigElement, mem_access: IMemAccess, offset: int
+    ) -> BaseTemplateElement:
         """Create a template element.
 
         Args:
@@ -235,7 +261,12 @@ class TmplModel():
 
         return tmpl_element
 
-    def _get_tmpl_element_dict(self, binary_data, cfg_elements_dict, offset = 0):
+    def _get_tmpl_element_dict(
+        self,
+        binary_data: IntelHex,
+        cfg_elements_dict: dict[str, ConfigElement],
+        offset: int = 0,
+    ) -> dict[str, Any]:
         """Get a dictionary of elements and its value.
 
         Args:
@@ -279,7 +310,7 @@ class TmplModel():
 
         return tmpl_element_dict
 
-    def _flatten_tmpl_dict(self, tmpl_element_dict):
+    def _flatten_tmpl_dict(self, tmpl_element_dict: dict[str, Any]) -> list[BaseTemplateElement]:
         """Flattens a template element dictionary and provides it as a list.
 
         Args:

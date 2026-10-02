@@ -1,11 +1,49 @@
 """Tests
 """
 
+# MIT License
+#
+# Copyright (c) 2022 - 2026 Andreas Merkle (web@blue-andi.de)
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+################################################################################
+# Imports
+################################################################################
 import struct
+import pytest
 from intelhex import IntelHex
 from pyHexDump.macros import get_macro_dict, set_binary_data
 
-def test_macros_read_unsigned_integers():
+################################################################################
+# Variables
+################################################################################
+
+################################################################################
+# Classes
+################################################################################
+
+################################################################################
+# Functions
+################################################################################
+
+def test_macros_read_unsigned_integers() -> None:
     """Test macros to read unsigned integer values.
     """
     binary_data = IntelHex()
@@ -68,7 +106,7 @@ def test_macros_read_unsigned_integers():
         expected |= test_data[idx] << (56 - idx * 8)
     assert hex(expected) == hex(value)
 
-def test_macros_read_signed_integers(): # pylint: disable=too-many-statements
+def test_macros_read_signed_integers() -> None: # pylint: disable=too-many-statements
     """Test macros to read signed integer values.
     """
     binary_data = IntelHex()
@@ -154,7 +192,7 @@ def test_macros_read_signed_integers(): # pylint: disable=too-many-statements
     value = macro_dict["m_read_int64be"](0)
     assert test_value == value
 
-def test_macros_read_float32():
+def test_macros_read_float32() -> None:
     """Test macros to read 32-bit floating values.
     """
     binary_data = IntelHex()
@@ -186,7 +224,7 @@ def test_macros_read_float32():
     assert (test_value + epsilon) > value
     assert (test_value - epsilon) < value
 
-def test_macros_read_float64():
+def test_macros_read_float64() -> None:
     """Test macros to read 64-bit floating values.
     """
     binary_data = IntelHex()
@@ -226,7 +264,7 @@ def test_macros_read_float64():
     assert (test_value + epsilon) > value
     assert (test_value - epsilon) < value
 
-def test_macros_swap():
+def test_macros_swap() -> None:
     """Test macros for data swapping
     """
     macro_dict = get_macro_dict()
@@ -249,7 +287,7 @@ def test_macros_swap():
     value = macro_dict["m_swap_words_u32"](value)
     assert hex(expected) == hex(value)
 
-def test_macro_string():
+def test_macro_string() -> None:
     """Test macro for reading a string.
     """
     binary_data = IntelHex()
@@ -267,3 +305,16 @@ def test_macro_string():
     value = macro_dict["m_read_string"](0)
 
     assert test_string == value
+
+def test_macro_string_requires_terminator_within_limit() -> None:
+    """Unterminated strings must stop at the configured maximum length."""
+    binary_data = IntelHex()
+    binary_data[0] = ord("A")
+    set_binary_data(binary_data)
+
+    with pytest.raises(ValueError, match="not terminated"):
+        get_macro_dict()["m_read_string"](0, max_length=1)
+
+################################################################################
+# Main
+################################################################################

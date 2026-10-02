@@ -7,7 +7,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 - 2025 Andreas Merkle (web@blue-andi.de)
+# Copyright (c) 2022 - 2026 Andreas Merkle (web@blue-andi.de)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,9 @@
 ################################################################################
 # Imports
 ################################################################################
+import argparse
+from typing import Any, Callable
+
 from mako.template import Template
 from mako.exceptions import SyntaxException, RichTraceback
 from pyHexDump.constants import Ret
@@ -38,6 +41,7 @@ from pyHexDump.common import \
     common_load_template_file
 from pyHexDump.macros import get_macro_dict, set_binary_data
 from pyHexDump.bunch import dict_to_bunch
+from pyHexDump.bunch import Bunch
 from pyHexDump.config_model import ConfigModel
 from pyHexDump.tmpl_model import TmplModel
 
@@ -56,7 +60,9 @@ _IS_VERBOSE = False
 # Functions
 ################################################################################
 
-def _print_config_elements(tmpl_element_dict, show_only_in_hex, namespace=""):
+def _print_config_elements(
+    tmpl_element_dict: dict[str, Any], show_only_in_hex: bool, namespace: str = ""
+) -> Ret:
     """Print a single configuration element with its value, read from the
         binary data.
 
@@ -87,7 +93,10 @@ def _print_config_elements(tmpl_element_dict, show_only_in_hex, namespace=""):
 
     return ret_status
 
-def _print_template(tmpl_model, template, constants): # pylint: disable=too-many-locals
+# pylint: disable=too-many-locals
+def _print_template(
+    tmpl_model: TmplModel, template: str, constants: dict[str, str]
+) -> Ret:
     """Print a generated report from template and configuration element dictionary.
 
     Args:
@@ -147,7 +156,7 @@ def _print_template(tmpl_model, template, constants): # pylint: disable=too-many
 
     return ret_status
 
-def _constants_to_dict(constants):
+def _constants_to_dict(constants: list[str]) -> dict[str, str]:
     """Convert list of constants in key:value format to a dictionary.
 
     Args:
@@ -159,14 +168,33 @@ def _constants_to_dict(constants):
     constants_dict = {}
 
     for constant in constants:
-        key_value_pair = constant.split(":", 1)
-
-        if key_value_pair is not None:
-            constants_dict[key_value_pair[0]] = key_value_pair[1]
+        key, separator, value = constant.partition(":")
+        if not separator:
+            raise ValueError(f"Invalid constant {constant!r}; expected key:value.")
+        constants_dict[key] = value
 
     return constants_dict
 
-def _cmd_print(binary_file, config_file, template_file, show_only_in_hex, constants):
+def _validate_constant(constant: str) -> str:
+    """Validate a CLI template constant.
+
+    Args:
+        constant: User-supplied constant in ``key:value`` format.
+
+    Returns:
+        The unchanged constant after validation.
+    """
+    if ":" not in constant:
+        raise ValueError("Expected a constant in key:value format.")
+    return constant
+
+def _cmd_print(
+    binary_file: str,
+    config_file: str,
+    template_file: str | None,
+    show_only_in_hex: bool,
+    constants: list[str] | None,
+) -> Ret:
     """Print configuration element values. The configuration file contains the
         elements with its meta data. A template may be used to format the
         output. If no template is available, the configuration elements will
@@ -218,7 +246,7 @@ def _cmd_print(binary_file, config_file, template_file, show_only_in_hex, consta
 
     return ret_status
 
-def _exec(args):
+def _exec(args: argparse.Namespace | Bunch) -> Ret:
     """Determine the required parameters from the program arguments and execute the command.
 
     Args:
@@ -235,7 +263,9 @@ def _exec(args):
 
     return _cmd_print(args.binaryFile[0], args.configFile[0], args.templateFile, args.onlyInHex, constants) # pylint: disable=line-too-long,too-many-function-args
 
-def cmd_register(arg_sub_parsers):
+def cmd_register(
+    arg_sub_parsers: argparse._SubParsersAction,
+) -> dict[str, str | Callable[[argparse.Namespace], Ret]]:
     """Register the command specific CLI argument parser and get command
         specific paramters.
 
@@ -304,6 +334,7 @@ def cmd_register(arg_sub_parsers):
         "-c",
         "--constant",
         action="append",
+        type=_validate_constant,
         required=False,
         help="Constant key/value pair to be used in the template. " \
                 "Can be applied several times. Example --constant name:value"

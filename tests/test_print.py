@@ -1,12 +1,55 @@
 """Tests
 """
 
+# MIT License
+#
+# Copyright (c) 2022 - 2026 Andreas Merkle (web@blue-andi.de)
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+################################################################################
+# Imports
+################################################################################
+import pytest
 from pyHexDump.constants import Ret
 from pyHexDump.prg_arg_parser import PrgArgParser
-from pyHexDump.cmd_print import _exec,  cmd_register as cmd_print_register
+from pyHexDump.cmd_print import _constants_to_dict, _exec,  cmd_register as cmd_print_register
 from pyHexDump.bunch import dict_to_bunch
 
-def test_cmd_registration():
+################################################################################
+# Variables
+################################################################################
+
+################################################################################
+# Classes
+################################################################################
+
+################################################################################
+# Functions
+################################################################################
+
+def test_constants_require_key_value_separator() -> None:
+    """Malformed template constants are rejected."""
+    with pytest.raises(ValueError, match="key:value"):
+        _constants_to_dict(["missing-separator"])
+
+def test_cmd_registration() -> None:
     """Test the command registration.
     """
     main_prg_arg_parser = PrgArgParser()
@@ -15,7 +58,7 @@ def test_cmd_registration():
     assert cmd["name"] == "print"
     assert hasattr(cmd["execFunc"], "__call__") is True
 
-def test_config(capsys):
+def test_config(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the call via command line args."""
     args = {
         "binaryFile": [ "tests/data/data.txt" ],
@@ -36,7 +79,7 @@ def test_config(capsys):
     assert captured_lines[2] == "utf8 @ 00000004: 567"
     assert captured_lines[3] == ""
 
-def test_config_structure(capsys):
+def test_config_structure(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the call via command line args."""
     args = {
         "binaryFile": [ "tests/data/data.txt" ],
@@ -56,7 +99,7 @@ def test_config_structure(capsys):
     assert captured_lines[1] == "uint8_list_custom.element @ 00000000: [49, 50, 51, 52, 53, 54, 55, 56]"
     assert captured_lines[2] == ""
 
-def test_config_structure_nested(capsys):
+def test_config_structure_nested(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the call via command line args."""
     args = {
         "binaryFile": [ "tests/data/data.txt" ],
@@ -76,7 +119,7 @@ def test_config_structure_nested(capsys):
     assert captured_lines[1] == "ubyte_list.element.b @ 00000001: 50"
     assert captured_lines[2] == ""
 
-def test_config_structure_array(capsys):
+def test_config_structure_array(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the call via command line args."""
     args = {
         "binaryFile": [ "tests/data/data.txt" ],
@@ -99,7 +142,7 @@ def test_config_structure_array(capsys):
     assert captured_lines[2] == "uint8_list_custom._1_.element @ 00000004: [53, 54, 55, 56]"
     assert captured_lines[3] == ""
 
-def test_config_structure_nested_array(capsys):
+def test_config_structure_nested_array(capsys: pytest.CaptureFixture[str]) -> None:
     """Test the call via command line args."""
     args = {
         "binaryFile": [ "tests/data/data.txt" ],
@@ -126,3 +169,7 @@ def test_config_structure_nested_array(capsys):
     assert captured_lines[6] == "ubyte_list._1_.element._1_.a @ 00000006: 55"
     assert captured_lines[7] == "ubyte_list._1_.element._1_.b @ 00000007: 56"
     assert captured_lines[8] == ""
+
+################################################################################
+# Main
+################################################################################

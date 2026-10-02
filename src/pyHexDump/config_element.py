@@ -3,7 +3,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 - 2025 Andreas Merkle (web@blue-andi.de)
+# Copyright (c) 2022 - 2026 Andreas Merkle (web@blue-andi.de)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -42,16 +42,20 @@ class ConfigElement:
     """
 
     # pylint: disable=too-many-arguments
-    def __init__(self, name, addr, data_type, count, elements = None):
+    def __init__(self, name: str, addr: int, data_type: str, count: int,
+                 elements: dict[str, "ConfigElement"] | None = None) -> None:
         """
         Initialize the configuration element.
 
         Args:
-            name (str): _description_
-            addr (int): _description_
-            data_type (str): _description_
-            count (int): _description_
-            elements (list, optional): List of configuration elements. Defaults to None.
+            name (str): Name used to identify the configured element.
+            addr (int): Starting memory address of the element.
+            data_type (str): Data type used to decode the element.
+            count (int): Number of values represented by the element.
+            elements (dict, optional): Nested structure members, if this is a structure.
+
+        Returns:
+            None: Initializes the configuration element.
         """
         self.name = name
         self.addr = addr
@@ -60,7 +64,7 @@ class ConfigElement:
         self.elements = elements
 
     @property
-    def size(self):
+    def size(self) -> int:
         """Get the size of the configuration element.
 
         Returns:
@@ -88,18 +92,21 @@ class PaddingElement(ConfigElement):
     A gap can be necessary in case of a specific alignment is required.
     """
 
-    def __init__(self, size):
+    def __init__(self, size: int) -> None:
         """
         Initialize the padding element.
 
         Args:
             size (int): Size of the padding element in bytes.
+
+        Returns:
+            None: Initializes the padding element.
         """
         super().__init__("padding", 0, "uint8", 0)
         self._size = size
 
     @property
-    def size(self):
+    def size(self) -> int:
         """Get the size of the padding element.
 
         Returns:

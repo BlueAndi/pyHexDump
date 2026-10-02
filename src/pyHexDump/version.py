@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 - 2025 Andreas Merkle (web@blue-andi.de)
+# Copyright (c) 2022 - 2026 Andreas Merkle (web@blue-andi.de)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@
 # Imports
 ################################################################################
 import importlib.metadata as meta
+from email.utils import parseaddr
 import os
 import sys
 import toml
@@ -49,8 +50,15 @@ __license__ = "???"
 ################################################################################
 
 
-def resource_path(relative_path):
-    """ Get the absolute path to the resource, works for dev and for PyInstaller """
+def resource_path(relative_path: str) -> str:
+    """Get the absolute path to a packaged resource.
+
+    Args:
+        relative_path: Path relative to the package resource directory.
+
+    Returns:
+        Absolute path to the resource.
+    """
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
         # pylint: disable=protected-access
@@ -61,30 +69,35 @@ def resource_path(relative_path):
 
     return os.path.join(base_path, relative_path)
 
-def init_from_metadata():
+def init_from_metadata() -> tuple[str, str, str, str, str]:
     """Initialize dunders from importlib.metadata
     Requires that the package was installed.
 
     Returns:
-        list: Tool related informations
+        Tuple containing version, author, email, repository URL, and license.
     """
 
     my_metadata = meta.metadata('pyHexDump')
+    author_email = my_metadata.get('Author-email') or ""
+    author_name, email_address = parseaddr(author_email)
+    project_urls = my_metadata.get_all('Project-URL', [])
+    repository = next((url.partition(',')[2].strip() for url in project_urls
+                       if url.partition(',')[0].strip().lower() in {'repository', 'source'}), "")
 
     return \
-        my_metadata['Version'],\
-        my_metadata['Author'],\
-        my_metadata['Author-email'],\
-        my_metadata['Project-URL'].replace("repository, ", ""),\
-        my_metadata['License']
+        my_metadata.get('Version') or "???",\
+        my_metadata.get('Author') or author_name or "???",\
+        email_address or author_email,\
+        repository or my_metadata.get('Home-page') or "???",\
+        my_metadata.get('License') or my_metadata.get('License-Expression') or "???"
 
-def init_from_toml():
+def init_from_toml() -> tuple[str, str, str, str, str]:
     """Initialize dunders from pypackage.toml file
 
     Tried if package wasn't installed.
 
     Returns:
-        list: Tool related informations
+        Tuple containing version, author, email, repository URL, and license.
     """
 
     toml_file = resource_path("pyproject.toml")

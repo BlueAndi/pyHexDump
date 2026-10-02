@@ -2,7 +2,7 @@
 
 # MIT License
 #
-# Copyright (c) 2022 - 2025 Andreas Merkle (web@blue-andi.de)
+# Copyright (c) 2022 - 2026 Andreas Merkle (web@blue-andi.de)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,9 +25,13 @@
 ################################################################################
 # Imports
 ################################################################################
+import argparse
+from typing import Callable
+
 from pyHexDump.constants import Ret
 from pyHexDump.common import common_load_binary_file, common_dump_intel_hex
 from pyHexDump.mem_access import mem_access_get_api_by_data_type
+from pyHexDump.bunch import Bunch
 
 ################################################################################
 # Variables
@@ -43,7 +47,7 @@ _CMD_NAME = "dump"
 # Functions
 ################################################################################
 
-def _cmd_dump(binary_file, addr, count, data_type):
+def _cmd_dump(binary_file: str, addr: int, count: int, data_type: str) -> Ret:
     """Dump binary file to the console at the given address. It will contain a
         number of elements (count) depended on the data type (data_type).
 
@@ -66,7 +70,7 @@ def _cmd_dump(binary_file, addr, count, data_type):
 
     return ret_status
 
-def _exec(args):
+def _exec(args: argparse.Namespace | Bunch) -> Ret:
     """Determine the required parameters from the program arguments and execute the command.
 
     Args:
@@ -77,7 +81,9 @@ def _exec(args):
     """
     return _cmd_dump(args.binaryFile[0], args.addr, args.count, args.dataType)
 
-def cmd_register(arg_sub_parsers):
+def cmd_register(
+    arg_sub_parsers: argparse._SubParsersAction,
+) -> dict[str, str | Callable[[argparse.Namespace], Ret]]:
     """Register the command specific CLI argument parser and get command
         specific paramters.
 
@@ -85,7 +91,7 @@ def cmd_register(arg_sub_parsers):
         arg_sub_parsers (obj): Register the parser here
 
     Returns:
-        obj: Command parameters
+        dict: Registered command name and execution callback.
     """
     cmd_par_dict = {}
     cmd_par_dict["name"] = _CMD_NAME

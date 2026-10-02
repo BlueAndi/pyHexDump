@@ -1,11 +1,48 @@
 """Tests
 """
 
+# MIT License
+#
+# Copyright (c) 2022 - 2026 Andreas Merkle (web@blue-andi.de)
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+################################################################################
+# Imports
+################################################################################
 import struct
 from pyHexDump.tmpl_element import TmplElementInt, TmplElementIntList, \
     TmplElementFloat, TmplElementFloatList, TmplElementStr
 
-def test_tmpl_element():
+################################################################################
+# Variables
+################################################################################
+
+################################################################################
+# Classes
+################################################################################
+
+################################################################################
+# Functions
+################################################################################
+
+def test_tmpl_element() -> None:
     """Test the template element class with different representations.
     """
     # Test uint8
@@ -74,7 +111,7 @@ def test_tmpl_element():
     assert f"0x{value_raw:016X}" == tmpl_element.hex()
     assert test_value == tmpl_element
 
-def test_tmpl_element_with_array_part_1():
+def test_tmpl_element_with_array_part_1() -> None:
     """Test the template element class with different representations
         in case its an array.
     """
@@ -139,7 +176,7 @@ def test_tmpl_element_with_array_part_1():
     for idx, value in enumerate(test_values):
         assert value == tmpl_element[idx]
 
-def test_tmpl_element_with_array_part_2():
+def test_tmpl_element_with_array_part_2() -> None:
     """Test the template element class with different representations
         in case its an array.
     """
@@ -208,7 +245,7 @@ def test_tmpl_element_with_array_part_2():
     for idx, value in enumerate(test_values):
         assert value == tmpl_element[idx]
 
-def test_tmpl_element_with_array_part_3():
+def test_tmpl_element_with_array_part_3() -> None:
     """Test the template element class with different representations
         in case its an array.
     """
@@ -258,3 +295,7 @@ def test_tmpl_element_with_array_part_3():
     assert hex_str == tmpl_element.hex()
 
     assert test_values == tmpl_element
+
+################################################################################
+# Main
+################################################################################
